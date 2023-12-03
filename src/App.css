@@ -1,0 +1,291 @@
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    gap: 16px;
+}
+
+input[id="remember"]:checked {
+    accent-color: #a273ff;
+}
+
+.loginContainer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 95vh;
+}
+
+.form-input {
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid var(--gray-300, #d1d5db);
+}
+
+.form-input:focus {
+    outline: none;
+    border: 1px solid var(--gray-500, #d1d5db);
+}
+
+a,
+a:hover,
+a:active,
+a:visited {
+    text-decoration: none;
+    color: "#A273FF";
+}
+
+.logoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    height: 80px;
+    width: 256px;
+    background-color: #fff;
+}
+
+.sideBar {
+    border-inline-end: 1px solid rgba(5, 5, 5, 0.06);
+    width: 256px;
+}
+
+.ant-menu-item-selected {
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    width: 99% !important;
+    border-right: #a273ff 4px solid !important;
+    background-color: #fff !important;
+    color: #a273ff !important;
+    border-radius: 0px !important;
+}
+
+.ant-pagination-item {
+    background-color: rgba(236, 227, 255, 1)!important;
+    color: #a273ff;
+}
+
+.ant-pagination-item-active {
+    background-color: #a273ff !important;
+    color: #fff !important;
+    margin: 0px 4px !important;
+}
+
+.ant-pagination-item-active a {
+    color: #fff !important;
+}
+
+.ant-menu-item {
+    color: var(--gray-400, #9ca3af);
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    /* 150% */
+}
+
+.ant-tabs-tab-active {
+    color: #a273ff !important;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    border-top: 2px solid #a273ff !important;
+    /* 150% */
+}
+
+.stats {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.mainContainer {
+    display: flex;
+}
+
+.mainContainer main {
+    padding: 16px;
+}
+
+.chartContainer {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.chartContainer .left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.chartContainer .left p {
+    font-size: 58px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 72px;
+    letter-spacing: -1.36px;
+}
+
+.chartContainer .left span {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    color: rgba(34, 197, 94, 1);
+}
+
+.chartContainer .leftTitle {
+    background-color: #f6f1ff;
+    border-radius: 8px;
+}
+
+.chartContainer .left .gain {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #9ca3af;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.chartContainer .chart {
+    width: 70%;
+    height: 200px;
+}
+
+.multipleTable {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 6px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.multipleTable .leftTable,
+.multipleTable .midleChart,
+.multipleTable .barChart {
+    flex: 5;
+    background-color: #fff;
+    padding: 8px;
+    height: auto;
+    border-radius: 20px;
+    height: 300px;
+}
+
+.multipleTable .leftTable .legendTab {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.multipleTable .leftTable .legendTab .title {
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 26px;
+    /* 133.333% */
+    letter-spacing: -0.48px;
+    color: #1e1a21;
+}
+
+.multipleTable .midleChart {
+    flex: 4;
+}
+
+.multipleTable .barChart {
+    flex: 3;
+}
+
+@media (max-width: 768px) {
+    .logo {
+        display: none;
+    }
+    .formContainer {
+        width: 70vw;
+    }
+    .chartContainer .left p {
+        display: flex;
+        align-items: flex-start;
+        gap: -8px;
+        justify-content: center;
+        height: 42px;
+    }
+    .statContainer {
+        width: 100%;
+        justify-content: flex-start !important;
+    }
+    .mainContainer .sideBar {
+        display: none;
+    }
+    .mainContainer {
+        margin-bottom: 5rem;
+    }
+    .chartContainer .left p {
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 72px;
+        letter-spacing: -1.36px;
+    }
+    .chartContainer .chart {
+        width: 100%;
+        height: 180px;
+    }
+    .multipleTable {
+        gap: 10px;
+        padding: 6px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        height: auto;
+    }
+    .multipleTable .leftTable,
+    .multipleTable .midleChart,
+    .multipleTable .barChart {
+        background-color: #fff;
+        border-radius: 20px;
+        width: 100%;
+    }
+    .multipleTable .leftTable {
+        height: auto;
+    }
+    .multipleTable .midleChart {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 500px) {
+    .multipleTable .leftTable,
+    .multipleTable .midleChart,
+    .multipleTable .barChart {
+        background-color: #fff;
+        border-radius: 20px;
+        min-width: 100%;
+        margin-top: 8px;
+    }
+    .multipleTable .leftTable {
+        height: auto;
+    }
+    .multipleTable .midleChart {
+        margin-top: 10px;
+    }
+}

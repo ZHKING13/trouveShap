@@ -1,0 +1,17 @@
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    padding: 0;
+    margin: 0;
+    --primary: "#A273FF";
+    --secondary: "#2D2B39";
+    --success: "#22C55E";
+    --warnig: "#F59F0B";
+    --dange: "#EF4444";
+    background-color: #F6F1FF;
+}
+
+p,
+h4 {
+    padding: 0;
+    margin: 0;
+}
