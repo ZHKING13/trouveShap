@@ -2,7 +2,7 @@
 import React from "react";
 import build from "../assets/build.png";
 import "./stat.css";
-const Stats = ({title,subtitle,children,icon}) => {
+const Stats = ({title,subtitle,children,icon }) => {
     return (
         <div className="statContainer">
             <div className="statLeft">

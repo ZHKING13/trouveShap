@@ -24,10 +24,12 @@ import TableComponent from "../components/Table";
 import BarCharts from "../components/chart/Bar";
 import AreaCharts from "../components/chart/AreaChart";
 import ChartHeader from "../components/CharteHeader";
+import Header from "../components/Header";
 import DataTable from "../components/DataTable";
 const Home = () => {
     return (
         <main>
+            <Header title={"ACCUEIL"} />
             <div className="stats">
                 <Stats
                     title="Gains mensuel"

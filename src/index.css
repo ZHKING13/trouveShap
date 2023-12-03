@@ -10,8 +10,56 @@
     background-color: #F6F1FF;
 }
 
-p,
-h4 {
+* {
     padding: 0;
     margin: 0;
+}
+
+#root {
+    overflow-x: hidden;
+}
+
+body {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    overflow: -moz-scrollbars-none;
+}
+
+::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+
+.slick-dots li,
+.slick-dots li button {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background-color: #ECE3FF !important;
+}
+
+.slick-dots li.slick-active button {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background-color: #A273FF !important;
+}
+
+.ant-divider {
+    margin: 15px;
+}
+
+.otpInput {
+    width: 100%;
+    height: 50px;
+    border: 1px solid #ECE3FF;
+    border-radius: 5px;
+    background-color: #F6F1FF;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2D2B39;
+    text-align: center;
 }

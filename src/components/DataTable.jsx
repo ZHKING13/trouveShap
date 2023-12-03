@@ -10,11 +10,11 @@ import {
 const renderIcon = (status) => {
     switch (status) {
         case "Validé":
-            return <CheckCircleOutlined />;
+            return <CheckCircleOutlined color="#fff" />;
         case "Refusé":
-            return <CloseCircleOutlined />;
+            return <CloseCircleOutlined color="#fff" />;
         case "En attente":
-            return <ExclamationCircleOutlined />;
+            return <ExclamationCircleOutlined color="#fff" />;
         default:
             return null;
     }
@@ -106,12 +106,16 @@ const columns = [
     {
         title: "Action",
         key: "action",
-        render: (_, record) => <Tag color="success">delete</Tag>,
+        render: (_, record) => <Tag color="dange">delete</Tag>,
         responsive: ["lg"],
     },
 ];
 
-const DataTable = () => {
+const DataTable = ({ column, data, size,onclick }) => {
+    const handleRowClick = (record) => {
+        console.log(record);
+        onclick && onclick(record);
+    };
     return (
         <Table
             style={{
@@ -121,12 +125,14 @@ const DataTable = () => {
             }}
             size="small"
             bordered={false}
-            columns={columns}
-            dataSource={DATA2}
+            columns={column ? column : columns}
+            dataSource={data ? data : DATA2}
             pagination={{
-                pageSize: 4,
-                
+                pageSize: size ? size : 5,
             }}
+            onRow={(record) => ({
+                onClick: () => handleRowClick(record),
+            })}
         />
     );
 };

@@ -101,3 +101,149 @@ export const DATA2 = [{
         img: resi,
     },
 ];
+export const DATA3 = [{
+        id: 1,
+        nom: "franck",
+        email: "franck@email",
+        date: "12 jan 2023",
+    },
+    {
+        id: 2,
+
+        nom: "franck",
+        email: "franck@email",
+        date: "12 jan 2023",
+    },
+    {
+        id: 3,
+
+        nom: "franck",
+        email: "franck@email",
+    },
+    {
+        id: 4,
+
+        nom: "franck",
+        email: "franck@email",
+    },
+    {
+        id: 5,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 6,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 7,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 8,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 9,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 10,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 11,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 12,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 13,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 14,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 15,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 16,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 17,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 18,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 19,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 20,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+    {
+        id: 21,
+
+        nom: "franck",
+        email: "franck@gmail",
+        date: "12 jan 2023",
+    },
+
+]

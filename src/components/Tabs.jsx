@@ -24,37 +24,36 @@ const items = [
         key: "residence",
 
         icon: <img src={icon} />,
-        children:"",
+        children: "",
     },
     {
         key: "reservation",
 
         icon: <img src={check} />,
-        children:"",
+        children: "",
     },
     {
         key: "newsletter",
 
         icon: <img src={inbox} />,
-        children:"",
+        children: "",
     },
     {
         key: "profil",
 
         icon: <img src={user} />,
-        children:"",
+        children: "",
     },
     {
-        key: "logout",
+        key: "login",
 
         icon: <img src={log} />,
-        children:"",
+        children: "",
     },
 ];
 const TabsComponent = () => {
     const navigate = useNavigate();
     const onChange = (key) => {
-        console.log(key);
         navigate(key);
     };
     const location = useLocation();

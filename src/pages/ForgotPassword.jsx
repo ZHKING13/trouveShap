@@ -1,22 +1,23 @@
 import Button from "../components/Button";
-import { GoogleOutlined } from "@ant-design/icons";
-import logo from "../assets/logo.png";
-import google from "../assets/google.png";
 import { COLORS } from "../constant/Color";
-import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 
 const styleProps = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-cursor: "pointer",
+    cursor: "pointer",
     background: "#F4F7FE",
     maxWidth: "300px",
     height: "40px",
     borderRadius: "100px",
 };
-
-const Login = () => {
+const ForgotPassword = () => {
+    const navigate = useNavigate();
+    const handleclick = () => {
+        navigate("/new-password");
+    }
     return (
         <div>
             <div className="loginContainer">
@@ -29,16 +30,14 @@ const Login = () => {
                             letterSpacing: "-0.64px",
                         }}
                     >
-                        connexion
+                        Mot de passe oublié
                     </p>
                     <span>
-                        saisissez votre adresse email et votre mot de passe pour
-                        vous connecter
+                        Saisissez l'adresse e-mail associée à votre compte. Nous
+                        vous enverrons un lien par e-mail pour réinitialiser
+                        votre mot de passe.
                     </span>
-                    {/* <Button style={styleProps}>
-                        <img src={google} alt="google" />
-                        <span>Se connecter avec Google</span>
-                    </Button> */}
+
                     <div
                         style={{
                             display: "flex",
@@ -57,52 +56,7 @@ const Login = () => {
                             required
                         />
                     </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "10px",
-                        }}
-                    >
-                        <label for="password">Mot de passe*</label>
-                        <input
-                            type="password"
-                            name="password"
-                            id="password"
-                            required
-                            className="form-input"
-                            placeholder="Min. 8 characters"
-                        />
-                    </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            fontSize: "12px",
-                            width: "100%",
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "5px",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <input
-                                type="checkbox"
-                                name="remember"
-                                id="remember"
-                            />
-                            <label for="remember">Me garder connecté</label>
-                        </div>
-                        <p>
-                          
-                            <Link to="/forgot-password">Mot de passe oublié?</Link>
-                        </p>
-                    </div>
+
                     <div
                         style={{
                             display: "flex",
@@ -115,11 +69,11 @@ const Login = () => {
                                 ...styleProps,
                                 background: COLORS.primary,
                             }}
+                            onClick={handleclick}
                         >
                             <span style={{ color: "#f1f1f1" }}>Conexion</span>
                         </Button>
                     </div>
-                   
                 </div>
                 <div className="logo">
                     <img
@@ -151,5 +105,5 @@ const Login = () => {
             </footer>
         </div>
     );
-};
-export default Login;
+}
+export default ForgotPassword

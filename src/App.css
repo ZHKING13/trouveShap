@@ -9,6 +9,121 @@ input[id="remember"]:checked {
     accent-color: #a273ff;
 }
 
+
+/* HEADER START */
+
+header .rigth {
+    border-radius: 30.5px;
+    background: #FFF;
+    box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
+    padding: 5px;
+}
+
+header .rigth input {
+    border-radius: 49px;
+    background: #F4F7FE;
+    border: none;
+}
+
+.rigthContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+
+/* HEADER END */
+
+
+/* PROFIL START */
+
+.profilContainer .subtitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 35px;
+    gap: 16px;
+}
+
+.profilContainer {
+    padding: 8px;
+    display: flex;
+}
+
+.profilContainer .profilBotom {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 5px;
+}
+
+.profilContainer .profilItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    column-gap: 10px;
+}
+
+.profilContainer .profilItem .left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.profilContainer .profil .profilImg {
+    padding: 8px;
+    border-radius: 30px;
+    background: #FFF;
+    box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
+}
+
+.profilContainer .profil .profilImg .backgroundImg {
+    height: 90px;
+    width: 100%;
+    border-radius: 15px;
+}
+
+.profilContainer .profil .profilImg .avatar {
+    height: 90px;
+    width: 90px;
+    border-radius: 50%;
+    border: 3px solid rgb(255, 255, 255);
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.profilContainer .profilStat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60%;
+    column-gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    margin-left: 2rem;
+}
+
+.profilContainer .profilStat .statContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    column-gap: 10px;
+    margin-top: 10px;
+    flex-direction: column;
+}
+
+
+/* PROFIL END */
+
 .loginContainer {
     display: flex;
     justify-content: space-around;
@@ -63,15 +178,19 @@ a:visited {
     border-radius: 0px !important;
 }
 
-.ant-pagination-item {
+.ant-pagination-item .anticon {
     background-color: rgba(236, 227, 255, 1)!important;
     color: #a273ff;
+    margin: 0px 4px !important;
+}
+
+.ant-table-pagination .anticon svg {
+    fill: #a273ff !important;
 }
 
 .ant-pagination-item-active {
     background-color: #a273ff !important;
     color: #fff !important;
-    margin: 0px 4px !important;
 }
 
 .ant-pagination-item-active a {
@@ -99,6 +218,13 @@ a:visited {
     /* 150% */
 }
 
+.ant-menu-item-selected,
+.ant-menu-item {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+}
+
 .stats {
     display: flex;
     flex-direction: row;
@@ -110,8 +236,13 @@ a:visited {
     display: flex;
 }
 
+.tabsNav {
+    display: none;
+}
+
 .mainContainer main {
     padding: 16px;
+    width: 100%;
 }
 
 .chartContainer {
@@ -223,6 +354,39 @@ a:visited {
     .formContainer {
         width: 70vw;
     }
+    .mainContainer main {
+        padding: 4px;
+        width: 100%;
+        margin: 0px 6px;
+    }
+    header .rigth .filtre {
+        display: none;
+    }
+    header .rigth {
+        width: 100%;
+    }
+    .rigthContainer .ant-space {
+        display: none;
+    }
+    .profilContainer .profil {
+        width: 100%;
+    }
+    .profilContainer .profilStat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-top: 10px;
+        flex-wrap: wrap;
+        margin-left: 0;
+    }
+    .profilContainer {
+        flex-direction: column;
+        width: 100%;
+    }
+    .profilContainer .profilStat .statContainer {
+        flex-direction: row;
+    }
     .chartContainer .left p {
         display: flex;
         align-items: flex-start;
@@ -271,6 +435,17 @@ a:visited {
     .multipleTable .midleChart {
         margin-top: 10px;
     }
+    .tabsNav {
+        display: block;
+    }
+}
+
+.comodite {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    align-items: center;
+    padding: 8px;
 }
 
 @media (max-width: 500px) {
