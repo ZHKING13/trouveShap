@@ -19,6 +19,7 @@ import { far } from "@fortawesome/free-regular-svg-icons";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import Otp from "./pages/Otp.jsx";
+import GuestRoute from "./feature/Guards/GuestRoute.jsx";
 library.add(fab, fas, far);
 const router = createBrowserRouter([
     {
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "",
-                element: <Home />,
+                element:<GuestRoute element={<Home />} />,
             },
             {
                 path: "reservation",

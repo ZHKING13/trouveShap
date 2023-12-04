@@ -4,12 +4,14 @@ import logo from "../assets/logo.png";
 import google from "../assets/google.png";
 import { COLORS } from "../constant/Color";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { LoginUser } from "../feature/API";
 
 const styleProps = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-cursor: "pointer",
+    cursor: "pointer",
     background: "#F4F7FE",
     maxWidth: "300px",
     height: "40px",
@@ -17,6 +19,18 @@ cursor: "pointer",
 };
 
 const Login = () => {
+    const [formData, setFormData] = useState(new FormData());
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+    // validate input value befor submit
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+        console.log(formData);
+        const rest = await LoginUser(formData);
+
+    }
     return (
         <div>
             <div className="loginContainer">
@@ -35,10 +49,7 @@ const Login = () => {
                         saisissez votre adresse email et votre mot de passe pour
                         vous connecter
                     </span>
-                    {/* <Button style={styleProps}>
-                        <img src={google} alt="google" />
-                        <span>Se connecter avec Google</span>
-                    </Button> */}
+
                     <div
                         style={{
                             display: "flex",
@@ -55,6 +66,7 @@ const Login = () => {
                             id="email"
                             placeholder="Adrianagrest@trouvechap.com"
                             required
+                            onChange={handleInputChange}
                         />
                     </div>
                     <div
@@ -72,6 +84,7 @@ const Login = () => {
                             required
                             className="form-input"
                             placeholder="Min. 8 characters"
+                            onChange={handleInputChange}
                         />
                     </div>
                     <div
@@ -99,8 +112,9 @@ const Login = () => {
                             <label for="remember">Me garder connecté</label>
                         </div>
                         <p>
-                          
-                            <Link to="/forgot-password">Mot de passe oublié?</Link>
+                            <Link to="/forgot-password">
+                                Mot de passe oublié?
+                            </Link>
                         </p>
                     </div>
                     <div
@@ -115,11 +129,11 @@ const Login = () => {
                                 ...styleProps,
                                 background: COLORS.primary,
                             }}
+                            onClick={handleSubmit}
                         >
                             <span style={{ color: "#f1f1f1" }}>Conexion</span>
                         </Button>
                     </div>
-                   
                 </div>
                 <div className="logo">
                     <img
