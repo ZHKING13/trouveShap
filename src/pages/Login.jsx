@@ -3,10 +3,11 @@ import { GoogleOutlined } from "@ant-design/icons";
 import logo from "../assets/logo.png";
 import google from "../assets/google.png";
 import { COLORS } from "../constant/Color";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { LoginUser } from "../feature/API";
-
+import { Spin, notification } from "antd";
+import Loader from "../components/Loader";
 const styleProps = {
     display: "flex",
     justifyContent: "center",
@@ -19,20 +20,59 @@ const styleProps = {
 };
 
 const Login = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState(new FormData());
+    const [loading, setLoading] = useState(false);
+    const [api, contextHolder] = notification.useNotification();
+    const openNotificationWithIcon = (type, title, message) => {
+        api[type]({
+            message: title,
+            description: message,
+        });
+    };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
     // validate input value befor submit
-    const handleSubmit = async(e) => {
-        e.preventDefault();
-        console.log(formData);
-        const rest = await LoginUser(formData);
+    const handleSubmit = async (e) => {
+        setLoading(true);
+        // check if formdat is empty
+        const { email, password } = formData;
+        if (!email || !password) {
+            openNotificationWithIcon(
+                "error",
+                "champs requis",
+                "veuillez remplir tous les champs"
+            );
+            setLoading(false);
+            return;
+        }
 
-    }
+        e.preventDefault();
+        const rest = await LoginUser(formData);
+        setLoading(false);
+        console.log(rest);
+        if (rest.status !== 201) {
+            openNotificationWithIcon(
+                "error",
+                "connexion impossible",
+                rest.data.message
+            );
+            return;
+        }
+        localStorage.setItem("isLog", true);
+        localStorage.setItem("user", JSON.stringify(rest.data));
+        localStorage.setItem("token", rest.data.token);
+        localStorage.setItem("accesToken", rest.data.access_token);
+        localStorage.setItem("refreshToken", rest.data.refresh_token);
+        openNotificationWithIcon("success", "connexion reussi","vous allez etre redirigé vers votre espace");
+        setTimeout(() => {
+            navigate("/");
+        }, 1500);
+    };
     return (
-        <div>
+        <Spin spinning={loading} tip="Connexion en cours..." size="large">
             <div className="loginContainer">
                 <div className="formContainer">
                     <p
@@ -58,6 +98,7 @@ const Login = () => {
                             width: "100%",
                         }}
                     >
+                        {contextHolder}
                         <label for="email">Email*</label>
                         <input
                             className="form-input"
@@ -163,7 +204,7 @@ const Login = () => {
             >
                 <p>© 2023 Trouvechap. Tous droits réservé.</p>
             </footer>
-        </div>
+        </Spin>
     );
 };
 export default Login;

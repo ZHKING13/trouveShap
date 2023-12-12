@@ -1,7 +1,9 @@
 import GoogleMapReact from "google-map-react";
 import tv from "../assets/loca.svg";
+import { useEffect, useState } from "react";
 
-const Map = () => {
+const Map = ({ location }) => {
+    const [rerenderTrigger, setRerenderTrigger] = useState(0);
     const CustomMarker = () => {
         return (
             <div
@@ -35,12 +37,9 @@ const Map = () => {
         );
     };
 
-    const location = {
-        address: "1600 Amphitheatre Parkway, Mountain View, California.",
-        lat: 37.42216,
-        lng: -122.08427,
-    };
-
+    useEffect(() => {
+        setRerenderTrigger((prev) => prev + 1);
+    }, [location.lat, location.lng]);
     return (
         <div
             style={{
@@ -53,7 +52,7 @@ const Map = () => {
             <h2>Localisation du logement</h2>
             <GoogleMapReact
                 bootstrapURLKeys={{
-                    key: "AIzaSyDR_ABkBmzqjHJr5mOcvYepEPkVgZITulY",
+                    key: "AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw",
                 }}
                 defaultCenter={location}
                 defaultZoom={13}

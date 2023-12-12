@@ -20,8 +20,9 @@ const AreaCharts = ({ data, options }) => {
                     top: 10,
                     right: 30,
                     left: 0,
-                    bottom: 0,
+                    bottom: 15,
                 }}
+
             >
                 <XAxis axisLine={false} tickLine={false} dataKey="month" />
 

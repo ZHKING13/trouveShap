@@ -32,12 +32,16 @@ const renderColor = (status) => {
             return null;
     }
 };
-
+function FormatDate(dateStr) {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("fr-FR", options);
+}
 const columns = [
     {
         title: "Résidences",
-        dataIndex: "nom",
-        key: "nom",
+        dataIndex: "name",
+        key: "name",
         render: (text, record) => (
             <div
                 style={{
@@ -46,11 +50,15 @@ const columns = [
                     gap: "10px",
                 }}
             >
-                <img src={record.img} alt="" />
+                <img style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "10%",
+                }} src={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`} alt="" />
                 <div>
                     <p>{text}</p>
                     <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.location}
+                        {record.address}
                     </p>
                 </div>
             </div>
@@ -62,7 +70,9 @@ const columns = [
         key: "owner",
         render: (text, record) => (
             <div>
-                <p>{text}</p>
+                <p>
+                    {record.host.firstname} {record.host.lastname} 
+                </p>
                 <p style={{ fontSize: 12, color: "#888" }}>{record.email}</p>
             </div>
         ),
@@ -70,8 +80,8 @@ const columns = [
     },
     {
         title: "Prix / nuits",
-        dataIndex: "prix",
-        key: "prix",
+        dataIndex: "price",
+        key: "price",
         render: (text) => <span>{text} fcfa </span>,
         responsive: ["md"],
     },
@@ -84,9 +94,9 @@ const columns = [
     },
     {
         title: "Date d'ajout",
-        key: "date",
-        dataIndex: "date",
-        render: (text) => <span>{text}</span>,
+        key: "createdAt",
+        dataIndex: "createdAt",
+        render: (text) => <span>{FormatDate(text)}</span>,
         responsive: ["lg"],
     },
     {
@@ -106,7 +116,7 @@ const columns = [
     {
         title: "Action",
         key: "action",
-        render: (_, record) => <Tag color="dange">delete</Tag>,
+        render: (_, record) => <Tag color="red">delete</Tag>,
         responsive: ["lg"],
     },
 ];

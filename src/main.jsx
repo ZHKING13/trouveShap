@@ -24,11 +24,11 @@ library.add(fab, fas, far);
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />,
+        element: <GuestRoute element={<App />} />,
         children: [
             {
                 path: "",
-                element:<GuestRoute element={<Home />} />,
+                element: <Home />,
             },
             {
                 path: "reservation",
@@ -68,8 +68,7 @@ const router = createBrowserRouter([
 const theme = {
     token: {
         colorPrimary: "#A273FF",
-        dotActiveWidth: "100% !important",
-        dotWidth: "100% !important",
+       
     },
 };
 ReactDOM.createRoot(document.getElementById("root")).render(

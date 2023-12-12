@@ -1,7 +1,10 @@
 import Button from "../components/Button";
 import { COLORS } from "../constant/Color";
 import logo from "../assets/logo.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
+import { Spin, notification } from "antd";
+import { useState } from "react";
+import { RecoverPassword } from "../feature/API";
 
 const styleProps = {
     display: "flex",
@@ -15,11 +18,49 @@ const styleProps = {
 };
 const ForgotPassword = () => {
     const navigate = useNavigate();
-    const handleclick = () => {
-        navigate("/new-password");
+  const [loading, setLoading] = useState(false);
+    const [formdata, setFormdata] = useState(new FormData())
+    const [api, contextHolder] = notification.useNotification();
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormdata({ ...formdata, [name]: value });
     }
+    const openNotificationWithIcon = (type, title, message) => {
+        api[type]({
+            message: title,
+            description: message,
+        });
+    };
+    const handleclick = async() => {
+        setLoading(true);
+        const { email } = formdata;
+        if (!email) {
+            openNotificationWithIcon(
+                "error",
+                "champs requis",
+                "veuillez remplir tous les champs"
+            );
+            setLoading(false);
+            return;
+        }
+        const res = await RecoverPassword(formdata)
+        console.log(res)
+        setLoading(false);
+        if (res.status !== 201) {
+            openNotificationWithIcon(
+                "error",
+                "connexion impossible",
+                res.data.message
+            );
+            return
+        }
+
+        localStorage.setItem("requestId", JSON.stringify(res.data.id));
+       navigate('/otp')
+       
+    };
     return (
-        <div>
+        <Spin  spinning={loading} tip="Connexion en cours..." size="large">
             <div className="loginContainer">
                 <div className="formContainer">
                     <p
@@ -37,7 +78,7 @@ const ForgotPassword = () => {
                         vous enverrons un lien par e-mail pour réinitialiser
                         votre mot de passe.
                     </span>
-
+{contextHolder}
                     <div
                         style={{
                             display: "flex",
@@ -53,7 +94,7 @@ const ForgotPassword = () => {
                             name="email"
                             id="email"
                             placeholder="Adrianagrest@trouvechap.com"
-                            required
+                            onChange={handleInputChange}
                         />
                     </div>
 
@@ -103,7 +144,7 @@ const ForgotPassword = () => {
             >
                 <p>© 2023 Trouvechap. Tous droits réservé.</p>
             </footer>
-        </div>
+        </Spin>
     );
-}
-export default ForgotPassword
+};
+export default ForgotPassword;

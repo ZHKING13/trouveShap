@@ -1,8 +1,12 @@
-import { Button, Space } from "antd";
+import { Button, Space, Spin, notification, DatePicker } from "antd";
 import DataTable from "../components/DataTable";
 import Header from "../components/Header";
 import { DATA3 } from "../data";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
+import { getNewsletter } from "../feature/API";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+const { RangePicker } = DatePicker;
 const columns = [
     {
         title: "Adresse email",
@@ -34,43 +38,88 @@ const columns = [
     },
 ];
 const NewsLetter = () => {
+    const [loading, setLoading] = useState(false);
+    const [newsletter, setNewsletter] = useState([]);
+    const [selectItem, setSelectItem] = useState(null);
+    const [api, contextHolder] = notification.useNotification();
+    const navigate = useNavigate();
+    const openNotificationWithIcon = (type, title, message) => {
+        api[type]({
+            message: title,
+            description: message,
+        });
+    };
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+        "refresh-token": localStorage.getItem("refreshToken"),
+    };
+    const fetchNewsletter = async () => {
+        setLoading(true);
+        const res = await getNewsletter(headers);
+        console.log(res);
+
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Session expiré",
+                "merci de vous reconnecter"
+            );
+            // localStorage.clear();
+            // setTimeout(() => {
+            //     navigate("/login");
+            // }, 1500);
+            return;
+        }
+        setNewsletter(res.data);
+        setLoading(false);
+    };
+    useEffect(() => {
+        fetchNewsletter();
+    }, []);
     return (
         <main>
-            <Header
-                title={"NEWSLETTER"}
-                path={"Newsletter"}
-                children={
-                    <Space>
-                        <Button
-                            icon={<DownloadOutlined />}
-                            style={{
-                                backgroundColor: "#A273FF",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "100px",
-                                padding: "4px 8px",
-                            }}
-                        >
-                            Importer
-                        </Button>
-                        <Button
-                            type="primary"
-                            icon={<UploadOutlined />}
-                            style={{
-                                backgroundColor: "#ECE3FF",
-                                border: "none",
-                                color: "rgba(162, 115, 255, 1)",
-                                borderRadius: "100px",
-                                padding: "4px 8px",
-                            }}
-                        >
-                            Exporter
-                        </Button>
-                    </Space>
-                }
-            ></Header>
-            <DataTable column={columns} data={DATA3} />
+            <Spin spinning={loading} tip="Chargement des données...">
+                <>
+                    {contextHolder}
+                    <Header
+                        title={"NEWSLETTER"}
+                        path={"Newsletter"}
+                        children={
+                            <Space>
+                                <Button
+                                    icon={<DownloadOutlined />}
+                                    style={{
+                                        backgroundColor: "#A273FF",
+                                        color: "#fff",
+                                        border: "none",
+                                        borderRadius: "100px",
+                                        padding: "4px 8px",
+                                    }}
+                                >
+                                    Importer
+                                </Button>
+                                <Button
+                                    type="primary"
+                                    icon={<UploadOutlined />}
+                                    style={{
+                                        backgroundColor: "#ECE3FF",
+                                        border: "none",
+                                        color: "rgba(162, 115, 255, 1)",
+                                        borderRadius: "100px",
+                                        padding: "4px 8px",
+                                    }}
+                                >
+                                    Exporter
+                                </Button>
+                                <RangePicker bordered={false} format="DD/MM/YYYY" />
+                            </Space>
+                        }
+                    ></Header>
+                    <DataTable column={columns} data={DATA3} />
+                </>
+            </Spin>
         </main>
     );
-}
-export default NewsLetter
+};
+export default NewsLetter;

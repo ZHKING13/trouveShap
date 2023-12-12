@@ -1,4 +1,4 @@
-import { Tag } from "antd";
+import { Spin, Tag, notification } from "antd";
 import DataTable from "../components/DataTable";
 import Header from "../components/Header";
 import TableComponent from "../components/Table";
@@ -7,6 +7,14 @@ import {
     CloseCircleOutlined,
     ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getReservation } from "../feature/API";
+function FormatDate(dateStr) {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("fr-FR", options);
+}
 const columns = [
     {
         title: "Résidences",
@@ -22,9 +30,9 @@ const columns = [
             >
                 <img src={record.img} alt="" />
                 <div>
-                    <p>{text}</p>
+                    <p> {record.residence.name}</p>
                     <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.location}
+                        {record.residence.address}
                     </p>
                 </div>
             </div>
@@ -43,28 +51,22 @@ const columns = [
         responsive: ["md"],
     },
     {
-        title: "Prix / nuits",
+        title: "Total",
         dataIndex: "prix",
-        key: "prix",
-        render: (text) => <span>{text} fcfa </span>,
+        key: "price",
+        render: (text, record) => <span> {record.residence.price} fcfa </span>,
         responsive: ["md"],
     },
-    {
-        title: "Moyen de paiement",
-        key: "payment",
-        dataIndex: "payment",
-        render: (text) => <span>{text} </span>,
-        responsive: ["md"],
-    },
+
     {
         title: "Date d'ajout",
         key: "date",
-        dataIndex: "date",
-        render: (text) => <span>{text}</span>,
+        dataIndex: "createdAt",
+        render: (text) => <span>{FormatDate(text)}</span>,
         responsive: ["lg"],
     },
     {
-        title: "Réservations",
+        title: "Statut",
         key: "status",
         render: (_, record) => (
             <Tag
@@ -77,7 +79,6 @@ const columns = [
         ),
         responsive: ["md"],
     },
-   
 ];
 const renderIcon = (status) => {
     switch (status) {
@@ -105,11 +106,57 @@ const renderColor = (status) => {
     }
 };
 const Reservation = () => {
+    const [loading, setLoading] = useState(false);
+    const [reservation, setReservation] = useState([]);
+    const [selectItem, setSelectItem] = useState(null);
+    const [api, contextHolder] = notification.useNotification();
+    const navigate = useNavigate();
+    const openNotificationWithIcon = (type, title, message) => {
+        api[type]({
+            message: title,
+            description: message,
+        });
+    };
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+        "refresh-token": localStorage.getItem("refreshToken"),
+    };
+    const fetchReservation = async () => {
+        setLoading(true);
+        const res = await getReservation(headers);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Session expiré",
+                "merci de vous reconnecter"
+            );
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        console.log(res);
+        setReservation(res.data);
+        setLoading(false);
+    };
+    useEffect(() => {
+        fetchReservation();
+    }, []);
     return (
         <main>
-            <Header title={"RESERVATION"} path={"Réservations"} />
-            <DataTable column={columns} />
+            <Spin
+                size="large"
+                spinning={loading}
+                tip="Chargement des données...."
+            >
+                <>
+                    <Header title={"RESERVATION"} path={"Réservations"} />
+                    <DataTable column={columns} data={reservation} size={7} />
+                </>
+            </Spin>
         </main>
     );
-}
+};
 export default Reservation;

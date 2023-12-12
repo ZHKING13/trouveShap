@@ -2,6 +2,7 @@ import { COLORS } from "../constant/Color";
 import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import { RecoverPassword } from "../feature/API";
 
 const styleProps = {
     display: "flex",
@@ -14,10 +15,44 @@ const styleProps = {
     borderRadius: "100px",
 };
 const ChangePassword = () => {
-      const navigate = useNavigate();
-      const handleclick = () => {
-          navigate("/otp");
-      };
+    const navigate = useNavigate();
+      const [loading, setLoading] = useState(false);
+    const [api, contextHolder] = notification.useNotification();
+    const openNotificationWithIcon = (type, title, message) => {
+        api[type]({
+            message: title,
+            description: message,
+        });
+    };
+    const handleclick = async () => {
+        setLoading(true);
+        const { password, password2 } = formData;
+        if (!password || !password2) {
+            openNotificationWithIcon(
+                "error",
+                "champs requis",
+                "veuillez remplir tous les champs"
+            );
+            setLoading(false);
+            return;
+        }
+        const res = await RecoverPassword(formData);
+        setLoading(false);
+        if (res.status !== 201) {
+            openNotificationWithIcon(
+                "error",
+                "connexion impossible",
+                res.data.message
+            );
+            return;
+        }
+        openNotificationWithIcon(
+            "success",
+            "connexion réussie",
+            "vous êtes connecté"
+        );
+       
+    };
     return (
         <div>
             <div className="loginContainer">

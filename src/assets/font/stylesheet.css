@@ -1,0 +1,91 @@
+@font-face {
+    font-family: 'Mori Gothic';
+    src: url('MoriGothic-Bold.eot');
+    src: local('Mori Gothic Bold'), local('MoriGothic-Bold'),
+        url('MoriGothic-Bold.eot?#iefix') format('embedded-opentype'),
+        url('MoriGothic-Bold.woff2') format('woff2'),
+        url('MoriGothic-Bold.woff') format('woff'),
+        url('MoriGothic-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mori Gothic';
+    src: url('MoriGothic-Medium.eot');
+    src: local('Mori Gothic Medium'), local('MoriGothic-Medium'),
+        url('MoriGothic-Medium.eot?#iefix') format('embedded-opentype'),
+        url('MoriGothic-Medium.woff2') format('woff2'),
+        url('MoriGothic-Medium.woff') format('woff'),
+        url('MoriGothic-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mori Gothic Semi';
+    src: url('MoriGothic-SemiBold.eot');
+    src: local('Mori Gothic Semi Bold'), local('MoriGothic-SemiBold'),
+        url('MoriGothic-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('MoriGothic-SemiBold.woff2') format('woff2'),
+        url('MoriGothic-SemiBold.woff') format('woff'),
+        url('MoriGothic-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mori Gothic Extra';
+    src: url('MoriGothic-ExtraLight.eot');
+    src: local('Mori Gothic Extra Light'), local('MoriGothic-ExtraLight'),
+        url('MoriGothic-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('MoriGothic-ExtraLight.woff2') format('woff2'),
+        url('MoriGothic-ExtraLight.woff') format('woff'),
+        url('MoriGothic-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mori Gothic Normal';
+    src: url('MoriGothic-Normal.eot');
+    src: local('Mori Gothic Normal'), local('MoriGothic-Normal'),
+        url('MoriGothic-Normal.eot?#iefix') format('embedded-opentype'),
+        url('MoriGothic-Normal.woff2') format('woff2'),
+        url('MoriGothic-Normal.woff') format('woff'),
+        url('MoriGothic-Normal.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mori Gothic';
+    src: url('MoriGothic-Light.eot');
+    src: local('Mori Gothic Light'), local('MoriGothic-Light'),
+        url('MoriGothic-Light.eot?#iefix') format('embedded-opentype'),
+        url('MoriGothic-Light.woff2') format('woff2'),
+        url('MoriGothic-Light.woff') format('woff'),
+        url('MoriGothic-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mori Gothic';
+    src: url('MoriGothic-Regular.eot');
+    src: local('Mori Gothic'), local('MoriGothic-Regular'),
+        url('MoriGothic-Regular.eot?#iefix') format('embedded-opentype'),
+        url('MoriGothic-Regular.woff2') format('woff2'),
+        url('MoriGothic-Regular.woff') format('woff'),
+        url('MoriGothic-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
