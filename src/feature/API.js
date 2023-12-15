@@ -137,10 +137,11 @@ export const getProfilStats = async(headers) => {
         }
     }
     // delet residence /admin/residences/{id}
-export const deleteResidence = async(id, headers) => {
+export const deleteResidence = async(id, data, headers) => {
         try {
-            const response = await privateService.delete(`/admin/store/${id}`, { headers })
+            const response = await privateService.delete(`/admin/residences/${id}`, data, { headers })
             const { status, data: responseData } = response;
+
             return { status, data: responseData };
         } catch (error) {
             console.log(error);

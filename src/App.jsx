@@ -70,9 +70,9 @@ function App() {
                         items={items}
                     />
                 </div>
-                <>
+                <section className="homRigContainer">
                     <Outlet context={[loading, setLoading]} />
-                </>
+                </section>
             </div>
             <div className="tabsNav">
                 <TabsComponent />

@@ -115,7 +115,15 @@ const Reservation = () => {
                     }}
                     onClick={() => showDrawer(record)}
                 >
-                    <img src={record.img} alt="" />
+                    <img
+                        style={{
+                            width: "50px",
+                            height: "50px",
+                            borderRadius: "10%",
+                        }}
+                        src={`https://api.trouvechap.com/assets/uploads/residences/${record?.residence?.medias[0].filename}`}
+                        alt=""
+                    />
                     <div>
                         <p> {record.residence.name}</p>
                         <p style={{ fontSize: 12, color: "#888" }}>
@@ -323,7 +331,7 @@ const DrawerComponent = ({ selectItem, onClose,showDrawer,open }) => {
             >
                 <Carousel autoplay>
                     {selectItem &&
-                        selectItem?.medias?.map((item) => (
+                        selectItem?.residence?.medias?.map((item) => (
                             <div>
                                 <img
                                     style={{
@@ -351,7 +359,8 @@ const DrawerComponent = ({ selectItem, onClose,showDrawer,open }) => {
                 >
                     <span>
                         <PictureOutlined /> +
-                        {selectItem && selectItem?.medias?.length} photos
+                        {selectItem && selectItem?.residence?.medias?.length}{" "}
+                        photos
                     </span>
                 </div>
             </div>
@@ -401,11 +410,11 @@ const DrawerComponent = ({ selectItem, onClose,showDrawer,open }) => {
                     }}
                 >
                     <h3>
-                        {selectItem && selectItem?.us?.firstname}{" "}
-                        {selectItem && selectItem?.host?.lastname}
+                        {selectItem && selectItem?.residence?.host?.firstname}{" "}
+                        {selectItem && selectItem?.residence?.host?.lastname}
                     </h3>
-                    <p>{selectItem && selectItem?.host?.email}</p>
-                    <p>{selectItem && selectItem?.host?.contact}</p>
+                    <p>{selectItem && selectItem?.residence?.host?.email}</p>
+                    <p>{selectItem && selectItem?.residence?.host?.contact}</p>
                 </div>
             </div>
             <Divider />

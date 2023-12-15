@@ -121,7 +121,7 @@ const columns = [
     },
 ];
 
-const DataTable = ({ column, data, size,onclick,onChange }) => {
+const DataTable = ({ column, data, size,onclick,onChange,pagination }) => {
     const handleRowClick = (record) => {
        
         onclick && onclick(record);
@@ -139,11 +139,13 @@ const DataTable = ({ column, data, size,onclick,onChange }) => {
             dataSource={data ? data : DATA2}
             pagination={{
                 pageSize: size ? size : 5,
+                ...pagination
             }}
             onRow={(record) => ({
                 onClick: () => handleRowClick(record),
             })}
             onChange={onChange}
+            
         />
     );
 };

@@ -66,10 +66,10 @@ const Home = () => {
                 "Session expiré",
                 "merci de vous reconnecter"
             );
-            // localStorage.clear();
-            // setTimeout(() => {
-            //     navigate("/login");
-            // }, 1500);
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
             return;
         }
         setStats(res.data);

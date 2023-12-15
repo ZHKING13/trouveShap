@@ -197,8 +197,8 @@ const Remboursement = () => {
         <main>
             <>
                 <Header
-                    title={"RESIDENCES"}
-                    path={"Résidences"}
+                    title={"REMBOURSEMENT"}
+                    path={"Remboursement"}
                     children={
                         <FilterBoxe
                             handleSearch={setFilterText}

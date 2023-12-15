@@ -17,12 +17,14 @@ import {
     Spin,
     Modal,
     Slider,
+    Input,
+    InputNumber,
 } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Map from "../components/Map";
-import { getResidence } from "../feature/API";
+import { deleteResidence, getResidence } from "../feature/API";
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
@@ -46,6 +48,18 @@ const Residence = () => {
     const [residence, setResidence] = useState([]);
     const [location, setLocation] = useState(null);
     const [selectItem, setSelectItem] = useState(null);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 7 });
+    const [deletReason, setDeletReason] = useState("");
+    const [showModal, setShowModal] = useState({
+        deletModal: false,
+        filterModal: false,
+        addModal: false,
+        loading: false,
+    });
+    const [filterValue, setFilterValue] = useState({
+        minPrice: 0,
+        maxPrice: 0,
+    });
     const [api, contextHolder] = notification.useNotification();
     const [current, setCurrent] = useState(1);
     const navigate = useNavigate();
@@ -144,7 +158,12 @@ const Residence = () => {
             title: "Action",
             key: "action",
             render: (_, record) => {
-                return <img src={Icon.trash} alt="delet icon" />;
+                return <img onClick={
+                    () => {
+                        setSelectItem(record);
+                        setShowModal({ ...showModal, deletModal: true });
+                    }
+                } src={Icon.trash} alt="delet icon" />;
             },
             responsive: ["lg"],
         },
@@ -169,10 +188,45 @@ const Residence = () => {
         "refresh-token": localStorage.getItem("refreshToken"),
     };
     const params = {
-        page: current,
+        page: pagination.current,
         fromDate: "2023-11-11T00:00:00.000Z",
         toDate: "2023-12-20T00:00:00.000Z",
     };
+    const deletResidence = async (id) => {
+        setShowModal({ ...showModal, loading: true });
+        const formdata = new FormData();
+        formdata.append("reason", deletReason);
+        if (deletReason == "") {
+            openNotificationWithIcon(
+                "error",
+                "ERREUR",
+                "merci de remplir le champ raison"
+            );
+            setShowModal({ ...showModal, loading: false });
+            return;
+}
+        const res = await deleteResidence(id,formdata, headers);
+
+        console.log(res);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.data.message
+            );
+            setShowModal({ ...showModal, loading: false });
+            if (res.status == 400) {
+                return;
+            }
+            // localStorage.clear();
+            // setTimeout(() => {
+            //     navigate("/login");
+            // }, 1500);
+            return;
+        }
+        setShowModal({ ...showModal, loading: false });
+        // setResidence(res.data.residences);
+    }
     const fetchResidence = async () => {
         setLoading(true);
         const res = await getResidence(params, headers);
@@ -189,14 +243,19 @@ const Residence = () => {
             return;
         }
         setLoading(false);
+        setPagination({ ...pagination, total: res.data.totalResidences });
         setResidence(res.data.residences);
     };
     useEffect(() => {
         fetchResidence();
-    }, [current]);
+    }, [pagination.current]);
   
     return (
-        <main>
+        <main
+            style={{
+                width: "100%",
+            }}
+        >
             <>
                 <Header
                     title={"RESIDENCES"}
@@ -411,6 +470,35 @@ const Residence = () => {
                     <Divider />
                     <Map location={location} />
                 </Drawer>
+
+                <FilterModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    setFilterValue={setFilterValue}
+                    min={filterValue.minPrice}
+                    max={filterValue.maxPrice}
+                />
+                <DeletModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    setFilterValue={setFilterValue}
+                    min={filterValue.min}
+                    max={filterValue.max}
+                    loading={showModal.loading}
+                    onConfirme={() => {
+                        deletResidence(selectItem.id);
+                    }}
+                    deletReason={deletReason}
+                    setDeletReason={setDeletReason}
+                />
+                <ConfrimeModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    setFilterValue={setFilterValue}
+                    min={filterValue.min}
+                    max={filterValue.max}
+                    loading={showModal.loading}
+                />
                 <DataTable
                     data={residence.filter((item) => {
                         return item.name
@@ -419,25 +507,230 @@ const Residence = () => {
                     })}
                     size={7}
                     onChange={({ current }) => {
-                        setCurrent(current);
+                        setPagination({ ...pagination, current });
+                        fetchResidence();
                     }}
                     column={columns}
+                    pagination={{
+                        defaultPageSize: 7,
+                        total: pagination.total,
+                        showSizeChanger: false,
+                    
+                    }}
                 />
             </>
         </main>
     );
 };
 export default Residence;
-const filterModal = () => {
+const FilterModal = ({min,max,setFilterValue,showModal,setShowModal,onConfirme}) => {
     return (
-        <Modal open={true} >
+        <Modal
+            onCancel={() => setShowModal({ ...showModal, filterModal: false })}
+            footer={
+                <>
+                    <Divider />
+                    <div style={spaceStyle}>
+                        <Button danger type="text">
+                            Tout effacer
+                        </Button>
+                        <Button onClick={onConfirme} type="primary">Chercher</Button>
+                    </div>
+                </>
+            }
+            open={showModal.filterModal}
+        >
             <div className="top">
                 <h3>Fourchette de prix</h3>
-                <Slider range defaultValue={[20, 50]} />
+                <Slider
+                    onChange={(value) => {
+                        setFilterValue({ min: value[0], max: value[1] });
+                    }}
+                    min={10000}
+                    max={200000}
+                    range
+                    defaultValue={[15000, 75000]}
+                    step={1000}
+                    tooltip={false}
+                />
+                <Space style={spaceStyle}>
+                    <Input value={min + " " + "fcfa"} placeholder="min" />
+                    -
+                    <Input value={max + " " + "fcfa"} placeholder="max" />
+                </Space>
+                <Divider />
+                <h3>Nombre de pièces</h3>
+                <Space style={spaceStyle}>
+                    <span>chambre</span>
+                    <InputNumber
+                        addonAfter={<span style={{ fontSize: "12px" }}>+</span>}
+                        addonBefore={
+                            <span style={{ fontSize: "12px" }}>-</span>
+                        }
+                        min={1}
+                        max={7}
+                        placeholder="00"
+                        style={{
+                            textAlign: "center",
+                        }}
+                    />
+                </Space>
+                <Divider />
+
+                <Space style={spaceStyle}>
+                    <span>Salles de bain</span>
+                    <InputNumber
+                        addonAfter={<span style={{ fontSize: "12px" }}>+</span>}
+                        addonBefore={
+                            <span style={{ fontSize: "12px" }}>-</span>
+                        }
+                        min={1}
+                        max={7}
+                        placeholder="00"
+                        style={{
+                            textAlign: "center",
+                        }}
+                    />
+                </Space>
+                <Divider />
+                <h3>Nombre de personnes</h3>
+                <Space style={spaceStyle}>
+                    <span>Nombre de personnes</span>
+                    <InputNumber
+                        addonAfter={<span style={{ fontSize: "12px" }}>+</span>}
+                        addonBefore={
+                            <span style={{ fontSize: "12px" }}>-</span>
+                        }
+                        min={1}
+                        max={7}
+                        placeholder="00"
+                        style={{
+                            textAlign: "center",
+                        }}
+                    />
+                </Space>
             </div>
         </Modal>
     );
 }
+const DeletModal = ({ setShowModal, showModal, onConfirme, loading,deletReason,setDeletReason }) => {
+    return (
+        <Modal
+            width={300}
+            onCancel={() => setShowModal({ ...showModal, deletModal: false })}
+            centered
+            maskClosable={false}
+            footer={
+                <>
+                    <Divider />
+                    <div style={spaceStyle}>
+                        <Button
+                            onClick={() =>
+                                setShowModal({
+                                    ...showModal,
+                                    deletModal: false,
+                                })
+                            }
+                            style={{
+                               
+                                borderRadius: "25px",
+                            }}
+                            type="primary"
+                        >
+                            Garder
+                        </Button>
+                        <Button
+                            style={{
+                                backgroundColor: "#FEF2F2 !important",
+                                color: "#fff",
+                                borderRadius: "25px",
+                            }}
+                            danger
+                            onClick={onConfirme}
+                            type="primary"
+                            loading={loading}
+                        >
+                            Supprimer
+                        </Button>
+                    </div>
+                </>
+            }
+            open={showModal.deletModal}
+        >
+            <div className="top">
+                <h3>Confirmer la suppression</h3>
+                <span>Voulez vous vraiment supprimer ces données ?</span>
+                <Input.TextArea
+                    value={deletReason}
+                    onChange={(e) => {
+                        setDeletReason(e.target.value);
+                    }}
+                    style={{
+                        marginTop: "10px",
+                    }}
+                    placeholder="Raison de la suppression"
+                />
+            </div>
+        </Modal>
+    );
+};
+const ConfrimeModal = ({ setShowModal, showModal, onConfirme, loading }) => {
+    return (
+        <Modal
+            width={300}
+            onCancel={() => setShowModal({ ...showModal, addModal: false })}
+            centered
+            maskClosable={false}
+            footer={
+                <>
+                    <Divider />
+                    <div style={spaceStyle}>
+                        <Button
+                            onClick={() =>
+                                setShowModal({
+                                    ...showModal,
+                                    addModal: false,
+                                })
+                            }
+                            style={{
+                                backgroundColor: "#FEF2F2 !important",
+                                color: "#EF4444",
+                                borderRadius: "25px",
+                            }}
+                            danger
+                        >
+                            Annuler
+                        </Button>
+                        <Button
+                            style={{
+                                borderRadius: "25px",
+                            }}
+                            onClick={onConfirme}
+                            type="primary"
+                            loading={loading}
+                        >
+                            Garder
+                        </Button>
+                    </div>
+                </>
+            }
+            open={showModal.addModal}
+        >
+            <div className="top">
+                <h3>Valider l’ajout</h3>
+                <span>
+                    Voulez vous vraiment valider l’ajout de cette résidence ?
+                </span>
+            </div>
+        </Modal>
+    );
+};
+
+const spaceStyle = {
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+};
 const subtitleSryle = {
     display: "flex",
     alignItems: "center",

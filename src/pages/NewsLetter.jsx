@@ -82,7 +82,7 @@ const NewsLetter = ({ test }) => {
     return (
         <main>
             < >
-                <>
+               
                     {contextHolder}
                     <Header
                         title={"NEWSLETTER"}
@@ -119,7 +119,7 @@ const NewsLetter = ({ test }) => {
                         }
                     ></Header>
                     <DataTable column={columns} data={DATA3} />
-                </>
+                
             </>
         </main>
     );

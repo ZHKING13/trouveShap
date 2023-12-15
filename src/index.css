@@ -75,6 +75,10 @@ body {
     display: none !important;
 }
 
+.ant-slider-track {
+    background-color: #A273FF !important;
+}
+
 
 /*  */
 

@@ -14,14 +14,14 @@ input[id="remember"]:checked {
 
 header .rigth {
     border-radius: 30.5px;
-    background: #FFF;
+    background: #fff;
     box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
     padding: 5px;
 }
 
 header .rigth input {
     border-radius: 49px;
-    background: #F4F7FE;
+    background: #f4f7fe;
     border: none;
 }
 
@@ -94,7 +94,7 @@ header .rigth input {
 .profilContainer .profil .profilImg {
     padding: 8px;
     border-radius: 30px;
-    background: #FFF;
+    background: #fff;
     box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
 }
 
@@ -178,6 +178,12 @@ a:visited {
 .sideBar {
     border-inline-end: 1px solid rgba(5, 5, 5, 0.06);
     width: 256px;
+    /* fixe sidebar */
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .ant-menu-item-selected {
@@ -194,7 +200,7 @@ a:visited {
 }
 
 .ant-pagination-item .anticon {
-    background-color: rgba(236, 227, 255, 1)!important;
+    background-color: rgba(236, 227, 255, 1) !important;
     color: #a273ff;
     margin: 0px 4px !important;
 }
@@ -362,9 +368,18 @@ a:visited {
     flex: 3;
 }
 
+.homRigContainer {
+    margin-left: 256px;
+}
+
 @media (max-width: 768px) {
     .logo {
         display: none;
+    }
+    .homRigContainer {
+        margin-left: 0px;
+        padding: 8px;
+        width: 90%;
     }
     /* .ant-picker-range-wrapper,
     .ant-picker-date-range-wrapper {

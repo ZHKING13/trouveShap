@@ -112,7 +112,7 @@ const ForgotPassword = () => {
                             }}
                             onClick={handleclick}
                         >
-                            <span style={{ color: "#f1f1f1" }}>Conexion</span>
+                            <span style={{ color: "#f1f1f1" }}>Valider</span>
                         </Button>
                     </div>
                 </div>

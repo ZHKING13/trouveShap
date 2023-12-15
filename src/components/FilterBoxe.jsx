@@ -26,6 +26,7 @@ const FilterBoxe = ({ handleSearch, selectRange, filtertext }) => {
                 boxShadow: "14px 17px 40px 4px rgba(112, 144, 176, 0.08);",
                 background: "#fff",
                 gap: "10px",
+                
             }}
             className="filter-box"
         >
@@ -43,7 +44,8 @@ const FilterBoxe = ({ handleSearch, selectRange, filtertext }) => {
                     background: "#F4F7FE",
                     borderRadius: "31px",
                     padding: "4px 16px",
-                    height: "30px",
+                    minHeight: "30px",
+                   
                 }}
             />
             <div className="rangeContainer">
@@ -54,7 +56,8 @@ const FilterBoxe = ({ handleSearch, selectRange, filtertext }) => {
                     endDate={enddate}
                     withPortal
                     placeholderText="trier par date"
-                    dateFormat="yyy-MM-ddmm:ss.sss"
+                    dateFormat="yyy-MM-dd"
+                    
                 />
             </div>
         </div>
