@@ -68,3 +68,28 @@ body {
     color: #2D2B39;
     text-align: center;
 }
+
+.ant-picker-input,
+.ant-picker-input-active,
+.ant-picker-range-separator {
+    display: none !important;
+}
+
+
+/*  */
+
+.react-datepicker__input-container {
+    width: 100%;
+}
+
+.react-datepicker__input-container input {
+    border: none;
+    outline: none;
+    padding: 5px;
+}
+
+.react-datepicker__day--in-range,
+.react-datepicker__month-text--in-selecting-range {
+    background-color: #A273FF !important;
+    color: #fff !important;
+}

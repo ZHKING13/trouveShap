@@ -4,8 +4,9 @@ import Header from "../components/Header";
 import { DATA3 } from "../data";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import { getNewsletter } from "../feature/API";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
+import FilterBoxe from "../components/FilterBoxe";
 const { RangePicker } = DatePicker;
 const columns = [
     {
@@ -37,8 +38,9 @@ const columns = [
         render: (text) => <span>{text}</span>,
     },
 ];
-const NewsLetter = () => {
-    const [loading, setLoading] = useState(false);
+const NewsLetter = ({ test }) => {
+    console.log(test);
+    const [loading, setLoading] = useOutletContext();
     const [newsletter, setNewsletter] = useState([]);
     const [selectItem, setSelectItem] = useState(null);
     const [api, contextHolder] = notification.useNotification();
@@ -65,10 +67,10 @@ const NewsLetter = () => {
                 "Session expiré",
                 "merci de vous reconnecter"
             );
-            // localStorage.clear();
-            // setTimeout(() => {
-            //     navigate("/login");
-            // }, 1500);
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
             return;
         }
         setNewsletter(res.data);
@@ -79,7 +81,7 @@ const NewsLetter = () => {
     }, []);
     return (
         <main>
-            <Spin spinning={loading} tip="Chargement des données...">
+            < >
                 <>
                     {contextHolder}
                     <Header
@@ -112,13 +114,13 @@ const NewsLetter = () => {
                                 >
                                     Exporter
                                 </Button>
-                                <RangePicker bordered={false} format="DD/MM/YYYY" />
+                               <FilterBoxe/>
                             </Space>
                         }
                     ></Header>
                     <DataTable column={columns} data={DATA3} />
                 </>
-            </Spin>
+            </>
         </main>
     );
 };

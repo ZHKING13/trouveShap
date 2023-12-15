@@ -13,6 +13,7 @@ const Header = ({path,title,children}) => {
                 alignItems: "center",
                 marginBottom: "10px",
                 flexWrap: "wrap",
+                background: "transparent",
             }}
         >
             <div className="left">

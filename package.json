@@ -20,11 +20,14 @@
     "chart.js": "^4.4.0",
     "google-map-react": "^2.2.1",
     "react": "^18.2.0",
+    "react-calendar": "^4.7.0",
     "react-chartjs-2": "^5.2.0",
+    "react-datepicker": "^4.24.0",
     "react-dom": "^18.2.0",
     "react-otp-input": "^3.1.0",
     "react-router-dom": "^6.20.0",
-    "recharts": "^2.10.3"
+    "recharts": "^2.10.3",
+    "rsuite": "^5.47.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",

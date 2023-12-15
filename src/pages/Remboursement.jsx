@@ -15,8 +15,6 @@ import {
     Tag,
     notification,
     Spin,
-    Modal,
-    Slider,
 } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -39,7 +37,7 @@ const contentStyle = {
     textAlign: "center",
     background: "#364d79",
 };
-const Residence = () => {
+const Remboursement = () => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useOutletContext();
     const [filtertext, setFilterText] = useState("");
@@ -194,7 +192,7 @@ const Residence = () => {
     useEffect(() => {
         fetchResidence();
     }, [current]);
-  
+
     return (
         <main>
             <>
@@ -330,85 +328,6 @@ const Residence = () => {
                         </div>
                     </div>
                     <Divider />
-                    <h2
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        Aperçu
-                    </h2>
-                    <div
-                        style={{
-                            display: "flex",
-
-                            gap: "5px",
-                            marginTop: "10px",
-                            justifyContent: "space-between",
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "5px",
-                            }}
-                            className="left"
-                        >
-                            <div style={subtitleSryle} className="subti">
-                                <img src={Icon.check} alt="" />
-                                <p>Règlement interieur</p>
-                            </div>
-                            <span>Animaux autorisé </span>
-                            <span> Interdiction de fumer</span>
-                        </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "5px",
-                            }}
-                            className="rigth"
-                        >
-                            <div style={subtitleSryle} className="subti">
-                                <img src={Icon.check} alt="" />
-                                <p>Type d’activités sociales</p>
-                            </div>
-                            <span>Baptêmes</span>
-                            <span>Mariages</span>
-                            <span>Anniversaires</span>
-                        </div>
-                    </div>
-                    <Divider />
-                    <h2
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        Grille de remboursement
-                    </h2>
-                    <div>
-                        <ul>
-                            <li style={listStyle}>
-                                Annulation entre 48h et 1 semaine
-                            </li>
-                            <span>
-                                Montant à rembourser : 25% du montant total
-                            </span>
-                            <li style={listStyle}>
-                                Annulation entre 1 semaine 1 mois
-                            </li>
-                            <span>
-                                Montant à rembourser : 25% du montant total
-                            </span>
-                            <li style={listStyle}>
-                                Annulation entre 1 mois et 3 mois
-                            </li>
-                            <span>
-                                Montant à rembourser : 25% du montant total
-                            </span>
-                        </ul>
-                    </div>
-                    <Divider />
                     <Map location={location} />
                 </Drawer>
                 <DataTable
@@ -427,26 +346,4 @@ const Residence = () => {
         </main>
     );
 };
-export default Residence;
-const filterModal = () => {
-    return (
-        <Modal open={true} >
-            <div className="top">
-                <h3>Fourchette de prix</h3>
-                <Slider range defaultValue={[20, 50]} />
-            </div>
-        </Modal>
-    );
-}
-const subtitleSryle = {
-    display: "flex",
-    alignItems: "center",
-    gap: "3px",
-    justifyContent: "space-around",
-fontSize:"12px",
-    color: "#1B2559",
-    fontWeight: "bold",
-}
-const listStyle = {
-    fontWeight: "bold",
-}
+export default Remboursement;

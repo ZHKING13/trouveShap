@@ -7,7 +7,7 @@ import {
     ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
-const renderIcon = (status) => {
+export const renderIcon = (status) => {
     switch (status) {
         case "Validé":
             return <CheckCircleOutlined color="#fff" />;
@@ -20,7 +20,7 @@ const renderIcon = (status) => {
     }
 };
 
-const renderColor = (status) => {
+export const renderColor = (status) => {
     switch (status) {
         case "Validé":
             return "#22C55E";
@@ -32,7 +32,7 @@ const renderColor = (status) => {
             return null;
     }
 };
-function FormatDate(dateStr) {
+export function FormatDate(dateStr) {
     const options = { year: "numeric", month: "long", day: "numeric" };
     const date = new Date(dateStr);
     return date.toLocaleDateString("fr-FR", options);
@@ -121,9 +121,9 @@ const columns = [
     },
 ];
 
-const DataTable = ({ column, data, size,onclick }) => {
+const DataTable = ({ column, data, size,onclick,onChange }) => {
     const handleRowClick = (record) => {
-        console.log(record);
+       
         onclick && onclick(record);
     };
     return (
@@ -143,6 +143,7 @@ const DataTable = ({ column, data, size,onclick }) => {
             onRow={(record) => ({
                 onClick: () => handleRowClick(record),
             })}
+            onChange={onChange}
         />
     );
 };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import { Menu, Tag } from "antd";
+import { Menu, Spin, Tag } from "antd";
 import {
     AppstoreOutlined,
     HomeOutlined,
@@ -36,10 +36,13 @@ function App() {
             type,
         };
     }
+        const [loading, setLoading] = useState(false);
+
     const items = [
         getItem("Home", "/", <img src={home} />, null),
         getItem("Residence", "residence", <img src={icon} />),
         getItem("Reservation", "reservation", <img src={check} />),
+        getItem("Remboursement", "remboursement", <img src={check} />),
         getItem("Newsletter", "newsletter", <img src={inbox} />),
         getItem("Profil", "profil", <img src={user} />),
         getItem("Deconnexion", "login", <img src={log} />),
@@ -48,7 +51,7 @@ function App() {
         navigate(e.key);
     };
     return (
-        <>
+        <Spin spinning={loading} tip="Chargement des données...">
             <div className="mainContainer">
                 <div className="sideBar">
                     <div className="logoContainer">
@@ -68,13 +71,13 @@ function App() {
                     />
                 </div>
                 <>
-                    <Outlet />
+                    <Outlet context={[loading, setLoading]} />
                 </>
             </div>
             <div className="tabsNav">
                 <TabsComponent />
             </div>
-        </>
+        </Spin>
     );
 }
 

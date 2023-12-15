@@ -1,7 +1,7 @@
 // creer la page d'accueil
 
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { Menu, Spin, Tag, notification } from "antd";
 
 import logo from "../assets/logo_sm.png";
@@ -20,7 +20,7 @@ import ChartHeader from "../components/CharteHeader";
 import Header from "../components/Header";
 import DataTable from "../components/DataTable";
 import { getResidence, getStats } from "../feature/API";
-export  function formatAmount(number) {
+export function formatAmount(number) {
     if (number < 1000) {
         return number.toString();
     } else if (number < 1000000) {
@@ -31,7 +31,7 @@ export  function formatAmount(number) {
 }
 const Home = () => {
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useOutletContext();
     const [residence, setResidence] = useState([]);
     const [stats, setStats] = useState({
         getVisits: 0,
@@ -51,21 +51,25 @@ const Home = () => {
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         "refresh-token": localStorage.getItem("refreshToken"),
     };
+    const params = {
+        page: 1,
+        limit: 10,
+    }
     const fetchSats = async () => {
         setLoading(true);
         const res = await getStats(headers);
-        const resi = await getResidence(headers);
-        console.log(resi)
+        const resi = await getResidence(params,headers);
+        console.log(resi);
         if (res.status !== 200 || resi.status !== 200) {
             openNotificationWithIcon(
                 "error",
                 "Session expiré",
                 "merci de vous reconnecter"
             );
-            localStorage.clear();
-            setTimeout(() => {
-                navigate("/login");
-            }, 1500);
+            // localStorage.clear();
+            // setTimeout(() => {
+            //     navigate("/login");
+            // }, 1500);
             return;
         }
         setStats(res.data);
@@ -73,12 +77,12 @@ const Home = () => {
         setLoading(false);
         console.log(stats);
     };
-   
+
     useEffect(() => {
         fetchSats();
     }, []);
     return (
-        <Spin spinning={loading} size="large" tip="Chargement...">
+        <>
             <main>
                 <Header title={"ACCUEIL"} />
                 {contextHolder}
@@ -180,7 +184,7 @@ const Home = () => {
                 </div>
                 <DataTable data={residence} />
             </main>
-        </Spin>
+        </>
     );
 };
 export default Home;

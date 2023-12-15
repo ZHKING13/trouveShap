@@ -20,6 +20,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import Otp from "./pages/Otp.jsx";
 import GuestRoute from "./feature/Guards/GuestRoute.jsx";
+import Remboursement from "./pages/Remboursement.jsx";
 library.add(fab, fas, far);
 const router = createBrowserRouter([
     {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
             {
                 path: "reservation",
                 element: <Reservation />,
+            },
+            {
+                path: "remboursement",
+                element: <Remboursement />,
             },
             {
                 path: "residence",
