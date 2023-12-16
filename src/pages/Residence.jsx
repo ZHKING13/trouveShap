@@ -24,7 +24,7 @@ import { PictureOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Map from "../components/Map";
-import { deleteResidence, getResidence } from "../feature/API";
+import { deleteResidence, getResidence, updateResidence } from "../feature/API";
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
@@ -49,19 +49,23 @@ const Residence = () => {
     const [location, setLocation] = useState(null);
     const [selectItem, setSelectItem] = useState(null);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 7 });
-    const [deletReason, setDeletReason] = useState("");
+    const [reason, setReason] = useState({
+        deletReason: "",
+        rejectReason: "",
+        acceptReason: "",
+    });
     const [showModal, setShowModal] = useState({
         deletModal: false,
         filterModal: false,
         addModal: false,
         loading: false,
+        rejectModal: false,
     });
     const [filterValue, setFilterValue] = useState({
         minPrice: 0,
         maxPrice: 0,
     });
     const [api, contextHolder] = notification.useNotification();
-    const [current, setCurrent] = useState(1);
     const navigate = useNavigate();
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
@@ -158,16 +162,98 @@ const Residence = () => {
             title: "Action",
             key: "action",
             render: (_, record) => {
-                return <img onClick={
-                    () => {
-                        setSelectItem(record);
-                        setShowModal({ ...showModal, deletModal: true });
-                    }
-                } src={Icon.trash} alt="delet icon" />;
+                return record.status == "En Attente" ? (
+                    <Space>
+                        <img
+                            onClick={() => {
+                                setSelectItem(record);
+                                setShowModal({
+                                    ...showModal,
+                                    addModal: true,
+                                });
+                            }}
+                            src={Icon.valid}
+                            alt="accept icon"
+                        />
+                        <img
+                            onClick={() => {
+                                setSelectItem(record);
+                                setShowModal({
+                                    ...showModal,
+                                    rejectModal: true,
+                                });
+                            }}
+                            src={Icon.cancel}
+                            alt="reject icon"
+                        />
+                    </Space>
+                ) : (
+                    <img
+                        onClick={() => {
+                            setSelectItem(record);
+                            setShowModal({ ...showModal, deletModal: true });
+                        }}
+                        src={Icon.trash}
+                        alt="delet icon"
+                    />
+                );
             },
             responsive: ["lg"],
         },
     ];
+    const updateResidences = async (id, status, reason) => {
+        setShowModal({ ...showModal, loading: true });
+        const formeData = new FormData();
+        formeData.append("status", status);
+        formeData.append("reason", reason);
+        if (reason == "") {
+            openNotificationWithIcon(
+                "error",
+                "ERREUR",
+                "merci de remplir le champ raison"
+            );
+            setShowModal({ ...showModal, loading: false });
+            return;
+        }
+        const res = await updateResidence(id, formeData, headers);
+        setShowModal({ ...showModal, loading: false });
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.data.message
+            );
+            if (res.status == 400) {
+                return;
+            }
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        setResidence((prev) => {
+            return prev.map((item) => {
+                if (item.id == id) {
+                    item.status = status;
+                }
+                return item;
+            });
+        });
+        console.log(res);
+        openNotificationWithIcon(
+            "success",
+            "SUCCES",
+            "la résidence a été" + " " + status
+        );
+
+        setShowModal({ ...showModal, addModal: false });
+        setReason({
+            ...reason,
+            acceptReason: "",
+            rejectReason: "",
+        });
+    };
     const showDrawer = async (data) => {
         setSelectItem(data);
         let loc = {
@@ -191,12 +277,23 @@ const Residence = () => {
         page: pagination.current,
         fromDate: "2023-11-11T00:00:00.000Z",
         toDate: "2023-12-20T00:00:00.000Z",
+        limit: 7,
     };
     const deletResidence = async (id) => {
         setShowModal({ ...showModal, loading: true });
+        const header = {
+            Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+            "refresh-token": localStorage.getItem("refreshToken"),
+            "Content-Type": "application/json",
+        };
         const formdata = new FormData();
+        const { deletReason } = reason;
         formdata.append("reason", deletReason);
-        if (deletReason == "") {
+        let deleteReason = formdata.get("reason");
+
+        console.log(formdata);
+
+        if (deleteReason == "") {
             openNotificationWithIcon(
                 "error",
                 "ERREUR",
@@ -204,8 +301,8 @@ const Residence = () => {
             );
             setShowModal({ ...showModal, loading: false });
             return;
-}
-        const res = await deleteResidence(id,formdata, headers);
+        }
+        const res = await deleteResidence(id, formdata, header);
 
         console.log(res);
         if (res.status !== 200) {
@@ -218,18 +315,39 @@ const Residence = () => {
             if (res.status == 400) {
                 return;
             }
-            // localStorage.clear();
-            // setTimeout(() => {
-            //     navigate("/login");
-            // }, 1500);
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
             return;
         }
         setShowModal({ ...showModal, loading: false });
+        openNotificationWithIcon(
+            "success",
+            "SUCCES",
+            "la résidence a été supprimé"
+        );
+        setResidence((prev) => {
+            return prev.filter((item) => item.id !== id);
+        });
+        setShowModal({ ...showModal, deletModal: false });
+        setReason({
+            ...reason,
+            deletReason: "",
+        });
         // setResidence(res.data.residences);
-    }
+    };
     const fetchResidence = async () => {
         setLoading(true);
-        const res = await getResidence(params, headers);
+        const res = await getResidence(
+            {
+                ...params,
+                page: pagination.current,
+                // minPrice: filterValue.minPrice,
+                // maxPrice: filterValue.maxPrice,
+            },
+            headers
+        );
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
@@ -244,12 +362,15 @@ const Residence = () => {
         }
         setLoading(false);
         setPagination({ ...pagination, total: res.data.totalResidences });
-        setResidence(res.data.residences);
+        setResidence((prev) => {
+            return [...prev, ...res.data.residences];
+        });
+        console.log(residence);
     };
     useEffect(() => {
         fetchResidence();
     }, [pagination.current]);
-  
+
     return (
         <main
             style={{
@@ -264,6 +385,9 @@ const Residence = () => {
                         <FilterBoxe
                             handleSearch={setFilterText}
                             filtertext={filtertext}
+                            children={
+                                <img src={Icon.filter} alt="filter icon" />
+                            }
                         />
                     }
                 />
@@ -488,34 +612,50 @@ const Residence = () => {
                     onConfirme={() => {
                         deletResidence(selectItem.id);
                     }}
-                    deletReason={deletReason}
-                    setDeletReason={setDeletReason}
+                    reason={reason}
+                    setReason={setReason}
                 />
                 <ConfrimeModal
                     showModal={showModal}
                     setShowModal={setShowModal}
                     setFilterValue={setFilterValue}
-                    min={filterValue.min}
-                    max={filterValue.max}
                     loading={showModal.loading}
+                    onConfirme={() => {
+                        updateResidences(
+                            selectItem.id,
+                            "Accepté",
+                            reason.acceptReason
+                        );
+                    }}
+                />
+                <RejectModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    setFilterValue={setFilterValue}
+                    loading={showModal.loading}
+                    onConfirme={() => {
+                        updateResidences(
+                            selectItem.id,
+                            "Refusé",
+                            reason.rejectReason
+                        );
+                    }}
                 />
                 <DataTable
-                    data={residence.filter((item) => {
-                        return item.name
-                            .toLowerCase()
-                            .includes(filtertext.toLowerCase());
+                    data={residence?.filter((item) => {
+                        return item?.name
+                            ?.toLowerCase()
+                            .includes(filtertext?.toLowerCase());
                     })}
-                    size={7}
+                    size={12}
                     onChange={({ current }) => {
                         setPagination({ ...pagination, current });
-                        fetchResidence();
                     }}
                     column={columns}
                     pagination={{
-                        defaultPageSize: 7,
                         total: pagination.total,
                         showSizeChanger: false,
-                    
+                        pageSize: 12,
                     }}
                 />
             </>
@@ -523,7 +663,14 @@ const Residence = () => {
     );
 };
 export default Residence;
-const FilterModal = ({min,max,setFilterValue,showModal,setShowModal,onConfirme}) => {
+const FilterModal = ({
+    min,
+    max,
+    setFilterValue,
+    showModal,
+    setShowModal,
+    onConfirme,
+}) => {
     return (
         <Modal
             onCancel={() => setShowModal({ ...showModal, filterModal: false })}
@@ -534,7 +681,9 @@ const FilterModal = ({min,max,setFilterValue,showModal,setShowModal,onConfirme})
                         <Button danger type="text">
                             Tout effacer
                         </Button>
-                        <Button onClick={onConfirme} type="primary">Chercher</Button>
+                        <Button onClick={onConfirme} type="primary">
+                            Chercher
+                        </Button>
                     </div>
                 </>
             }
@@ -612,27 +761,44 @@ const FilterModal = ({min,max,setFilterValue,showModal,setShowModal,onConfirme})
             </div>
         </Modal>
     );
-}
-const DeletModal = ({ setShowModal, showModal, onConfirme, loading,deletReason,setDeletReason }) => {
+};
+const DeletModal = ({
+    setShowModal,
+    showModal,
+    onConfirme,
+    loading,
+    reason,
+    setReason,
+}) => {
     return (
         <Modal
             width={300}
-            onCancel={() => setShowModal({ ...showModal, deletModal: false })}
+            onCancel={() => {
+                setShowModal({ ...showModal, deletModal: false });
+                setReason({
+                    ...reason,
+                    deletReason: "",
+                });
+            }}
             centered
             maskClosable={false}
+            destroyOnClose={true}
             footer={
                 <>
                     <Divider />
                     <div style={spaceStyle}>
                         <Button
-                            onClick={() =>
+                            onClick={() => {
                                 setShowModal({
                                     ...showModal,
                                     deletModal: false,
-                                })
-                            }
+                                });
+                                setReason({
+                                    ...reason,
+                                    deletReason: "",
+                                });
+                            }}
                             style={{
-                               
                                 borderRadius: "25px",
                             }}
                             type="primary"
@@ -661,9 +827,9 @@ const DeletModal = ({ setShowModal, showModal, onConfirme, loading,deletReason,s
                 <h3>Confirmer la suppression</h3>
                 <span>Voulez vous vraiment supprimer ces données ?</span>
                 <Input.TextArea
-                    value={deletReason}
+                    value={reason.deletReason}
                     onChange={(e) => {
-                        setDeletReason(e.target.value);
+                        setReason({ ...reason, deletReason: e.target.value });
                     }}
                     style={{
                         marginTop: "10px",
@@ -674,11 +840,23 @@ const DeletModal = ({ setShowModal, showModal, onConfirme, loading,deletReason,s
         </Modal>
     );
 };
-const ConfrimeModal = ({ setShowModal, showModal, onConfirme, loading }) => {
+const ConfrimeModal = ({
+    setShowModal,
+    showModal,
+    onConfirme,
+    loading,
+    setReason,
+}) => {
     return (
         <Modal
             width={300}
-            onCancel={() => setShowModal({ ...showModal, addModal: false })}
+            onCancel={() => {
+                setShowModal({ ...showModal, addModal: false });
+                setReason({
+                    ...reason,
+                    acceptReason: "",
+                });
+            }}
             centered
             maskClosable={false}
             footer={
@@ -686,12 +864,16 @@ const ConfrimeModal = ({ setShowModal, showModal, onConfirme, loading }) => {
                     <Divider />
                     <div style={spaceStyle}>
                         <Button
-                            onClick={() =>
+                            onClick={() => {
                                 setShowModal({
                                     ...showModal,
                                     addModal: false,
-                                })
-                            }
+                                });
+                                setReason({
+                                    ...reason,
+                                    acceptReason: "",
+                                });
+                            }}
                             style={{
                                 backgroundColor: "#FEF2F2 !important",
                                 color: "#EF4444",
@@ -721,6 +903,92 @@ const ConfrimeModal = ({ setShowModal, showModal, onConfirme, loading }) => {
                 <span>
                     Voulez vous vraiment valider l’ajout de cette résidence ?
                 </span>
+                <Input.TextArea
+                    style={{
+                        marginTop: "10px",
+                    }}
+                    placeholder="Raison de la validation"
+                    onChange={(e) => {
+                        setReason({ ...reason, acceptReason: e.target.value });
+                    }}
+                />
+            </div>
+        </Modal>
+    );
+};
+const RejectModal = ({
+    setShowModal,
+    showModal,
+    onConfirme,
+    loading,
+    setReason,
+}) => {
+    return (
+        <Modal
+            width={300}
+            onCancel={() => {
+                setShowModal({ ...showModal, rejectModal: false });
+                setReason({
+                    ...reason,
+                    rejectReason: "",
+                });
+            }}
+            centered
+            maskClosable={false}
+            footer={
+                <>
+                    <Divider />
+                    <div style={spaceStyle}>
+                        <Button
+                            onClick={() => {
+                                setShowModal({
+                                    ...showModal,
+                                    addModal: false,
+                                });
+
+                                setReason({
+                                    ...reason,
+                                    rejectReason: "",
+                                });
+                            }}
+                            style={{
+                                backgroundColor: "#FEF2F2 !important",
+                                color: "#EF4444",
+                                borderRadius: "25px",
+                            }}
+                            danger
+                        >
+                            Annuler
+                        </Button>
+                        <Button
+                            style={{
+                                borderRadius: "25px",
+                            }}
+                            onClick={onConfirme}
+                            type="primary"
+                            loading={loading}
+                        >
+                            Confirmer
+                        </Button>
+                    </div>
+                </>
+            }
+            open={showModal.rejectModal}
+        >
+            <div className="top">
+                <h3>Valider le refus</h3>
+                <span>
+                    Voulez vous vraiment refuser l’ajout de cette résidence ?
+                </span>
+                <Input.TextArea
+                    style={{
+                        marginTop: "10px",
+                    }}
+                    placeholder="Raison du refus"
+                    onChange={(e) => {
+                        setReason({ ...reason, rejectReason: e.target.value });
+                    }}
+                />
             </div>
         </Modal>
     );
@@ -736,10 +1004,10 @@ const subtitleSryle = {
     alignItems: "center",
     gap: "3px",
     justifyContent: "space-around",
-fontSize:"12px",
+    fontSize: "12px",
     color: "#1B2559",
     fontWeight: "bold",
-}
+};
 const listStyle = {
     fontWeight: "bold",
-}
+};

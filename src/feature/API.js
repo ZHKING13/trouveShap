@@ -139,9 +139,9 @@ export const getProfilStats = async(headers) => {
     // delet residence /admin/residences/{id}
 export const deleteResidence = async(id, data, headers) => {
         try {
-            const response = await privateService.delete(`/admin/residences/${id}`, data, { headers })
-            const { status, data: responseData } = response;
 
+            const response = await privateService.delete(`/admin/residences/${id}`, { headers, data })
+            const { status, data: responseData } = response;
             return { status, data: responseData };
         } catch (error) {
             console.log(error);
@@ -155,7 +155,7 @@ export const deleteResidence = async(id, data, headers) => {
     // update residence /admin/residences/update_status/{id}
 export const updateResidence = async(id, data, headers) => {
         try {
-            const response = await privateService.put(`/admin/store/${id}`, data, { headers })
+            const response = await privateService.put(`/admin/residences/update_status/${id}`, data, { headers })
             const { status, data: responseData } = response;
             return { status, data: responseData };
         } catch (error) {

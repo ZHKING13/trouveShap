@@ -6,6 +6,9 @@ import refri from "../assets/refri.svg";
 import trash from "../assets/trash.svg";
 import fan from "../assets/fan.svg";
 import check from "../assets/check.svg";
+import cancel from "../assets/cancel.svg";
+import valid from "../assets/valid.svg";
+import filter from "../assets/filter.svg";
 
 export const Icon = {
     wifi,
@@ -15,5 +18,8 @@ export const Icon = {
     refri,
     trash,
     fan,
-    check
+    check,
+    cancel,
+    valid,
+    filter,
 }

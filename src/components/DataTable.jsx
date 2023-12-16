@@ -11,9 +11,9 @@ export const renderIcon = (status) => {
     switch (status) {
         case "Validé":
             return <CheckCircleOutlined color="#fff" />;
-        case "Refusé":
+        case "Rejeté":
             return <CloseCircleOutlined color="#fff" />;
-        case "En attente":
+        case "En Attente":
             return <ExclamationCircleOutlined color="#fff" />;
         default:
             return null;
@@ -24,9 +24,9 @@ export const renderColor = (status) => {
     switch (status) {
         case "Validé":
             return "#22C55E";
-        case "Refusé":
+        case "Rejeté":
             return "#EF4444";
-        case "En attente":
+        case "En Attente":
             return "#F59F0B";
         default:
             return null;
@@ -50,11 +50,15 @@ const columns = [
                     gap: "10px",
                 }}
             >
-                <img style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "10%",
-                }} src={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`} alt="" />
+                <img
+                    style={{
+                        width: "50px",
+                        height: "50px",
+                        borderRadius: "10%",
+                    }}
+                    src={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
+                    alt=""
+                />
                 <div>
                     <p>{text}</p>
                     <p style={{ fontSize: 12, color: "#888" }}>
@@ -71,7 +75,7 @@ const columns = [
         render: (text, record) => (
             <div>
                 <p>
-                    {record.host.firstname} {record.host.lastname} 
+                    {record.host.firstname} {record.host.lastname}
                 </p>
                 <p style={{ fontSize: 12, color: "#888" }}>{record.email}</p>
             </div>
@@ -121,9 +125,8 @@ const columns = [
     },
 ];
 
-const DataTable = ({ column, data, size,onclick,onChange,pagination }) => {
+const DataTable = ({ column, data, size, onclick, onChange, pagination,loading }) => {
     const handleRowClick = (record) => {
-       
         onclick && onclick(record);
     };
     return (
@@ -132,6 +135,7 @@ const DataTable = ({ column, data, size,onclick,onChange,pagination }) => {
                 backgroundColor: "#fff",
                 borderRadius: "18px",
                 padding: "10px",
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.04)",
             }}
             size="small"
             bordered={false}
@@ -139,13 +143,13 @@ const DataTable = ({ column, data, size,onclick,onChange,pagination }) => {
             dataSource={data ? data : DATA2}
             pagination={{
                 pageSize: size ? size : 5,
-                ...pagination
+                ...pagination,
             }}
             onRow={(record) => ({
                 onClick: () => handleRowClick(record),
             })}
             onChange={onChange}
-            
+            loading={loading}
         />
     );
 };

@@ -4,8 +4,9 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { DateRangePicker } from "rsuite";
+import { Icon } from "../constant/Icon";
 // const { RangePicker } = DatePicker;
-const FilterBoxe = ({ handleSearch, selectRange, filtertext }) => {
+const FilterBoxe = ({ handleSearch, selectRange, filtertext,children }) => {
     const [startDate, setStartDate] = useState();
     const [enddate, setEndDate] = useState();
     const [open, setOpen] = useState(false);
@@ -26,7 +27,6 @@ const FilterBoxe = ({ handleSearch, selectRange, filtertext }) => {
                 boxShadow: "14px 17px 40px 4px rgba(112, 144, 176, 0.08);",
                 background: "#fff",
                 gap: "10px",
-                
             }}
             className="filter-box"
         >
@@ -45,20 +45,22 @@ const FilterBoxe = ({ handleSearch, selectRange, filtertext }) => {
                     borderRadius: "31px",
                     padding: "4px 16px",
                     minHeight: "30px",
-                   
                 }}
             />
             <div className="rangeContainer">
-                <DatePicker
-                    onChange={rangPicker}
-                    selectsRange={true}
-                    startDate={startDate}
-                    endDate={enddate}
-                    withPortal
-                    placeholderText="trier par date"
-                    dateFormat="yyy-MM-dd"
-                    
-                />
+                {children ? (
+                    children
+                ) : (
+                    <DatePicker
+                        onChange={rangPicker}
+                        selectsRange={true}
+                        startDate={startDate}
+                        endDate={enddate}
+                        withPortal
+                        placeholderText="trier par date"
+                        dateFormat="yyy-MM-dd"
+                    />
+                )}
             </div>
         </div>
     );
