@@ -62,8 +62,8 @@ const Residence = () => {
         rejectModal: false,
     });
     const [filterValue, setFilterValue] = useState({
-        minPrice: 0,
-        maxPrice: 0,
+        minPrice: 20000,
+        maxPrice: 55000,
     });
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
@@ -717,7 +717,7 @@ const FilterModal = ({
                     min={10000}
                     max={200000}
                     range
-                    defaultValue={[15000, 75000]}
+                    defaultValue={[min, max]}
                     step={1000}
                     tooltip={false}
                 />

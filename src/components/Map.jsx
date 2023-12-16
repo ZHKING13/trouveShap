@@ -36,7 +36,7 @@ const Map = ({ location }) => {
             </div>
         );
     };
-
+ 
     useEffect(() => {
         setRerenderTrigger((prev) => prev + 1);
     }, [location.lat, location.lng]);
@@ -54,7 +54,10 @@ const Map = ({ location }) => {
                 bootstrapURLKeys={{
                     key: "AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw",
                 }}
-                defaultCenter={location}
+                defaultCenter={{
+                    lat: 5.30966,
+                    lng: -4.01266,
+                }}
                 defaultZoom={13}
             >
                 <CustomMarker lat={location.lat} lng={location.lng} />
