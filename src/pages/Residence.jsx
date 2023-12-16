@@ -337,12 +337,12 @@ const Residence = () => {
         });
         // setResidence(res.data.residences);
     };
-    const fetchResidence = async () => {
+    const fetchResidence = async (page) => {
         setLoading(true);
         const res = await getResidence(
             {
                 ...params,
-                page: pagination.current,
+                page,
                 // minPrice: filterValue.minPrice,
                 // maxPrice: filterValue.maxPrice,
             },
@@ -362,13 +362,11 @@ const Residence = () => {
         }
         setLoading(false);
         setPagination({ ...pagination, total: res.data.totalResidences });
-        setResidence((prev) => {
-            return [...prev, ...res.data.residences];
-        });
+        setResidence(res.data.residences);
         console.log(residence);
     };
     useEffect(() => {
-        fetchResidence();
+        fetchResidence(1);
     }, [pagination.current]);
 
     return (
@@ -648,8 +646,8 @@ const Residence = () => {
                             .includes(filtertext?.toLowerCase());
                     })}
                     size={12}
-                    onChange={({ current }) => {
-                        setPagination({ ...pagination, current });
+                    onChange={(page) => {
+                        fetchResidence(page)
                     }}
                     column={columns}
                     pagination={{
