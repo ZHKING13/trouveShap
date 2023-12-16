@@ -1,4 +1,4 @@
-import { Avatar, Carousel, Divider, Drawer, Space, Spin, Tag, notification } from "antd";
+import { Avatar, Carousel, Divider, Drawer, Space, Spin, Tag, notification ,Image} from "antd";
 import DataTable, { renderColor, renderIcon } from "../components/DataTable";
 import Header from "../components/Header";
 import TableComponent from "../components/Table";
@@ -15,88 +15,7 @@ function FormatDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString("fr-FR", options);
 }
-const columns = [
-    {
-        title: "Résidences",
-        dataIndex: "nom",
-        key: "nom",
-        render: (text, record) => (
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                }}
-                onClick={() => showDrawer(record)}
-            >
-                <img src={record.img} alt="" />
-                <div>
-                    <p> {record.residence.name}</p>
-                    <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.residence.address}
-                    </p>
-                </div>
-            </div>
-        ),
-    },
-    {
-        title: "Hôte",
-        dataIndex: "owner",
-        key: "owner",
-        render: (text, record) => (
-            <div>
-                <p>{text}</p>
-                <p style={{ fontSize: 12, color: "#888" }}>{record.email}</p>
-            </div>
-        ),
-        responsive: ["md"],
-    },
-    {
-        title: "Client",
-        dataIndex: "user",
-        key: "owner",
-        render: (text, record) => (
-            <div>
-                <p>
-                    {record.user.firstname} {record.user.lastname}
-                </p>
-                <p style={{ fontSize: 12, color: "#888" }}>
-                    {record.user.email}
-                </p>
-            </div>
-        ),
-        responsive: ["md"],
-    },
-    {
-        title: "Total",
-        dataIndex: "prix",
-        key: "price",
-        render: (text, record) => <span> {record.residence.price} fcfa </span>,
-        responsive: ["md"],
-    },
 
-    {
-        title: "Date d'ajout",
-        key: "date",
-        dataIndex: "createdAt",
-        render: (text) => <span>{FormatDate(text)}</span>,
-        responsive: ["lg"],
-    },
-    {
-        title: "Statut",
-        key: "status",
-        render: (_, record) => (
-            <Tag
-                icon={renderIcon(record.status)}
-                color={renderColor(record.status)}
-                key={record.status}
-            >
-                {record.status}
-            </Tag>
-        ),
-        responsive: ["md"],
-    },
-];
 
 
 
@@ -333,13 +252,14 @@ const DrawerComponent = ({ selectItem, onClose,showDrawer,open }) => {
                     {selectItem &&
                         selectItem?.residence?.medias?.map((item) => (
                             <div>
-                                <img
+                                <Image
                                     style={{
                                         width: "100%",
                                         height: "156px",
                                         objectFit: "cover",
                                         resizeMode: "cover",
                                     }}
+                                    width={320}
                                     src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
                                     alt=""
                                 />
