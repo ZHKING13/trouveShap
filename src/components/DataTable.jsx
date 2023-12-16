@@ -136,7 +136,9 @@ const DataTable = ({ column, data, size, onclick, onChange, pagination,loading }
                 borderRadius: "18px",
                 padding: "10px",
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.04)",
+                
             }}
+            className="dataTable"
             size="small"
             bordered={false}
             columns={column ? column : columns}

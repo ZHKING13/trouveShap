@@ -12,7 +12,7 @@ export const LoginUser = async(data) => {
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
-        if (error.code === 'ECONNABORTED') {
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
             console.error('La requête a expiré en raison d\'un timeout.');
             return { status: 408, data: { message: 'Request Timeout' } };
         }
@@ -37,7 +37,7 @@ export const RecoverPassword = async(data) => {
         return { status, data: responseData };
     } catch (error) {
         console.log(error);
-        if (error.code === 'ECONNABORTED') {
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
             console.error('La requête a expiré en raison d\'un timeout.');
             return { status: 408, data: { message: 'Request Timeout' } };
         }
@@ -52,7 +52,7 @@ export const CheckPasswordRecoveryCode = async(data) => {
         return { status, data: responseData };
     } catch (error) {
         console.log(error);
-        if (error.code === 'ECONNABORTED') {
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
             console.error('La requête a expiré en raison d\'un timeout.');
             return { status: 408, data: { message: 'Request Timeout' } };
         }
@@ -84,7 +84,7 @@ export const getResidence = async(params, headers) => {
         return { status, data: responseData };
     } catch (error) {
         console.log(error);
-        if (error.code === 'ECONNABORTED') {
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
             console.error('La requête a expiré en raison d\'un timeout.');
             return { status: 408, data: { message: 'Request Timeout' } };
         }
@@ -101,7 +101,7 @@ export const getResidenceById = async(id, headers) => {
         return { status, data: responseData };
     } catch (error) {
         console.log(error);
-        if (error.code === 'ECONNABORTED') {
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
             console.error('La requête a expiré en raison d\'un timeout.');
             return { status: 408, data: { message: 'Request Timeout' } };
         }
@@ -115,7 +115,7 @@ export const getStats = async(headers) => {
         return { status, data: responseData };
     } catch (error) {
         console.log(error);
-        if (error.code === 'ECONNABORTED') {
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
             console.error('La requête a expiré en raison d\'un timeout.');
             return { status: 408, data: { message: 'Request Timeout' } };
         }
@@ -129,7 +129,7 @@ export const getProfilStats = async(headers) => {
             return { status, data: responseData };
         } catch (error) {
             console.log(error);
-            if (error.code === 'ECONNABORTED') {
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
                 console.error('La requête a expiré en raison d\'un timeout.');
                 return { status: 408, data: { message: 'Request Timeout' } };
             }
@@ -145,7 +145,7 @@ export const deleteResidence = async(id, data, headers) => {
             return { status, data: responseData };
         } catch (error) {
             console.log(error);
-            if (error.code === 'ECONNABORTED') {
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
                 console.error('La requête a expiré en raison d\'un timeout.');
                 return { status: 408, data: { message: 'Request Timeout' } };
             }
@@ -160,7 +160,7 @@ export const updateResidence = async(id, data, headers) => {
             return { status, data: responseData };
         } catch (error) {
             console.log(error);
-            if (error.code === 'ECONNABORTED') {
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
                 console.error('La requête a expiré en raison d\'un timeout.');
                 return { status: 408, data: { message: 'Request Timeout' } };
             }
@@ -177,7 +177,7 @@ export const getReservation = async(params, headers) => {
             return { status, data: responseData };
         } catch (error) {
             console.log(error);
-            if (error.code === 'ECONNABORTED') {
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
                 console.error('La requête a expiré en raison d\'un timeout.');
                 return { status: 408, data: { message: 'Request Timeout' } };
             }
@@ -192,7 +192,7 @@ export const getNewsletter = async(headers) => {
             return { status, data: responseData };
         } catch (error) {
             console.log(error);
-            if (error.code === 'ECONNABORTED') {
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
                 console.error('La requête a expiré en raison d\'un timeout.');
                 return { status: 408, data: { message: 'Request Timeout' } };
             }

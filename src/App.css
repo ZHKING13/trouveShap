@@ -261,9 +261,10 @@ a:visited {
     display: none;
 }
 
-.mainContainer main {
-    padding: 16px;
-    width: 100%;
+.mainContainer main,
+.mainContainer section {
+    padding: 6px 16px 0 6px;
+    width: 99%;
 }
 
 .chartContainer {
@@ -391,10 +392,13 @@ a:visited {
     .formContainer {
         width: 70vw;
     }
-    .mainContainer main {
+    /* .mainContainer main {
         padding: 4px;
         width: 100%;
-        margin: 0px 6px;
+    } */
+    .mainContainer section main {
+        padding: 6px 16px 0 6px;
+        width: 99%;
     }
     header .rigth .filtre {
         display: none;

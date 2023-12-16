@@ -371,9 +371,7 @@ const Residence = () => {
 
     return (
         <main
-            style={{
-                width: "100%",
-            }}
+          
         >
             <>
                 <Header
