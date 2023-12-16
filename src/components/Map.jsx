@@ -54,13 +54,14 @@ const Map = ({ location }) => {
                 bootstrapURLKeys={{
                     key: "AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw",
                 }}
-                defaultCenter={{
+                center={{
                     lat: 5.30966,
                     lng: -4.01266,
                 }}
                 defaultZoom={13}
             >
                 <CustomMarker lat={location.lat} lng={location.lng} />
+                
             </GoogleMapReact>
         </div>
     );
