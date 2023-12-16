@@ -382,7 +382,9 @@ const Residence = () => {
                             handleSearch={setFilterText}
                             filtertext={filtertext}
                             children={
-                                <img src={Icon.filter} alt="filter icon" />
+                                <img onClick={() => {
+                                    setShowModal({...showModal,filterModal:true})
+                                }} src={Icon.filter} alt="filter icon" />
                             }
                         />
                     }
@@ -674,10 +676,27 @@ const FilterModal = ({
                 <>
                     <Divider />
                     <div style={spaceStyle}>
-                        <Button danger type="text">
+                        <Button
+                            onClick={() =>
+                                setShowModal({
+                                    ...showModal,
+                                    filterModal: false,
+                                })
+                            }
+                            danger
+                            type="text"
+                        >
                             Tout effacer
                         </Button>
-                        <Button onClick={onConfirme} type="primary">
+                        <Button
+                            onClick={() =>
+                                setShowModal({
+                                    ...showModal,
+                                    filterModal: false,
+                                })
+                            }
+                            type="primary"
+                        >
                             Chercher
                         </Button>
                     </div>
@@ -689,7 +708,11 @@ const FilterModal = ({
                 <h3>Fourchette de prix</h3>
                 <Slider
                     onChange={(value) => {
-                        setFilterValue({ min: value[0], max: value[1] });
+                        console.log(value);
+                        setFilterValue({
+                            minPrice: value[0],
+                            maxPrice: value[1],
+                        });
                     }}
                     min={10000}
                     max={200000}
