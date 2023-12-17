@@ -19,15 +19,33 @@ export const renderIcon = (status) => {
             return null;
     }
 };
+//  waiting = 'En Attente',
+//     accepted = 'Acceptée',
+//     planified = 'Confirmée',
+//     progressing = 'En Cours',
+//     rejected = 'Rejetée',
+//     cancelled = 'Annulée',
+//     refunded = 'Remboursée',
+//     done = 'Terminée'
 
 export const renderColor = (status) => {
     switch (status) {
         case "Validé":
             return "#22C55E";
+        case "Acceptée":
+            return "#22C55E";
+        case "Confirmée":
+            return "#22C55E";
         case "Rejeté":
+            return "#EF4444";
+        case "Rejetée":
+            return "#EF4444";
+        case "Annulée":
             return "#EF4444";
         case "En Attente":
             return "#F59F0B";
+        case "Remboursée":
+            return "#A273FF";
         default:
             return null;
     }

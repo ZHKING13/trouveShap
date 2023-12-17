@@ -48,6 +48,7 @@ const Residence = () => {
     const [residence, setResidence] = useState([]);
     const [location, setLocation] = useState(null);
     const [selectItem, setSelectItem] = useState(null);
+    const [tableLoading, setTableLoading] = useState(false);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 7 });
     const [reason, setReason] = useState({
         deletReason: "",
@@ -64,6 +65,7 @@ const Residence = () => {
     const [filterValue, setFilterValue] = useState({
         minPrice: 20000,
         maxPrice: 55000,
+        numPeople: "",
     });
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
@@ -203,9 +205,12 @@ const Residence = () => {
     ];
     const updateResidences = async (id, status, reason) => {
         setShowModal({ ...showModal, loading: true });
-        const formeData = new FormData();
-        formeData.append("status", status);
-        formeData.append("reason", reason);
+        const formeData = {
+            status,
+            reason,
+        };
+
+        console.log(formeData);
         if (reason == "") {
             openNotificationWithIcon(
                 "error",
@@ -279,6 +284,7 @@ const Residence = () => {
         toDate: "2023-12-20T00:00:00.000Z",
         limit: 7,
     };
+
     const deletResidence = async (id) => {
         setShowModal({ ...showModal, loading: true });
         const header = {
@@ -337,17 +343,29 @@ const Residence = () => {
         });
         // setResidence(res.data.residences);
     };
-    const fetchResidence = async (page) => {
-        setLoading(true);
-        const res = await getResidence(
-            {
-                ...params,
-                page,
-                // minPrice: filterValue.minPrice,
-                // maxPrice: filterValue.maxPrice,
-            },
-            headers
+    const filtResidence = async () => {
+        setShowModal({
+            ...showModal,
+            filterModal: false,
+        });
+        const filteredObject = Object.fromEntries(
+            Object.entries(filterValue).filter(
+                ([key, value]) =>
+                    value !== null &&
+                    value !== undefined &&
+                    value !== "" &&
+                    value !== 0
+            )
         );
+        console.log(filteredObject);
+        fetchResidence({
+            ...filteredObject,
+            limit: 7,
+        });
+    };
+    const fetchResidence = async (params) => {
+        setLoading(true);
+        const res = await getResidence(params, headers);
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
@@ -366,13 +384,11 @@ const Residence = () => {
         console.log(residence);
     };
     useEffect(() => {
-        fetchResidence(1);
+        fetchResidence({ limit: 7, page: pagination.current });
     }, [pagination.current]);
 
     return (
-        <main
-          
-        >
+        <main>
             <>
                 <Header
                     title={"RESIDENCES"}
@@ -382,9 +398,16 @@ const Residence = () => {
                             handleSearch={setFilterText}
                             filtertext={filtertext}
                             children={
-                                <img onClick={() => {
-                                    setShowModal({...showModal,filterModal:true})
-                                }} src={Icon.filter} alt="filter icon" />
+                                <img
+                                    onClick={() => {
+                                        setShowModal({
+                                            ...showModal,
+                                            filterModal: true,
+                                        });
+                                    }}
+                                    src={Icon.filter}
+                                    alt="filter icon"
+                                />
                             }
                         />
                     }
@@ -599,6 +622,8 @@ const Residence = () => {
                     setFilterValue={setFilterValue}
                     min={filterValue.minPrice}
                     max={filterValue.maxPrice}
+                    filterValue={filterValue}
+                    onConfirme={filtResidence}
                 />
                 <DeletModal
                     showModal={showModal}
@@ -621,20 +646,24 @@ const Residence = () => {
                     onConfirme={() => {
                         updateResidences(
                             selectItem.id,
-                            "Accepté",
+                            "accepted",
                             reason.acceptReason
                         );
                     }}
+                    reason={reason}
+                    setReason={setReason}
                 />
                 <RejectModal
                     showModal={showModal}
                     setShowModal={setShowModal}
                     setFilterValue={setFilterValue}
                     loading={showModal.loading}
+                    reason={reason}
+                    setReason={setReason}
                     onConfirme={() => {
                         updateResidences(
                             selectItem.id,
-                            "Refusé",
+                            "rejected",
                             reason.rejectReason
                         );
                     }}
@@ -647,7 +676,8 @@ const Residence = () => {
                     })}
                     size={12}
                     onChange={(page) => {
-                        fetchResidence(page)
+                        console.log(page);
+                        setPagination({ ...pagination, current: page.current });
                     }}
                     column={columns}
                     pagination={{
@@ -668,6 +698,7 @@ const FilterModal = ({
     showModal,
     setShowModal,
     onConfirme,
+    filterValue,
 }) => {
     return (
         <Modal
@@ -688,15 +719,7 @@ const FilterModal = ({
                         >
                             Tout effacer
                         </Button>
-                        <Button
-                            onClick={() =>
-                                setShowModal({
-                                    ...showModal,
-                                    filterModal: false,
-                                })
-                            }
-                            type="primary"
-                        >
+                        <Button onClick={onConfirme} type="primary">
                             Chercher
                         </Button>
                     </div>
@@ -774,6 +797,13 @@ const FilterModal = ({
                         placeholder="00"
                         style={{
                             textAlign: "center",
+                        }}
+                        onChange={(e) => {
+                            console.log(e);
+                            setFilterValue({
+                                ...filterValue,
+                                numPeople: e,
+                            });
                         }}
                     />
                 </Space>
@@ -865,6 +895,7 @@ const ConfrimeModal = ({
     onConfirme,
     loading,
     setReason,
+    reason,
 }) => {
     return (
         <Modal
@@ -929,7 +960,9 @@ const ConfrimeModal = ({
                     placeholder="Raison de la validation"
                     onChange={(e) => {
                         setReason({ ...reason, acceptReason: e.target.value });
+                        console.log(reason);
                     }}
+                    value={reason.acceptReason}
                 />
             </div>
         </Modal>
@@ -941,6 +974,7 @@ const RejectModal = ({
     onConfirme,
     loading,
     setReason,
+    reason,
 }) => {
     return (
         <Modal
@@ -962,7 +996,7 @@ const RejectModal = ({
                             onClick={() => {
                                 setShowModal({
                                     ...showModal,
-                                    addModal: false,
+                                    rejectModal: false,
                                 });
 
                                 setReason({
@@ -1005,8 +1039,10 @@ const RejectModal = ({
                     }}
                     placeholder="Raison du refus"
                     onChange={(e) => {
+                        console.log(e);
                         setReason({ ...reason, rejectReason: e.target.value });
                     }}
+                    value={reason.rejectReason}
                 />
             </div>
         </Modal>

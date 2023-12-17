@@ -172,8 +172,9 @@ export const getReservation = async(params, headers) => {
         try {
             const queryString = new URLSearchParams(params).toString();
 
-            const response = await privateService.get("/admin/bookings?" + queryString, { headers })
+            const response = await privateService.get("/admin/bookings/?" + queryString, { headers })
             const { status, data: responseData } = response;
+            console.log(response)
             return { status, data: responseData };
         } catch (error) {
             console.log(error);
