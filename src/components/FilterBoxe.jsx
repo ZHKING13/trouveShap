@@ -6,15 +6,27 @@ import "react-datepicker/dist/react-datepicker.css";
 import { DateRangePicker } from "rsuite";
 import { Icon } from "../constant/Icon";
 // const { RangePicker } = DatePicker;
+function convertToISO(dateString) {
+    const dateObject = new Date(dateString);
+    const ISOString = dateObject.toISOString();
+    return ISOString;
+}
 const FilterBoxe = ({ handleSearch, selectRange, filtertext,children }) => {
     const [startDate, setStartDate] = useState();
     const [enddate, setEndDate] = useState();
     const [open, setOpen] = useState(false);
     const rangPicker = (value) => {
+        console.log(value)
         setStartDate(value[0]);
         setEndDate(value[1]);
-        console.log("start", startDate);
-        console.log("end", enddate);
+        if (value[1] == null) {
+            return
+        }
+        selectRange({
+            fromDate: convertToISO(value[0]),
+            toDate:  convertToISO(value[1]),
+        });
+       
     };
     return (
         <div

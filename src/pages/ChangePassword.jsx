@@ -2,7 +2,9 @@ import { COLORS } from "../constant/Color";
 import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import { RecoverPassword } from "../feature/API";
+import { RecoverPassword, ResetPassword } from "../feature/API";
+import { useState } from "react";
+import { Spin, notification } from "antd";
 
 const styleProps = {
     display: "flex",
@@ -16,13 +18,18 @@ const styleProps = {
 };
 const ChangePassword = () => {
     const navigate = useNavigate();
-      const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [formData,setFormData]=useState(new FormData());
     const [api, contextHolder] = notification.useNotification();
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
             message: title,
             description: message,
         });
+    };
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
     const handleclick = async () => {
         setLoading(true);
@@ -36,27 +43,59 @@ const ChangePassword = () => {
             setLoading(false);
             return;
         }
-        const res = await RecoverPassword(formData);
+         if (password !=password2) {
+             openNotificationWithIcon(
+                 "error",
+                 "Invalide",
+                 "les deux  champs  ne corespondent pas"
+             );
+             setLoading(false);
+             return;
+         }
+         if (password.length < 5) {
+             openNotificationWithIcon(
+                 "error",
+                 "Invalide",
+                 "minimun 8 caracteres requis"
+             );
+             setLoading(false);
+             return;
+         }
+         let requestId = localStorage.getItem("requestId");
+         requestId = JSON.parse(requestId);
+         requestId = parseInt(requestId);
+        const data = {
+            requestId,
+            token: localStorage.getItem("otpToken"),
+            password
+        };
+        console.log(data);
+        const res = await ResetPassword(data);
         setLoading(false);
         if (res.status !== 201) {
             openNotificationWithIcon(
                 "error",
-                "connexion impossible",
+                "ERREUR",
                 res.data.message
             );
             return;
         }
         openNotificationWithIcon(
             "success",
-            "connexion réussie",
-            "vous êtes connecté"
+            " Succes",
+            "mots de pass renitialisé veuillez vous reconnnecter"
         );
+        setTimeout(() => {
+            navigate("/login");
+        }, 1300)
+        
        
     };
     return (
-        <div>
+        <Spin spinning={loading} tip="requete en cours de traitement..." >
             <div className="loginContainer">
                 <div className="formContainer">
+                    {contextHolder}
                     <p
                         style={{
                             color: COLORS.primary,
@@ -88,7 +127,7 @@ const ChangePassword = () => {
                             name="password"
                             id="password"
                             placeholder="Min. 8 characters"
-                            required
+                            onChange={handleInputChange}
                         />
                     </div>
                     <div
@@ -102,10 +141,11 @@ const ChangePassword = () => {
                         <input
                             type="password"
                             name="password2"
-                            id="password"
+                            id="password2"
                             required
                             className="form-input"
                             placeholder="Min. 8 characters"
+                            onChange={handleInputChange}
                         />
                     </div>
 
@@ -123,7 +163,7 @@ const ChangePassword = () => {
                             }}
                             onClick={handleclick}
                         >
-                            <span style={{ color: "#f1f1f1" }}>Conexion</span>
+                            <span style={{ color: "#f1f1f1" }}>Valider</span>
                         </Button>
                     </div>
                 </div>
@@ -155,7 +195,7 @@ const ChangePassword = () => {
             >
                 <p>© 2023 Trouvechap. Tous droits réservé.</p>
             </footer>
-        </div>
+        </Spin>
     );
 };
 export default ChangePassword;

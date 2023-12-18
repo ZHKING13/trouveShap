@@ -11,8 +11,20 @@ export const renderIcon = (status) => {
     switch (status) {
         case "Validé":
             return <CheckCircleOutlined color="#fff" />;
+        case "Acceptée":
+            return <CheckCircleOutlined color="#fff" />;
+        case "Terminée":
+            return <CheckCircleOutlined color="#fff" />;
+        case "Confirmée":
+            return <CheckCircleOutlined color="#fff" />;
+        case "Remboursée":
+            return <CheckCircleOutlined color="#fff" />;
         case "Rejeté":
             return <CloseCircleOutlined color="#fff" />;
+        case "Annulée":
+            return <CloseCircleOutlined color="#fff" />;
+        case "En Cours":
+            return <ExclamationCircleOutlined color="#fff" />;
         case "En Attente":
             return <ExclamationCircleOutlined color="#fff" />;
         default:
@@ -36,6 +48,8 @@ export const renderColor = (status) => {
             return "#22C55E";
         case "Confirmée":
             return "#22C55E";
+        case "Terminée":
+            return "#22C55E";
         case "Rejeté":
             return "#EF4444";
         case "Rejetée":
@@ -43,6 +57,8 @@ export const renderColor = (status) => {
         case "Annulée":
             return "#EF4444";
         case "En Attente":
+            return "#F59F0B";
+        case "En Cours":
             return "#F59F0B";
         case "Remboursée":
             return "#A273FF";

@@ -222,6 +222,7 @@ const Residence = () => {
         }
         const res = await updateResidence(id, formeData, headers);
         setShowModal({ ...showModal, loading: false });
+        console.log(res);
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",

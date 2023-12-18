@@ -62,14 +62,19 @@ export const CheckPasswordRecoveryCode = async(data) => {
 
 }
 export const ResetPassword = async(data) => {
-    const response = await fetch(`${API_URL}/users/password_recovery_update`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    }).then((res) => res.json());
-    return response;
+    try {
+        const response = await privateService.post("/users/password_recovery_update", data)
+        const { status, data: responseData } = response;
+        return { status, data: responseData };
+    } catch (error) {
+        console.log(error);
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+            console.error('La requête a expiré en raison d\'un timeout.');
+            return { status: 408, data: { message: 'Request Timeout' } };
+        }
+        return { status: error.response.status, data: error.response.data };
+
+    }
 }
 export const getResidence = async(params, headers) => {
     try {
@@ -186,9 +191,10 @@ export const getReservation = async(params, headers) => {
         }
     }
     // get newsletter /admin/newletters
-export const getNewsletter = async(headers) => {
+export const getNewsletter = async(params, headers) => {
         try {
-            const response = await privateService.get("/admin/newletters", { headers })
+            const queryString = new URLSearchParams(params).toString();
+            const response = await privateService.get("/admin/newletters?" + queryString, { headers })
             const { status, data: responseData } = response;
             return { status, data: responseData };
         } catch (error) {

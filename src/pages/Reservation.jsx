@@ -1,4 +1,14 @@
-import { Avatar, Carousel, Divider, Drawer, Space, Spin, Tag, notification ,Image} from "antd";
+import {
+    Avatar,
+    Carousel,
+    Divider,
+    Drawer,
+    Space,
+    Spin,
+    Tag,
+    notification,
+    Image,
+} from "antd";
 import DataTable, { renderColor, renderIcon } from "../components/DataTable";
 import Header from "../components/Header";
 import TableComponent from "../components/Table";
@@ -15,10 +25,21 @@ function FormatDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString("fr-FR", options);
 }
+export function filterNullUndefinedValues(obj) {
+    const filteredObject = {};
 
+    for (const key in obj) {
+        if (
+            obj.hasOwnProperty(key) &&
+            obj[key] !== null &&
+            obj[key] !== undefined
+        ) {
+            filteredObject[key] = obj[key];
+        }
+    }
 
-
-
+    return filteredObject;
+}
 const Reservation = () => {
     const columns = [
         {
@@ -116,13 +137,20 @@ const Reservation = () => {
     ];
     const [loading, setLoading] = useOutletContext();
     const [reservation, setReservation] = useState([]);
-        const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const [selectItem, setSelectItem] = useState(null);
-    const [current, setCurrent] = useState(1);
+    const [pagination, setPagination] = useState({
+        page: 1,
+        total: 7,
+    });
+    const [dateRange, setDateRange] = useState({
+        fromDate: null,
+        toDate: null,
+    });
     const [location, setLocation] = useState(null);
     const [api, contextHolder] = notification.useNotification();
-        const [filtertext, setFilterText] = useState("");
+    const [filtertext, setFilterText] = useState("");
 
     const navigate = useNavigate();
     const openNotificationWithIcon = (type, title, message) => {
@@ -131,34 +159,44 @@ const Reservation = () => {
             description: message,
         });
     };
-     const showDrawer = async (data) => {
-         setSelectItem(data);
-         let loc = {
-             address: data.address,
-             lat: parseInt(data.lat),
-             lng: parseInt(data.lng),
-         };
-         setLocation(loc);
-         console.log(selectItem);
-         console.log(location);
-         setOpen(true);
-     };
-     const onClose = () => {
-         setOpen(false);
-     };
+    const showDrawer = async (data) => {
+        setSelectItem(data);
+        let loc = {
+            address: data.address,
+            lat: parseInt(data.lat),
+            lng: parseInt(data.lng),
+        };
+        setLocation(loc);
+        console.log(selectItem);
+        console.log(location);
+        setOpen(true);
+    };
+    const onClose = () => {
+        setOpen(false);
+    };
     const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         "refresh-token": localStorage.getItem("refreshToken"),
     };
     const params = {
-        page: current,
+        page: pagination.page,
         limit: 7,
-
+        fromDate: dateRange.fromDate,
+        toDate: dateRange.toDate,
     };
+    const filtreByDate = (range) => {
+        console.log(range)
+        setDateRange(range);
+      console.log("dateranded",dateRange)
+        fetchReservation()
+    };
+  
     const fetchReservation = async () => {
         setLoading(true);
-        const res = await getReservation(params,headers);
+        const filteredObject = filterNullUndefinedValues(params)
+        console.log("params: ", filteredObject);
+        const res = await getReservation(filteredObject, headers);
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
@@ -172,12 +210,16 @@ const Reservation = () => {
             return;
         }
         console.log(res);
-        setReservation(res.data);
+        setReservation(res.data?.bookings);
+        setPagination({
+            ...pagination,
+            total: res.data?.totalBookings,
+        });
         setLoading(false);
     };
     useEffect(() => {
         fetchReservation();
-    }, [current]);
+    }, [pagination.page]);
     return (
         <main>
             <>
@@ -188,6 +230,7 @@ const Reservation = () => {
                         <FilterBoxe
                             handleSearch={setFilterText}
                             filtertext={filtertext}
+                            selectRange={filtreByDate}
                         />
                     }
                 />
@@ -206,7 +249,15 @@ const Reservation = () => {
                     })}
                     size={7}
                     onChange={({ current }) => {
-                        setCurrent(current);
+                        setPagination({
+                            ...pagination,
+                            page: current,
+                        });
+                    }}
+                    pagination={{
+                        total: pagination.total,
+                        showSizeChanger: false,
+                        pageSize: 12,
                     }}
                 />
             </>
@@ -232,7 +283,7 @@ const listStyle = {
     fontWeight: "bold",
 };
 
-const DrawerComponent = ({ selectItem, onClose,showDrawer,open }) => {
+const DrawerComponent = ({ selectItem, onClose, showDrawer, open }) => {
     return (
         <Drawer
             style={{

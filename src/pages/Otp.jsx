@@ -21,7 +21,7 @@ const Otp = () => {
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
     const [api, contextHolder] = notification.useNotification();
-
+const navigate = useNavigate()
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
             message: title,
@@ -51,10 +51,14 @@ const Otp = () => {
         const res = await CheckPasswordRecoveryCode(formdata);
         setLoading(false);
         console.log(res);
-        if (res.status !== 200) {
+        if (res.status !== 201) {
             openNotificationWithIcon("error", "OTP invalide", res.data.message);
             return;
         }
+        localStorage.setItem("otpToken", res.data.token);
+        console.log(res.data)
+        navigate("/new-password");
+
     };
     return (
         <Spin spinning={loading} size="large" tip="Chargement...">
