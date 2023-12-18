@@ -19,6 +19,7 @@ import {
     Slider,
     Input,
     InputNumber,
+    Image,
 } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -425,13 +426,14 @@ const Residence = () => {
                             {selectItem &&
                                 selectItem.medias.map((item) => (
                                     <div>
-                                        <img
+                                        <Image
                                             style={{
                                                 width: "100%",
                                                 height: "156px",
                                                 objectFit: "cover",
                                                 resizeMode: "cover",
                                             }}
+                                            width={320}
                                             src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
                                             alt=""
                                         />
