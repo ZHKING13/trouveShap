@@ -8,6 +8,8 @@ import {
     Tag,
     notification,
     Image,
+    Modal,
+    Button,
 } from "antd";
 import DataTable, { renderColor, renderIcon } from "../components/DataTable";
 import Header from "../components/Header";
@@ -138,8 +140,9 @@ const Reservation = () => {
     const [loading, setLoading] = useOutletContext();
     const [reservation, setReservation] = useState([]);
     const [open, setOpen] = useState(false);
-
+    const [imgModal, setImgModal] = useState(false);
     const [selectItem, setSelectItem] = useState(null);
+    const [modalAray, setModalAray] = useState([]);
     const [pagination, setPagination] = useState({
         page: 1,
         total: 7,
@@ -173,6 +176,7 @@ const Reservation = () => {
     };
     const onClose = () => {
         setOpen(false);
+        setImgModal(false);
     };
     const headers = {
         "Content-Type": "application/json",
@@ -186,15 +190,15 @@ const Reservation = () => {
         toDate: dateRange.toDate,
     };
     const filtreByDate = (range) => {
-        console.log(range)
+        console.log(range);
         setDateRange(range);
-      console.log("dateranded",dateRange)
-        fetchReservation()
+        console.log("dateranded", dateRange);
+        fetchReservation();
     };
-  
+
     const fetchReservation = async () => {
         setLoading(true);
-        const filteredObject = filterNullUndefinedValues(params)
+        const filteredObject = filterNullUndefinedValues(params);
         console.log("params: ", filteredObject);
         const res = await getReservation(filteredObject, headers);
         if (res.status !== 200) {
@@ -239,6 +243,14 @@ const Reservation = () => {
                     selectItem={selectItem}
                     onClose={onClose}
                     open={open}
+                    setImgModal={setImgModal}
+                    setModalAray={setModalAray}
+                    imgModal={imgModal}
+                />
+                <ImgModal
+                    setOpen={setImgModal}
+                    open={imgModal}
+                    tab={modalAray}
                 />
                 <DataTable
                     column={columns}
@@ -283,7 +295,14 @@ const listStyle = {
     fontWeight: "bold",
 };
 
-const DrawerComponent = ({ selectItem, onClose, showDrawer, open }) => {
+const DrawerComponent = ({
+    selectItem,
+    onClose,
+    showDrawer,
+    open,
+    setModalAray,
+    setImgModal,
+}) => {
     return (
         <Drawer
             style={{
@@ -302,7 +321,7 @@ const DrawerComponent = ({ selectItem, onClose, showDrawer, open }) => {
                 <Carousel autoplay>
                     {selectItem &&
                         selectItem?.residence?.medias?.map((item) => (
-                            <div>
+                            <div key={item.filename}>
                                 <Image
                                     style={{
                                         width: "100%",
@@ -313,6 +332,7 @@ const DrawerComponent = ({ selectItem, onClose, showDrawer, open }) => {
                                     width={320}
                                     src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
                                     alt=""
+                                    className="carouselImg"
                                 />
                             </div>
                         ))}
@@ -326,6 +346,11 @@ const DrawerComponent = ({ selectItem, onClose, showDrawer, open }) => {
                         padding: "10px 18px ",
                         backgroundColor: "#fff",
                         borderRadius: "100px",
+                    }}
+                    onClick={() => {
+                        console.log("okay clické");
+                        setModalAray(selectItem?.residence?.medias);
+                        setImgModal(true);
                     }}
                 >
                     <span>
@@ -582,5 +607,49 @@ const DrawerComponent = ({ selectItem, onClose, showDrawer, open }) => {
             <Divider />
             <Map location={location} />
         </Drawer>
+    );
+};
+export const ImgModal = ({ tab, open, setOpen }) => {
+    return (
+        <Modal
+            width={"90vw"}
+            style={{ width: "100vw" }}
+            onCancel={() => setOpen(false)}
+            footer={() => {
+                return (
+                    <Button type="primary" onClick={() => setOpen(false)}>
+                        OK
+                    </Button>
+                );
+            }}
+            open={open}
+        >
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "16px",
+                    rowGap: "16px",
+                    flexWrap: "wrap",
+                    // width: "100vw",
+                }}
+            >
+                {tab.map((item) => {
+                    return (
+                        <Image
+                            style={{
+                                width: "350px",
+                                height: "256px",
+                                objectFit: "cover",
+                                resizeMode: "cover",
+                                width: "100%",
+                            }}
+                            src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
+                        />
+                    );
+                })}
+            </div>
+        </Modal>
     );
 };

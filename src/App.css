@@ -510,4 +510,8 @@ a:visited {
     .ant-drawer-content-wrapper {
         width: 500px !important;
     }
+    .carouselImg {
+        width: 450px !important;
+        height: 200px !important;
+    }
 }

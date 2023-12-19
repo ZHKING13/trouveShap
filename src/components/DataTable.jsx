@@ -183,8 +183,9 @@ const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,o
                 borderRadius: "18px",
                 padding: "10px",
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.04)",
-                
             }}
+            rowKey={(record) => record.id}
+            key={(record) => record.id}
             className="dataTable"
             size="small"
             bordered={false}

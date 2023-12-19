@@ -34,6 +34,7 @@ import {
 import { useNavigate, useOutletContext } from "react-router-dom";
 import FilterBoxe from "../components/FilterBoxe";
 import { Icon } from "../constant/Icon";
+import { ImgModal } from "./Reservation";
 
 const contentStyle = {
     height: "160px",
@@ -49,7 +50,7 @@ const Residence = () => {
     const [residence, setResidence] = useState([]);
     const [location, setLocation] = useState(null);
     const [selectItem, setSelectItem] = useState(null);
-    const [tableLoading, setTableLoading] = useState(false);
+    const [modalAray, setModalAray] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 7 });
     const [reason, setReason] = useState({
         deletReason: "",
@@ -68,6 +69,7 @@ const Residence = () => {
         maxPrice: 55000,
         numPeople: "",
     });
+    const [imageModal, setImageModal] = useState(false)
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
     const openNotificationWithIcon = (type, title, message) => {
@@ -92,6 +94,7 @@ const Residence = () => {
                     <img
                         onClick={() => {
                             showDrawer(record);
+                            setModalAray(record.medias)
                         }}
                         style={{
                             width: "50px",
@@ -437,6 +440,8 @@ const Residence = () => {
                     }
                 />
                 {contextHolder}
+                <ImgModal tab={modalAray} open={imageModal} setOpen={setImageModal} />
+
                 <Drawer placement="right" onClose={onClose} open={open}>
                     <div
                         style={{
@@ -447,7 +452,7 @@ const Residence = () => {
                         <Carousel autoplay>
                             {selectItem &&
                                 selectItem.medias.map((item) => (
-                                    <div>
+                                    <div key={item.filename}>
                                         <Image
                                             style={{
                                                 width: "100%",
@@ -458,11 +463,13 @@ const Residence = () => {
                                             width={320}
                                             src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
                                             alt=""
+                                            className="carouselImg"
                                         />
                                     </div>
                                 ))}
                         </Carousel>
                         <div
+                            onClick={()=>setImageModal(true)}
                             style={{
                                 position: "absolute",
                                 bottom: "20px",
@@ -640,7 +647,6 @@ const Residence = () => {
                     <Divider />
                     <Map location={location} />
                 </Drawer>
-
                 <FilterModal
                     showModal={showModal}
                     setShowModal={setShowModal}
