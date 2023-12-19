@@ -140,7 +140,7 @@ const Residence = () => {
                         textDecoration: "none",
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "center",
+                        justifyContent: "flex-start",
                     }}
                     href={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
                     download={`doc_${record.host.firstname}.png`}
@@ -478,6 +478,7 @@ const Residence = () => {
                                 padding: "10px 18px ",
                                 backgroundColor: "#fff",
                                 borderRadius: "100px",
+                                cursor: "pointer"
                             }}
                         >
                             <span>
@@ -785,15 +786,12 @@ const FilterModal = ({
                 <Space style={spaceStyle}>
                     <span>chambre</span>
                     <InputNumber
-                        addonAfter={<span style={{ fontSize: "12px" }}>+</span>}
-                        addonBefore={
-                            <span style={{ fontSize: "12px" }}>-</span>
-                        }
                         min={1}
                         max={7}
                         placeholder="00"
                         style={{
                             textAlign: "center",
+                            width: "125px",
                         }}
                     />
                 </Space>
@@ -802,15 +800,12 @@ const FilterModal = ({
                 <Space style={spaceStyle}>
                     <span>Salles de bain</span>
                     <InputNumber
-                        addonAfter={<span style={{ fontSize: "12px" }}>+</span>}
-                        addonBefore={
-                            <span style={{ fontSize: "12px" }}>-</span>
-                        }
                         min={1}
                         max={7}
                         placeholder="00"
                         style={{
                             textAlign: "center",
+                            width: "125px",
                         }}
                     />
                 </Space>
@@ -819,15 +814,12 @@ const FilterModal = ({
                 <Space style={spaceStyle}>
                     <span>Nombre de personnes</span>
                     <InputNumber
-                        addonAfter={<span style={{ fontSize: "12px" }}>+</span>}
-                        addonBefore={
-                            <span style={{ fontSize: "12px" }}>-</span>
-                        }
                         min={1}
                         max={7}
                         placeholder="00"
                         style={{
                             textAlign: "center",
+                            width: "125px",
                         }}
                         onChange={(e) => {
                             console.log(e);
