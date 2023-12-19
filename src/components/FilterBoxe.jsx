@@ -11,22 +11,27 @@ function convertToISO(dateString) {
     const ISOString = dateObject.toISOString();
     return ISOString;
 }
-const FilterBoxe = ({ handleSearch, selectRange, filtertext,children }) => {
+const FilterBoxe = ({
+    handleSearch,
+    selectRange,
+    filtertext,
+    children,
+    onClick,
+}) => {
     const [startDate, setStartDate] = useState();
     const [enddate, setEndDate] = useState();
     const [open, setOpen] = useState(false);
     const rangPicker = (value) => {
-        console.log(value)
+        console.log(value);
         setStartDate(value[0]);
         setEndDate(value[1]);
         if (value[1] == null) {
-            return
+            return;
         }
         selectRange({
             fromDate: convertToISO(value[0]),
-            toDate:  convertToISO(value[1]),
+            toDate: convertToISO(value[1]),
         });
-       
     };
     return (
         <div
@@ -59,7 +64,7 @@ const FilterBoxe = ({ handleSearch, selectRange, filtertext,children }) => {
                     minHeight: "30px",
                 }}
             />
-            <div className="rangeContainer">
+            <div onClick={onClick ? onClick:null} className="rangeContainer">
                 {children ? (
                     children
                 ) : (

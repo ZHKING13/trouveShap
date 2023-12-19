@@ -9,6 +9,9 @@ import check from "../assets/check.svg";
 import cancel from "../assets/cancel.svg";
 import valid from "../assets/valid.svg";
 import filter from "../assets/filter.svg";
+import doc from "../assets/doc.svg";
+import eye from "../assets/eye.svg";
+import eyeOf from "../assets/eye-off.svg";
 
 export const Icon = {
     wifi,
@@ -22,4 +25,7 @@ export const Icon = {
     cancel,
     valid,
     filter,
+    eye,
+    eyeOf,
+    doc
 }

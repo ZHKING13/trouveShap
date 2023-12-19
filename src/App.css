@@ -505,3 +505,9 @@ a:visited {
         margin-top: 10px;
     }
 }
+
+@media (min-width: 1400px) {
+    .ant-drawer-content-wrapper {
+        width: 500px !important;
+    }
+}

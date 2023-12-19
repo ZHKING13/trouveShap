@@ -127,19 +127,35 @@ const Residence = () => {
             responsive: ["md"],
         },
         {
+            title: "Document hotes",
+            key: "docs",
+            dataIndex: "docs",
+            render: (text, record) => (
+                <a
+                    style={{
+                        color: "#64748B",
+                        textDecoration: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                    href={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
+                    download={`doc_${record.host.firstname}.png`}
+                    target="_blank"
+                >
+                    <img src={Icon.doc} /> doc_{record.host.firstname}.png
+                </a>
+            ),
+            responsive: ["md"],
+        },
+        {
             title: "Prix / nuits",
             dataIndex: "price",
             key: "price",
             render: (text) => <span>{text} fcfa </span>,
             responsive: ["md"],
         },
-        {
-            title: "Moyen de paiement",
-            key: "payment",
-            dataIndex: "payment",
-            render: (text) => <span>{text} </span>,
-            responsive: ["md"],
-        },
+
         {
             title: "Date d'ajout",
             key: "createdAt",
@@ -399,6 +415,12 @@ const Residence = () => {
                         <FilterBoxe
                             handleSearch={setFilterText}
                             filtertext={filtertext}
+                            onClick={() => {
+                                setShowModal({
+                                    ...showModal,
+                                    filterModal: true,
+                                });
+                            }}
                             children={
                                 <img
                                     onClick={() => {
@@ -892,7 +914,7 @@ const DeletModal = ({
         </Modal>
     );
 };
-const ConfrimeModal = ({
+export const ConfrimeModal = ({
     setShowModal,
     showModal,
     onConfirme,
@@ -971,7 +993,7 @@ const ConfrimeModal = ({
         </Modal>
     );
 };
-const RejectModal = ({
+export const RejectModal = ({
     setShowModal,
     showModal,
     onConfirme,

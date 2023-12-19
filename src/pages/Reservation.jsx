@@ -79,9 +79,9 @@ const Reservation = () => {
             key: "owner",
             render: (text, record) => (
                 <div>
-                    <p>{text}</p>
+                    <p>{record.residence.host.firstname}</p>
                     <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.email}
+                        {record.residence.host.email}
                     </p>
                 </div>
             ),

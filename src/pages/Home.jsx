@@ -19,7 +19,8 @@ import AreaCharts from "../components/chart/AreaChart";
 import ChartHeader from "../components/CharteHeader";
 import Header from "../components/Header";
 import DataTable from "../components/DataTable";
-import { getResidence, getStats } from "../feature/API";
+import { getResidence, getStats, updateResidence } from "../feature/API";
+import { ConfrimeModal, RejectModal } from "./Residence";
 export function formatAmount(number) {
     if (number < 1000) {
         return number.toString();
@@ -40,6 +41,17 @@ const Home = () => {
         getCompanyMoneyMonth: 0,
         getCompanyMoney: 0,
     });
+    const [selectItem, setSelectItem] = useState(null);
+
+    const [reason, setReason] = useState({
+        rejectReason: "",
+        acceptReason: "",
+    });
+    const [showModal, setShowModal] = useState({
+        addModal: false,
+        loading: false,
+        rejectModal: false,
+    });
     const [api, contextHolder] = notification.useNotification();
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
@@ -52,13 +64,93 @@ const Home = () => {
         "refresh-token": localStorage.getItem("refreshToken"),
     };
     const params = {
-        page: 1,
-        limit: 10,
+        page: 4,
+        limit: 20,
+    };
+    const onConfirme = (data) => {
+        setSelectItem(data);
+        setShowModal({
+            ...showModal,
+            addModal: true,
+        });
+    };
+    const onHide = (id) => {
+        
+         setResidence((prev) => {
+             return prev.filter((item) => item.id !== id);
+         });
+        console.log(id);
     }
+    const onCancel = (data) => {
+        setSelectItem(data);
+        setShowModal({
+            ...showModal,
+            rejectModal: true,
+        });
+    };
+    const updateResidences = async (id, status, reason) => {
+        setShowModal({ ...showModal, loading: true });
+        const formeData = {
+            status,
+            reason,
+        };
+        console.log(selectItem);
+        console.log(formeData);
+        if (reason == "") {
+            openNotificationWithIcon(
+                "error",
+                "ERREUR",
+                "merci de remplir le champ raison"
+            );
+            setShowModal({ ...showModal, loading: false });
+            return;
+        }
+        const res = await updateResidence(id, formeData, headers);
+        setShowModal({ ...showModal, loading: false });
+        console.log(res);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.data.message
+            );
+            if (res.status == 400) {
+                return;
+            }
+             localStorage.clear();
+             setTimeout(() => {
+                 navigate("/login");
+             }, 1500);
+            return;
+        }
+        setResidence((prev) => {
+            return prev.map((item) => {
+                if (item.id == id) {
+                    item.status = status == "accepted" ? "Validé" : "Rejeté";
+                }
+                return item;
+            });
+        });
+        console.log(res);
+        openNotificationWithIcon(
+            "success",
+            "SUCCES",
+            "la résidence a été" + " " + status == "accepted"
+                ? "Validé"
+                : "Rejeté"
+        );
+
+        setShowModal({ ...showModal, addModal: false, rejectModal: false });
+        setReason({
+            ...reason,
+            acceptReason: "",
+            rejectReason: "",
+        });
+    };
     const fetchSats = async () => {
         setLoading(true);
         const res = await getStats(headers);
-        const resi = await getResidence(params,headers);
+        const resi = await getResidence(params, headers);
         console.log(resi);
         if (res.status !== 200 || resi.status !== 200) {
             openNotificationWithIcon(
@@ -182,7 +274,40 @@ const Home = () => {
                         <BarCharts />
                     </div>
                 </div>
-                <DataTable data={residence} />
+                <RejectModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    loading={showModal.loading}
+                    reason={reason}
+                    setReason={setReason}
+                    onConfirme={() => {
+                        updateResidences(
+                            selectItem.id,
+                            "rejected",
+                            reason.rejectReason
+                        );
+                    }}
+                />
+                <ConfrimeModal
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    loading={showModal.loading}
+                    onConfirme={() => {
+                        updateResidences(
+                            selectItem.id,
+                            "accepted",
+                            reason.acceptReason
+                        );
+                    }}
+                    reason={reason}
+                    setReason={setReason}
+                />
+                <DataTable
+                    onConfirm={onConfirme}
+                    onCancel={onCancel}
+                    data={residence}
+                    onHide={onHide}
+                />
             </main>
         </>
     );

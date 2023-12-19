@@ -96,6 +96,12 @@ const NewsLetter = () => {
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
     };
+     const filtreByDate = (range) => {
+         console.log(range);
+         setDateRange(range);
+         console.log("dateranded", dateRange);
+         fetchNewsletter();
+     };
     const fetchNewsletter = async () => {
         setLoading(true);
         const filteredObject = filterNullUndefinedValues(params);
@@ -161,6 +167,7 @@ console.log(filteredObject)
                             <FilterBoxe
                                 handleSearch={setFilterText}
                                 filtertext={filtertext}
+                                selectRange={filtreByDate}
                             />
                         </Space>
                     }

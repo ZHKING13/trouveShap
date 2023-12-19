@@ -1,11 +1,12 @@
 import React from "react";
-import { Table, Tag } from "antd";
+import { Space, Table, Tag } from "antd";
 import { DATA2 } from "../data";
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
     ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import { Icon } from "../constant/Icon";
 
 export const renderIcon = (status) => {
     switch (status) {
@@ -71,7 +72,13 @@ export function FormatDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString("fr-FR", options);
 }
-const columns = [
+
+
+const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,onConfirm,onCancel,onHide }) => {
+    const handleRowClick = (record) => {
+        onclick && onclick(record);
+    };
+    const columns = [
     {
         title: "Résidences",
         dataIndex: "name",
@@ -154,15 +161,21 @@ const columns = [
     {
         title: "Action",
         key: "action",
-        render: (_, record) => <Tag color="red">delete</Tag>,
+        render: (_, record) => {
+           return record.status == "Rejeté" ? (
+               <img onClick={() => onHide(record.id)} src={Icon.eye} />
+           ) : record.status == "Validé" ? (
+               <img onClick={() => onHide(record.id)} src={Icon.eyeOf} />
+           ) : (
+               <Space>
+                   <img onClick={() => onConfirm(record)} src={Icon.valid} />
+                   <img onClick={() => onCancel(record)} src={Icon.cancel} />
+               </Space>
+           );
+        },
         responsive: ["lg"],
     },
 ];
-
-const DataTable = ({ column, data, size, onclick, onChange, pagination,loading }) => {
-    const handleRowClick = (record) => {
-        onclick && onclick(record);
-    };
     return (
         <Table
             style={{

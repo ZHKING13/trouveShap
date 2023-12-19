@@ -16,6 +16,15 @@
     font-family: Mori Gothic, 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
+img {
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: #A273FF;
+}
+
 body {
     position: relative;
 }
