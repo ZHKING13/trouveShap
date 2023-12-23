@@ -24,6 +24,8 @@ export const renderIcon = (status) => {
             return <CloseCircleOutlined color="#fff" />;
         case "Annulée":
             return <CloseCircleOutlined color="#fff" />;
+        case "Désactivé":
+            return <CloseCircleOutlined color="#fff" />;
         case "En Cours":
             return <ExclamationCircleOutlined color="#fff" />;
         case "En Attente":
@@ -57,6 +59,8 @@ export const renderColor = (status) => {
             return "#EF4444";
         case "Annulée":
             return "#EF4444";
+        case "Désactivé":
+            return "#EF4444";
         case "En Attente":
             return "#F59F0B";
         case "En Cours":
@@ -79,103 +83,140 @@ const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,o
         onclick && onclick(record);
     };
     const columns = [
-    {
-        title: "Résidences",
-        dataIndex: "name",
-        key: "name",
-        render: (text, record) => (
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                }}
-            >
-                <img
+        {
+            title: "Résidences",
+            dataIndex: "name",
+            key: "name",
+            render: (text, record) => (
+                <div
                     style={{
-                        width: "50px",
-                        height: "50px",
-                        borderRadius: "10%",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
                     }}
-                    src={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
-                    alt=""
-                />
+                >
+                    <img
+                        style={{
+                            width: "50px",
+                            height: "50px",
+                            borderRadius: "10%",
+                        }}
+                        src={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
+                        alt=""
+                    />
+                    <div>
+                        <p>{text}</p>
+                        <p style={{ fontSize: 12, color: "#888" }}>
+                            {record.address}
+                        </p>
+                    </div>
+                </div>
+            ),
+        },
+        {
+            title: "Hôte",
+            dataIndex: "owner",
+            key: "owner",
+            render: (text, record) => (
                 <div>
-                    <p>{text}</p>
+                    <p>
+                        {record.host.firstname} {record.host.lastname}
+                    </p>
                     <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.address}
+                        {record.email}
                     </p>
                 </div>
-            </div>
-        ),
-    },
-    {
-        title: "Hôte",
-        dataIndex: "owner",
-        key: "owner",
-        render: (text, record) => (
-            <div>
-                <p>
-                    {record.host.firstname} {record.host.lastname}
-                </p>
-                <p style={{ fontSize: 12, color: "#888" }}>{record.email}</p>
-            </div>
-        ),
-        responsive: ["md"],
-    },
-    {
-        title: "Prix / nuits",
-        dataIndex: "price",
-        key: "price",
-        render: (text) => <span>{text} fcfa </span>,
-        responsive: ["md"],
-    },
-    {
-        title: "Moyen de paiement",
-        key: "payment",
-        dataIndex: "payment",
-        render: (text) => <span>{text} </span>,
-        responsive: ["md"],
-    },
-    {
-        title: "Date d'ajout",
-        key: "createdAt",
-        dataIndex: "createdAt",
-        render: (text) => <span>{FormatDate(text)}</span>,
-        responsive: ["lg"],
-    },
-    {
-        title: "Status",
-        key: "status",
-        render: (_, record) => (
-            <Tag
-                icon={renderIcon(record.status)}
-                color={renderColor(record.status)}
-                key={record.status}
-            >
-                {record.status}
-            </Tag>
-        ),
-        responsive: ["md"],
-    },
-    {
-        title: "Action",
-        key: "action",
-        render: (_, record) => {
-           return record.status == "Rejeté" ? (
-               <img onClick={() => onHide(record.id)} src={Icon.eye} />
-           ) : record.status == "Validé" ? (
-               <img onClick={() => onHide(record.id)} src={Icon.eyeOf} />
-           ) : (
-               <Space>
-                   <img onClick={() => onConfirm(record)} src={Icon.valid} />
-                   <img onClick={() => onCancel(record)} src={Icon.cancel} />
-               </Space>
-           );
+            ),
+            responsive: ["md"],
         },
-        responsive: ["lg"],
-    },
-];
+        {
+            title: "Prix / nuits",
+            dataIndex: "price",
+            key: "price",
+            render: (text) => <span>{text} fcfa </span>,
+            responsive: ["md"],
+        },
+        {
+            title: "Document hotes",
+            key: "docs",
+            dataIndex: "docs",
+            render: (text, record) =>
+                record?.host?.identityDoc == null ? (
+                    <span>non fournis</span>
+                ) : (
+                    <a
+                        style={{
+                            color: "#64748B",
+                            textDecoration: "none",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                        }}
+                        href={`https://api.trouvechap.com/assets/uploads/docs/${record.host.identityDoc}`}
+                        download={`doc_${record?.host?.firstname}.png`}
+                        target="_blank"
+                    >
+                        <img src={Icon.doc} /> doc_{record?.host?.firstname}.png
+                    </a>
+                ),
+            responsive: ["md"],
+        },
+        {
+            title: "Date d'ajout",
+            key: "createdAt",
+            dataIndex: "createdAt",
+            render: (text) => <span>{FormatDate(text)}</span>,
+            responsive: ["lg"],
+        },
+        {
+            title: "Status",
+            key: "status",
+            render: (_, record) => (
+                <Tag
+                    icon={renderIcon(record.status)}
+                    color={renderColor(record.status)}
+                    key={record.status}
+                >
+                    {record.status}
+                </Tag>
+            ),
+            responsive: ["md"],
+        },
+        {
+            title: "Action",
+            key: "action",
+            render: (_, record) => {
+                return record.status == "Désactivé" ? (
+                    <img
+                        onClick={() => onHide(record.id, "restored")}
+                        src={Icon.eye}
+                    />
+                ) : record.status == "Validé" ? (
+                    <img onClick={() => onHide(record.id)} src={Icon.eyeOf} />
+                ) : record.status == "En Attente" ? (
+                    <Space>
+                        <img
+                            onClick={() => {
+                                onConfirm(record);
+                            }}
+                            src={Icon.valid}
+                        />
+                        <img
+                            onClick={() => {
+                                setSelectItem(record);
+                                setShowModal({
+                                    ...showModal,
+                                    rejectModal: true,
+                                });
+                            }}
+                            src={Icon.cancel}
+                        />
+                    </Space>
+                ) : null;
+            },
+            responsive: ["lg"],
+        },
+    ];
     return (
         <Table
             style={{

@@ -41,7 +41,7 @@ const FilterBoxe = ({
                 justifyContent: "space-between",
                 height: "50px",
                 borderRadius: "31px",
-                boxShadow: "14px 17px 40px 4px rgba(112, 144, 176, 0.08);",
+                boxShadow: "14px 17px 40px 4px rgba(112, 144, 176, 0.08)",
                 background: "#fff",
                 gap: "10px",
             }}

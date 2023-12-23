@@ -310,6 +310,7 @@ const DrawerComponent = ({
             }}
             placement="right"
             onClose={onClose}
+            destroyOnClose={true}
             open={open}
         >
             <div
@@ -324,7 +325,6 @@ const DrawerComponent = ({
                             <div key={item.filename}>
                                 <Image
                                     style={{
-                                        width: "100%",
                                         height: "156px",
                                         objectFit: "cover",
                                         resizeMode: "cover",

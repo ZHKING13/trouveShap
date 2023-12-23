@@ -74,11 +74,41 @@ const Home = () => {
             addModal: true,
         });
     };
-    const onHide = (id) => {
+    const onHide = async(id,status) => {
         
-         setResidence((prev) => {
-             return prev.filter((item) => item.id !== id);
-         });
+        const data = {
+            status
+        }
+        const res = await updateResidence(id, data, headers);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.data.message
+            );
+            if (res.status == 400) {
+                return;
+            }
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        setResidence((prev) => {
+            return prev.map((item) => {
+                if (item.id == id) {
+                    item.status = "Validé";
+                }
+                return item;
+            });
+        });
+        console.log(res);
+        openNotificationWithIcon(
+            "success",
+            "SUCCES",
+            "la résidence a été" + " " + status
+        );
         console.log(id);
     }
     const onCancel = (data) => {
@@ -126,7 +156,7 @@ const Home = () => {
         setResidence((prev) => {
             return prev.map((item) => {
                 if (item.id == id) {
-                    item.status = status == "accepted" ? "Validé" : "Rejeté";
+                    item.status = status == "restored" ? "Validé" : "Désactivé";
                 }
                 return item;
             });

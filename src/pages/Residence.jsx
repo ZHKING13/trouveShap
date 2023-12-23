@@ -134,7 +134,8 @@ const Residence = () => {
             key: "docs",
             dataIndex: "docs",
             render: (text, record) => (
-                <a
+                record?.host?.identityDoc == null ? <span>non fournis</span>: (
+                    <a
                     style={{
                         color: "#64748B",
                         textDecoration: "none",
@@ -142,12 +143,13 @@ const Residence = () => {
                         alignItems: "center",
                         justifyContent: "flex-start",
                     }}
-                    href={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
-                    download={`doc_${record.host.firstname}.png`}
+                    href={`https://api.trouvechap.com/assets/uploads/docs/${record.host.identityDoc}`}
+                    download={`doc_${record?.host?.firstname}.png`}
                     target="_blank"
                 >
-                    <img src={Icon.doc} /> doc_{record.host.firstname}.png
+                    <img src={Icon.doc} /> doc_{record?.host?.firstname}.png
                 </a>
+                )
             ),
             responsive: ["md"],
         },
@@ -184,8 +186,27 @@ const Residence = () => {
             title: "Action",
             key: "action",
             render: (_, record) => {
-                return record.status == "En Attente" ? (
-                    <Space>
+                return record.status ==  "Désactivé" ? (
+                    <img
+                        onClick={() =>
+                            setResidence((prev) => {
+                                anableResidence(record.id)
+                            })
+                        }
+                        src={Icon.eye}
+                    />
+                ) : record.status == "Validé" ? (
+                    <img
+                        onClick={() =>
+                            setResidence((prev) => {
+                               updateResidence(record.id,"ok","desabled")
+                            })
+                        }
+                        src={Icon.eyeOf}
+                    />
+                ) : (
+                    record.status == "En Attente" ?(
+                        <Space>
                         <img
                             onClick={() => {
                                 setSelectItem(record);
@@ -195,7 +216,6 @@ const Residence = () => {
                                 });
                             }}
                             src={Icon.valid}
-                            alt="accept icon"
                         />
                         <img
                             onClick={() => {
@@ -206,23 +226,53 @@ const Residence = () => {
                                 });
                             }}
                             src={Icon.cancel}
-                            alt="reject icon"
                         />
                     </Space>
-                ) : (
-                    <img
-                        onClick={() => {
-                            setSelectItem(record);
-                            setShowModal({ ...showModal, deletModal: true });
-                        }}
-                        src={Icon.trash}
-                        alt="delet icon"
-                    />
+                    ):null
                 );
             },
             responsive: ["lg"],
         },
     ];
+    const anableResidence= async(id)=>{
+        const data = {
+            status:"restored"
+        }
+        const res = await updateResidence(id, data, headers);
+        setShowModal({ ...showModal, loading: false });
+        console.log(res);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.data.message
+            );
+            if (res.status == 400) {
+                return;
+            }
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        setResidence((prev) => {
+            return prev.map((item) => {
+                if (item.id == id) {
+                    item.status = "Validé";
+                }
+                return item;
+            });
+        });
+        console.log(res);
+        openNotificationWithIcon(
+            "success",
+            "SUCCES",
+            "la résidence a été" + " " + status
+        );
+
+
+    }
     const updateResidences = async (id, status, reason) => {
         setShowModal({ ...showModal, loading: true });
         const formeData = {
@@ -273,7 +323,7 @@ const Residence = () => {
             "la résidence a été" + " " + status
         );
 
-        setShowModal({ ...showModal, addModal: false });
+        setShowModal({ ...showModal, addModal: false,rejectModal:false });
         setReason({
             ...reason,
             acceptReason: "",
@@ -442,7 +492,7 @@ const Residence = () => {
                 {contextHolder}
                 <ImgModal tab={modalAray} open={imageModal} setOpen={setImageModal} />
 
-                <Drawer placement="right" onClose={onClose} open={open}>
+                <Drawer placement="right" onClose={onClose}  destroyOnClose={true} open={open}>
                     <div
                         style={{
                             position: "relative",
