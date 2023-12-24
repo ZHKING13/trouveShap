@@ -34,7 +34,7 @@ import AreaCharts from "../components/chart/AreaChart";
 import ChartHeader from "../components/CharteHeader";
 import Header from "../components/Header";
 import DataTable from "../components/DataTable";
-import { getResidence, getStats, updateResidence } from "../feature/API";
+import { API_URL, getResidence, getStats, updateResidence } from "../feature/API";
 import { ConfrimeModal, DeletModal, RejectModal } from "./Residence";
 import { ImgModal } from "./Reservation";
 import { Icon } from "../constant/Icon";
@@ -518,7 +518,7 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                                         resizeMode: "cover",
                                     }}
                                     width={320}
-                                    src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
+                                    src={`${API_URL}/assets/uploads/residences/${item.filename}`}
                                     alt=""
                                     className="carouselImg"
                                 />
@@ -573,7 +573,10 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                 }}
                 className="user"
             >
-                <Avatar size={64} />
+                <Avatar src={
+                     `${API_URL}/assets/uploads/avatars/${selectItem?.host?.avatar}`
+
+                } size={64} />
                 <div
                     style={{
                         display: "flex",

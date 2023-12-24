@@ -650,12 +650,12 @@ export const ImgModal = ({ tab, open, setOpen }) => {
                 {tab.map((item) => {
                     return (
                         <Image
+                            key={item.filename}
                             style={{
                                 width: "350px",
                                 height: "256px",
                                 objectFit: "cover",
                                 resizeMode: "cover",
-                                width: "100%",
                             }}
                             src={`${API_URL}/assets/uploads/residences/${item.filename}`}
                         />
