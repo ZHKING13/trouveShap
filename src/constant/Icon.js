@@ -11,6 +11,7 @@ import valid from "../assets/valid.svg";
 import filter from "../assets/filter.svg";
 import doc from "../assets/doc.svg";
 import eye from "../assets/eye.svg";
+import bank from "../assets/bank.svg";
 import eyeOf from "../assets/eye-off.svg";
 
 export const Icon = {
@@ -27,5 +28,6 @@ export const Icon = {
     filter,
     eye,
     eyeOf,
-    doc
+    doc,
+    bank
 }

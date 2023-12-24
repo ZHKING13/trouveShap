@@ -50,6 +50,7 @@ const Residence = () => {
     const [residence, setResidence] = useState([]);
     const [location, setLocation] = useState(null);
     const [selectItem, setSelectItem] = useState(null);
+    const [spin, setSpin] = useState(false);
     const [modalAray, setModalAray] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 7 });
     const [reason, setReason] = useState({
@@ -69,7 +70,7 @@ const Residence = () => {
         maxPrice: 55000,
         numPeople: "",
     });
-    const [imageModal, setImageModal] = useState(false)
+    const [imageModal, setImageModal] = useState(false);
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
     const openNotificationWithIcon = (type, title, message) => {
@@ -94,7 +95,7 @@ const Residence = () => {
                     <img
                         onClick={() => {
                             showDrawer(record);
-                            setModalAray(record.medias)
+                            setModalAray(record.medias);
                         }}
                         style={{
                             width: "50px",
@@ -133,24 +134,25 @@ const Residence = () => {
             title: "Document hotes",
             key: "docs",
             dataIndex: "docs",
-            render: (text, record) => (
-                record?.host?.identityDoc == null ? <span>non fournis</span>: (
+            render: (text, record) =>
+                record?.host?.identityDoc == null ? (
+                    <span>non fournis</span>
+                ) : (
                     <a
-                    style={{
-                        color: "#64748B",
-                        textDecoration: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                    }}
-                    href={`https://api.trouvechap.com/assets/uploads/docs/${record.host.identityDoc}`}
-                    download={`doc_${record?.host?.firstname}.png`}
-                    target="_blank"
-                >
-                    <img src={Icon.doc} /> doc_{record?.host?.firstname}.png
-                </a>
-                )
-            ),
+                        style={{
+                            color: "#64748B",
+                            textDecoration: "none",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                        }}
+                        href={`https://api.trouvechap.com/assets/uploads/docs/${record.host.identityDoc}`}
+                        download={`doc_${record?.host?.firstname}.png`}
+                        target="_blank"
+                    >
+                        <img src={Icon.doc} /> doc_{record?.host?.firstname}.png
+                    </a>
+                ),
             responsive: ["md"],
         },
         {
@@ -186,11 +188,11 @@ const Residence = () => {
             title: "Action",
             key: "action",
             render: (_, record) => {
-                return record.status ==  "Désactivé" ? (
+                return record.status == "Désactivé" ? (
                     <img
                         onClick={() =>
                             setResidence((prev) => {
-                                anableResidence(record.id)
+                                anableResidence(record.id);
                             })
                         }
                         src={Icon.eye}
@@ -199,14 +201,13 @@ const Residence = () => {
                     <img
                         onClick={() =>
                             setResidence((prev) => {
-                               updateResidence(record.id,"ok","desabled")
+                                updateResidence(record.id, "ok", "desabled");
                             })
                         }
                         src={Icon.eyeOf}
                     />
-                ) : (
-                    record.status == "En Attente" ?(
-                        <Space>
+                ) : record.status == "En Attente" ? (
+                    <Space>
                         <img
                             onClick={() => {
                                 setSelectItem(record);
@@ -228,19 +229,31 @@ const Residence = () => {
                             src={Icon.cancel}
                         />
                     </Space>
-                    ):null
-                );
+                ) : null;
             },
             responsive: ["lg"],
         },
     ];
-    const anableResidence= async(id)=>{
+    const onCancel = (data) => {
+        setSelectItem(data);
+        setShowModal({
+            ...showModal,
+            rejectModal: true,
+        });
+    };
+    const onConfirme = (data) => {
+        setSelectItem(data);
+        setShowModal({
+            ...showModal,
+            addModal: true,
+        });
+    };
+    const onHide = async (id, status) => {
+        setSpin(true);
         const data = {
-            status:"restored"
-        }
+            status,
+        };
         const res = await updateResidence(id, data, headers);
-        setShowModal({ ...showModal, loading: false });
-        console.log(res);
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
@@ -256,10 +269,11 @@ const Residence = () => {
             }, 1500);
             return;
         }
+        setSpin(false);
         setResidence((prev) => {
             return prev.map((item) => {
                 if (item.id == id) {
-                    item.status = "Validé";
+                    item.status = res.data.status;
                 }
                 return item;
             });
@@ -268,11 +282,9 @@ const Residence = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été" + " " + status
+            "la résidence a été" + " " + res.data.status
         );
-
-
-    }
+    };
     const updateResidences = async (id, status, reason) => {
         setShowModal({ ...showModal, loading: true });
         const formeData = {
@@ -323,7 +335,7 @@ const Residence = () => {
             "la résidence a été" + " " + status
         );
 
-        setShowModal({ ...showModal, addModal: false,rejectModal:false });
+        setShowModal({ ...showModal, addModal: false, rejectModal: false });
         setReason({
             ...reason,
             acceptReason: "",
@@ -402,10 +414,16 @@ const Residence = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été supprimé"
+            "la résidence a été desactivé"
         );
         setResidence((prev) => {
-            return prev.filter((item) => item.id !== id);
+            return prev.map((item) => {
+                if (item.id == id) {
+                    item.status = "Désactivé";
+                }
+                return item;
+            }
+            );
         });
         setShowModal({ ...showModal, deletModal: false });
         setReason({
@@ -474,6 +492,7 @@ const Residence = () => {
                                     filterModal: true,
                                 });
                             }}
+                            placeHolder={"Rechercher une résidence"}
                             children={
                                 <img
                                     onClick={() => {
@@ -490,9 +509,18 @@ const Residence = () => {
                     }
                 />
                 {contextHolder}
-                <ImgModal tab={modalAray} open={imageModal} setOpen={setImageModal} />
+                <ImgModal
+                    tab={modalAray}
+                    open={imageModal}
+                    setOpen={setImageModal}
+                />
 
-                <Drawer placement="right" onClose={onClose}  destroyOnClose={true} open={open}>
+                <Drawer
+                    placement="right"
+                    onClose={onClose}
+                    destroyOnClose={true}
+                    open={open}
+                >
                     <div
                         style={{
                             position: "relative",
@@ -505,7 +533,6 @@ const Residence = () => {
                                     <div key={item.filename}>
                                         <Image
                                             style={{
-                                                width: "100%",
                                                 height: "156px",
                                                 objectFit: "cover",
                                                 resizeMode: "cover",
@@ -519,7 +546,7 @@ const Residence = () => {
                                 ))}
                         </Carousel>
                         <div
-                            onClick={()=>setImageModal(true)}
+                            onClick={() => setImageModal(true)}
                             style={{
                                 position: "absolute",
                                 bottom: "20px",
@@ -528,7 +555,7 @@ const Residence = () => {
                                 padding: "10px 18px ",
                                 backgroundColor: "#fff",
                                 borderRadius: "100px",
-                                cursor: "pointer"
+                                cursor: "pointer",
                             }}
                         >
                             <span>
@@ -715,6 +742,7 @@ const Residence = () => {
                     max={filterValue.max}
                     loading={showModal.loading}
                     onConfirme={() => {
+                        console.log(selectItem)
                         deletResidence(selectItem.id);
                     }}
                     reason={reason}
@@ -761,12 +789,20 @@ const Residence = () => {
                         console.log(page);
                         setPagination({ ...pagination, current: page.current });
                     }}
-                    column={columns}
+                    // column={columns}
+                    onHide={onHide}
+                    onConfirm={onConfirme}
+                    onCancel={onCancel}
+                    onDelet={(data) =>
+                        {setSelectItem(data)
+                        setShowModal({ ...showModal, deletModal: true })}
+                    }
                     pagination={{
                         total: pagination.total,
                         showSizeChanger: false,
                         pageSize: 12,
                     }}
+                    spin={spin}
                 />
             </>
         </main>
@@ -938,7 +974,7 @@ const DeletModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Supprimer
+                            Desactivé
                         </Button>
                     </div>
                 </>
@@ -946,8 +982,7 @@ const DeletModal = ({
             open={showModal.deletModal}
         >
             <div className="top">
-                <h3>Confirmer la suppression</h3>
-                <span>Voulez vous vraiment supprimer ces données ?</span>
+                <h3>Confirmer la desactivation</h3>
                 <Input.TextArea
                     value={reason.deletReason}
                     onChange={(e) => {
@@ -956,7 +991,7 @@ const DeletModal = ({
                     style={{
                         marginTop: "10px",
                     }}
-                    placeholder="Raison de la suppression"
+                    placeholder="Raison de la desactivation"
                 />
             </div>
         </Modal>
@@ -1014,7 +1049,7 @@ export const ConfrimeModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Garder
+                            Confirmer
                         </Button>
                     </div>
                 </>

@@ -189,9 +189,8 @@ const Reservation = () => {
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
     };
-    const filtreByDate = (range) => {
-        console.log(range);
-        setDateRange(range);
+    const filtreByDate = () => {
+        console.log(dateRange);
         console.log("dateranded", dateRange);
         fetchReservation();
     };
@@ -233,8 +232,11 @@ const Reservation = () => {
                     children={
                         <FilterBoxe
                             handleSearch={setFilterText}
+                            setDateRange={setDateRange}
+                            dateRange={dateRange}
                             filtertext={filtertext}
                             selectRange={filtreByDate}
+                            placeHolder={"Chercher une réservation"}
                         />
                     }
                 />

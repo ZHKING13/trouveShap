@@ -20,12 +20,21 @@ import {
     Input,
     InputNumber,
     Image,
+    Popover,
 } from "antd";
-import { PictureOutlined } from "@ant-design/icons";
+import { PictureOutlined, DashOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Map from "../components/Map";
-import { deleteResidence, getResidence, updateResidence } from "../feature/API";
+import {
+    deleteResidence,
+    getResidence,
+    updateResidence,
+    getReimbusment,
+    AccepteReimbursment,
+    RejectReimbursment,
+    PayReimbursment,
+} from "../feature/API";
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
@@ -57,12 +66,17 @@ const Remboursement = () => {
         rejectReason: "",
         acceptReason: "",
     });
+    const [dateRange, setDateRange] = useState({
+        fromDate: null,
+        toDate: null,
+    });
     const [showModal, setShowModal] = useState({
         deletModal: false,
         filterModal: false,
         addModal: false,
         loading: false,
         rejectModal: false,
+        spin: false,
     });
     const [filterValue, setFilterValue] = useState({
         minPrice: 20000,
@@ -71,6 +85,7 @@ const Remboursement = () => {
     });
     const [imageModal, setImageModal] = useState(false);
     const [api, contextHolder] = notification.useNotification();
+    const [pophover, setPophover] = useState(false);
     const navigate = useNavigate();
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
@@ -90,24 +105,28 @@ const Remboursement = () => {
                         alignItems: "center",
                         gap: "10px",
                     }}
+                    onClick={() => {
+                        showDrawer(record);
+                        setModalAray(record.booking?.residence?.medias);
+                    }}
                 >
-                    <img
+                    {/* <img
                         onClick={() => {
                             showDrawer(record);
-                            setModalAray(record.medias);
+                            setModalAray(record.booking?.residence?.medias);
                         }}
                         style={{
                             width: "50px",
                             height: "50px",
                             borderRadius: "10%",
                         }}
-                        src={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
+                        src={`https://api.trouvechap.com/assets/uploads/residences/${record?.booking?.residence?.medias[0]?.filename}`}
                         alt=""
-                    />
+                    /> */}
                     <div>
                         <p>{text}</p>
                         <p style={{ fontSize: 12, color: "#888" }}>
-                            {record.address}
+                            {record.booking?.residence?.address}
                         </p>
                     </div>
                 </div>
@@ -120,47 +139,42 @@ const Remboursement = () => {
             render: (text, record) => (
                 <div>
                     <p>
-                        {record.host.firstname} {record.host.lastname}
+                        {record.booking?.residence.host?.firstname}{" "}
+                        {record.booking?.residence.host?.lastname}
                     </p>
                     <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.email}
+                        {record?.booking.residence.host.email}
                     </p>
                 </div>
             ),
             responsive: ["md"],
         },
         {
-            title: "Document hotes",
-            key: "docs",
-            dataIndex: "docs",
+            title: "Client",
+            key: "clien",
+            dataIndex: "client",
             render: (text, record) => (
-                <a
-                    style={{
-                        color: "#64748B",
-                        textDecoration: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                    }}
-                    href={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
-                    download={`doc_${record.host.firstname}.png`}
-                    target="_blank"
-                >
-                    <img src={Icon.doc} /> doc_{record.host.firstname}.png
-                </a>
+                <div>
+                    <p>{record.booking?.user?.firstname}</p>
+                    <p style={{ fontSize: 12, color: "#888" }}>
+                        {record.booking?.user?.email}
+                    </p>
+                </div>
             ),
             responsive: ["md"],
         },
         {
-            title: "Prix / nuits",
+            title: "Montant remboursement",
             dataIndex: "price",
             key: "price",
-            render: (text) => <span>{text} fcfa </span>,
+            render: (text, record) => (
+                <span>{record.refundedAmount} fcfa </span>
+            ),
             responsive: ["md"],
         },
 
         {
-            title: "Date d'ajout",
+            title: "Date de demande",
             key: "createdAt",
             dataIndex: "createdAt",
             render: (text) => <span>{FormatDate(text)}</span>,
@@ -185,63 +199,77 @@ const Remboursement = () => {
             key: "action",
             render: (_, record) => {
                 return record.status == "En Attente" ? (
-                    <Space>
+                    <Popover
+                        trigger="click"
+                        open={selectItem?.id == record.id ? pophover : null}
+                        content={
+                            <Spin
+                                spinning={
+                                    selectItem?.id == record.id
+                                        ? showModal.spin
+                                        : null
+                                }
+                            >
+                                <img
+                                    onClick={() => {
+                                        setSelectItem(record);
+                                        updateResidences(record.id);
+                                    }}
+                                    src={Icon.valid}
+                                    alt="accept icon"
+                                />
+                                <img
+                                    onClick={() => {
+                                        setSelectItem(record);
+                                        setShowModal({
+                                            ...showModal,
+                                            deletModal: true,
+                                        });
+                                    }}
+                                    src={Icon.cancel}
+                                    alt="reject icon"
+                                />
+                            </Spin>
+                        }
+                    >
+                        <DashOutlined
+                            onClick={() => {
+                                setSelectItem(record);
+                                setPophover(true);
+                            }}
+                        />
+                    </Popover>
+                ) : record.status == "Acceptée" ? (
+                    <Spin
+                        spinning={
+                            selectItem?.id == record.id ? showModal.spin : null
+                        }
+                    >
                         <img
                             onClick={() => {
                                 setSelectItem(record);
-                                setShowModal({
-                                    ...showModal,
-                                    addModal: true,
-                                });
+                                refund(record.id);
                             }}
-                            src={Icon.valid}
-                            alt="accept icon"
+                            src={Icon.bank}
+                            alt="paye icon"
                         />
-                        <img
-                            onClick={() => {
-                                setSelectItem(record);
-                                setShowModal({
-                                    ...showModal,
-                                    rejectModal: true,
-                                });
-                            }}
-                            src={Icon.cancel}
-                            alt="reject icon"
-                        />
-                    </Space>
-                ) : (
-                    <img
-                        onClick={() => {
-                            setSelectItem(record);
-                            setShowModal({ ...showModal, deletModal: true });
-                        }}
-                        src={Icon.trash}
-                        alt="delet icon"
-                    />
-                );
+                    </Spin>
+                ) : null;
             },
             responsive: ["lg"],
         },
     ];
-    const updateResidences = async (id, status, reason) => {
-        setShowModal({ ...showModal, loading: true });
-        const formeData = {
-            status,
-            reason,
+    const updateResidences = async (id) => {
+        setShowModal({ ...showModal, spin: true });
+
+        const header = {
+            Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+            "refresh-token": localStorage.getItem("refreshToken"),
+            "Content-Type": "application/json",
         };
 
-        console.log(formeData);
-        if (reason == "") {
-            openNotificationWithIcon(
-                "error",
-                "ERREUR",
-                "merci de remplir le champ raison"
-            );
-            setShowModal({ ...showModal, loading: false });
-            return;
-        }
-        const res = await updateResidence(id, formeData, headers);
-        setShowModal({ ...showModal, loading: false });
+        const res = await AccepteReimbursment(id, header);
+
         console.log(res);
         if (res.status !== 200) {
             openNotificationWithIcon(
@@ -249,6 +277,7 @@ const Remboursement = () => {
                 res.status == 400 ? "ERREUR" : "Session expiré",
                 res.data.message
             );
+            setPophover(false);
             if (res.status == 400) {
                 return;
             }
@@ -258,10 +287,12 @@ const Remboursement = () => {
             }, 1500);
             return;
         }
+        setShowModal({ ...showModal, spin: false });
+
         setResidence((prev) => {
             return prev.map((item) => {
                 if (item.id == id) {
-                    item.status = status;
+                    item.status = res.data.status;
                 }
                 return item;
             });
@@ -270,9 +301,9 @@ const Remboursement = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été" + " " + status
+            "la résidence a été" + " " + res.data.status
         );
-
+        setPophover(false);
         setShowModal({ ...showModal, addModal: false });
         setReason({
             ...reason,
@@ -297,17 +328,17 @@ const Remboursement = () => {
     };
     const headers = {
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
-        "refresh-token": localStorage.getItem("refreshToken"),
+        // "refresh-token": localStorage.getItem("refreshToken"),
     };
     const params = {
         page: pagination.current,
-        fromDate: "2023-11-11T00:00:00.000Z",
-        toDate: "2023-12-20T00:00:00.000Z",
+        fromDate: dateRange.fromDate,
+        toDate: dateRange.toDate,
         limit: 7,
     };
 
     const deletResidence = async (id) => {
-        setShowModal({ ...showModal, loading: true });
+        setShowModal({ ...showModal, spin: true });
         const header = {
             Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
             "refresh-token": localStorage.getItem("refreshToken"),
@@ -329,7 +360,7 @@ const Remboursement = () => {
             setShowModal({ ...showModal, loading: false });
             return;
         }
-        const res = await deleteResidence(id, formdata, header);
+        const res = await RejectReimbursment(id, formdata, header);
 
         console.log(res);
         if (res.status !== 200) {
@@ -348,14 +379,16 @@ const Remboursement = () => {
             }, 1500);
             return;
         }
-        setShowModal({ ...showModal, loading: false });
+        setShowModal({ ...showModal, spin: false });
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été supprimé"
+            "la de remboursement  a été refusée"
         );
         setResidence((prev) => {
-            return prev.filter((item) => item.id !== id);
+            return prev.map((item) =>
+                item.id == id ? { ...item, status: "Refusée" } : item
+            );
         });
         setShowModal({ ...showModal, deletModal: false });
         setReason({
@@ -365,12 +398,51 @@ const Remboursement = () => {
         // setResidence(res.data.residences);
     };
     const filtResidence = async () => {
-        setShowModal({
-            ...showModal,
-            filterModal: false,
+        console.log(dateRange);
+        fetReimbursment();
+    };
+    const refund = async (id) => {
+        setShowModal({ ...showModal, spin: true });
+        const header = {
+            Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+        };
+        const res = await PayReimbursment(id, header);
+        console.log(res);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.data.message
+            );
+            setPophover(false);
+            if (res.status == 400) {
+                return;
+            }
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        setShowModal({ ...showModal, spin: false });
+        setResidence((prev) => {
+            return prev.map((item) => {
+                if (item.id == id) {
+                    item.status = "Payée";
+                }
+                return item;
+            });
         });
+        console.log(res);
+        openNotificationWithIcon(
+            "success",
+            "SUCCES",
+            "la résidence a été" + " " + res.data.status
+        );
+    };
+    const fetReimbursment = async () => {
         const filteredObject = Object.fromEntries(
-            Object.entries(filterValue).filter(
+            Object.entries(params).filter(
                 ([key, value]) =>
                     value !== null &&
                     value !== undefined &&
@@ -379,14 +451,9 @@ const Remboursement = () => {
             )
         );
         console.log(filteredObject);
-        fetchResidence({
-            ...filteredObject,
-            limit: 7,
-        });
-    };
-    const fetchResidence = async (params) => {
         setLoading(true);
-        const res = await getResidence(params, headers);
+        const res = await getReimbusment(filteredObject, headers);
+        console.log(res);
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
@@ -400,12 +467,12 @@ const Remboursement = () => {
             return;
         }
         setLoading(false);
-        setPagination({ ...pagination, total: res.data.totalResidences });
-        setResidence(res.data.residences);
+        setPagination({ ...pagination, total: res.data.totalRequests });
+        setResidence(res.data.requests);
         console.log(residence);
     };
     useEffect(() => {
-        fetchResidence({ limit: 7, page: pagination.current });
+        fetReimbursment();
     }, [pagination.current]);
 
     return (
@@ -417,36 +484,22 @@ const Remboursement = () => {
                     children={
                         <FilterBoxe
                             handleSearch={setFilterText}
+                            setDateRange={setDateRange}
+                            dateRange={dateRange}
+                            selectRange={filtResidence}
                             filtertext={filtertext}
-                            onClick={() => {
-                                setShowModal({
-                                    ...showModal,
-                                    filterModal: true,
-                                });
-                            }}
-                            children={
-                                <img
-                                    onClick={() => {
-                                        setShowModal({
-                                            ...showModal,
-                                            filterModal: true,
-                                        });
-                                    }}
-                                    src={Icon.filter}
-                                    alt="filter icon"
-                                />
-                            }
+                            placeHolder="Rechercher une demande"
                         />
                     }
                 />
                 {contextHolder}
-                <ImgModal
+                {/* <ImgModal
                     tab={modalAray}
                     open={imageModal}
                     setOpen={setImageModal}
-                />
+                /> */}
 
-                <Drawer placement="right" onClose={onClose} open={open}>
+                <Drawer destroyOnClose={true} placement="right" onClose={onClose} open={open}>
                     <div
                         style={{
                             position: "relative",
@@ -454,23 +507,25 @@ const Remboursement = () => {
                         className="top"
                     >
                         <Carousel autoplay>
-                            {selectItem &&
-                                selectItem.medias.map((item) => (
-                                    <div key={item.filename}>
-                                        <Image
-                                            style={{
-                                                width: "100%",
-                                                height: "156px",
-                                                objectFit: "cover",
-                                                resizeMode: "cover",
-                                            }}
-                                            width={320}
-                                            src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
-                                            alt=""
-                                            className="carouselImg"
-                                        />
-                                    </div>
-                                ))}
+                            {selectItem?.booking?.residence?.medias &&
+                                selectItem?.booking?.residence?.medias.map(
+                                    (item) => (
+                                        <div key={item.filename}>
+                                            <Image
+                                                style={{
+                                                    width: "100%",
+                                                    height: "156px",
+                                                    objectFit: "cover",
+                                                    resizeMode: "cover",
+                                                }}
+                                                width={320}
+                                                src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
+                                                alt=""
+                                                className="carouselImg"
+                                            />
+                                        </div>
+                                    )
+                                )}
                         </Carousel>
                         <div
                             onClick={() => setImageModal(true)}
@@ -487,7 +542,10 @@ const Remboursement = () => {
                         >
                             <span>
                                 <PictureOutlined /> +
-                                {selectItem && selectItem.medias.length} photos
+                                {selectItem &&
+                                    selectItem.booking?.residence?.medias
+                                        ?.length}{" "}
+                                photos
                             </span>
                         </div>
                     </div>
@@ -497,9 +555,11 @@ const Remboursement = () => {
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem.name}
+                        {selectItem && selectItem.booking?.residence?.name}
                     </h2>
-                    <span>{selectItem && selectItem.address}</span>
+                    <span>
+                        {selectItem && selectItem.booking?.residence?.address}
+                    </span>
                     <Divider />
                     <div className="price">
                         <h2
@@ -507,11 +567,21 @@ const Remboursement = () => {
                                 color: "#1B2559",
                             }}
                         >
-                            {selectItem && selectItem.price} fcfa / nuits
+                            {selectItem &&
+                                selectItem?.booking?.residence?.price}{" "}
+                            fcfa / nuits
                         </h2>
                         <p>Prix</p>
                     </div>
                     <Divider />
+                    <h3
+                        style={{
+                            color: "#1B2559",
+                            margin: "10px 0",
+                        }}
+                    >
+                        Info Hôte
+                    </h3>
                     <div
                         style={{
                             display: "flex",
@@ -528,139 +598,133 @@ const Remboursement = () => {
                                 marginLeft: "10px",
                             }}
                         >
-                            <p>Hôte</p>
                             <h3
                                 style={{
                                     color: "#1B2559",
                                 }}
                             >
-                                {selectItem && selectItem.host.firstname}{" "}
-                                {selectItem && selectItem.host.lastname}
+                                {selectItem &&
+                                    selectItem?.booking?.residence?.host
+                                        ?.firstname}{" "}
+                                {selectItem &&
+                                    selectItem?.booking?.residence?.host
+                                        ?.lastname}
                             </h3>
+                            <p>
+                                {selectItem &&
+                                    selectItem?.booking?.residence?.host.email}
+                            </p>
+                            <p>
+                                {selectItem &&
+                                    selectItem?.booking?.residence?.host.contact}
+                            </p>
                         </div>
                     </div>
                     <Divider />
-                    <div orientation="vertical">
-                        <h2>Comodités</h2>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                gap: "5px",
-                                marginTop: "10px",
-                            }}
-                        >
-                            <Space className="comodite">
-                                <img src={Icon.clim} /> Climatisation
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.tv} /> Télévision
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.wash} /> Lave linge
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.wifi} /> Wifi
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.refri} /> Réfrigérateur
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.fan} /> Ventilateur
-                            </Space>
-                        </div>
-                    </div>
-                    <Divider />
-                    <h2
+                    <h3
                         style={{
                             color: "#1B2559",
+                            margin: "10px 0",
                         }}
                     >
-                        Aperçu
-                    </h2>
+                        Info Client
+                    </h3>
                     <div
                         style={{
                             display: "flex",
 
-                            gap: "5px",
-                            marginTop: "10px",
-                            justifyContent: "space-between",
+                            alignItems: "center",
                         }}
+                        className="user"
                     >
+                        <Avatar size={64} />
                         <div
                             style={{
                                 display: "flex",
                                 flexDirection: "column",
-                                gap: "5px",
+                                marginLeft: "10px",
                             }}
-                            className="left"
                         >
-                            <div style={subtitleSryle} className="subti">
-                                <img src={Icon.check} alt="" />
-                                <p>Règlement interieur</p>
-                            </div>
-                            <span>Animaux autorisé </span>
-                            <span> Interdiction de fumer</span>
+                            <h3>
+                                {selectItem &&
+                                    selectItem?.booking?.user?.firstname}{" "}
+                                {selectItem &&
+                                    selectItem?.booking?.user?.lastname}
+                            </h3>
+                            <p>
+                                {selectItem && selectItem?.booking?.user?.email}
+                            </p>
+                            <p>
+                                {selectItem &&
+                                    selectItem?.booking?.user?.contact}
+                            </p>
                         </div>
-                        <div
+                    </div>
+                    <Divider />
+                    <div style={spaceStyle}>
+                        <h3
                             style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "5px",
+                                color: "#1B2559",
                             }}
-                            className="rigth"
                         >
-                            <div style={subtitleSryle} className="subti">
-                                <img src={Icon.check} alt="" />
-                                <p>Type d’activités sociales</p>
+                            Montant du remboursement
+                        </h3>
+                        <h3 style={{ color: "#A273FF" }}>
+                            {selectItem?.refundedAmount} fcfa
+                        </h3>
+                    </div>
+                    <Divider />
+                    <div style={spaceStyle}>
+                        <h3
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            Date de la demande
+                        </h3>
+                        <h3>{FormatDate(selectItem?.createdAt)}</h3>
+                    </div>
+                    <Divider />
+                    <div style={spaceStyle}>
+                        <h3
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            Statut de la demande
+                        </h3>
+                        <Tag style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "3px",
+                            justifyContent: "center",
+                            fontSize: "12px",
+                            height: "18px",
+                            padding: " 10px",
+
+                        }} color={renderColor(selectItem?.status)}>
+                            {selectItem?.status}
+                        </Tag>
+                    </div>
+                    <Divider />
+                    {selectItem && (
+                        <>
+                            <div>
+                                <h3
+                                    style={{
+                                        color: "#1B2559",
+                                    }}
+                                >
+                                    Motif de la demande
+                                </h3>
+                                <h3> {selectItem?.requestReason} </h3>
                             </div>
-                            <span>Baptêmes</span>
-                            <span>Mariages</span>
-                            <span>Anniversaires</span>
-                        </div>
-                    </div>
+                        </>
+                    )}
+
                     <Divider />
-                    <h2
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        Grille de remboursement
-                    </h2>
-                    <div>
-                        <ul>
-                            <li style={listStyle}>
-                                Annulation entre 48h et 1 semaine
-                            </li>
-                            <span>
-                                Montant à rembourser : 25% du montant total
-                            </span>
-                            <li style={listStyle}>
-                                Annulation entre 1 semaine 1 mois
-                            </li>
-                            <span>
-                                Montant à rembourser : 25% du montant total
-                            </span>
-                            <li style={listStyle}>
-                                Annulation entre 1 mois et 3 mois
-                            </li>
-                            <span>
-                                Montant à rembourser : 25% du montant total
-                            </span>
-                        </ul>
-                    </div>
-                    <Divider />
-                    <Map location={location} />
                 </Drawer>
-                <FilterModal
-                    showModal={showModal}
-                    setShowModal={setShowModal}
-                    setFilterValue={setFilterValue}
-                    min={filterValue.minPrice}
-                    max={filterValue.maxPrice}
-                    filterValue={filterValue}
-                    onConfirme={filtResidence}
-                />
+
                 <DeletModal
                     showModal={showModal}
                     setShowModal={setShowModal}
@@ -674,21 +738,7 @@ const Remboursement = () => {
                     reason={reason}
                     setReason={setReason}
                 />
-                <ConfrimeModal
-                    showModal={showModal}
-                    setShowModal={setShowModal}
-                    setFilterValue={setFilterValue}
-                    loading={showModal.loading}
-                    onConfirme={() => {
-                        updateResidences(
-                            selectItem.id,
-                            "accepted",
-                            reason.acceptReason
-                        );
-                    }}
-                    reason={reason}
-                    setReason={setReason}
-                />
+
                 <RejectModal
                     showModal={showModal}
                     setShowModal={setShowModal}
@@ -706,7 +756,7 @@ const Remboursement = () => {
                 />
                 <DataTable
                     data={residence?.filter((item) => {
-                        return item?.name
+                        return item?.booking?.residence?.name
                             ?.toLowerCase()
                             .includes(filtertext?.toLowerCase());
                     })}
@@ -879,7 +929,7 @@ const DeletModal = ({
                             }}
                             type="primary"
                         >
-                            Garder
+                            Annuler
                         </Button>
                         <Button
                             style={{
@@ -892,7 +942,7 @@ const DeletModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Supprimer
+                            Confirmer
                         </Button>
                     </div>
                 </>
@@ -900,8 +950,7 @@ const DeletModal = ({
             open={showModal.deletModal}
         >
             <div className="top">
-                <h3>Confirmer la suppression</h3>
-                <span>Voulez vous vraiment supprimer ces données ?</span>
+                <h3>Pourquoi est ce que vous refusez le paiement?</h3>
                 <Input.TextArea
                     value={reason.deletReason}
                     onChange={(e) => {

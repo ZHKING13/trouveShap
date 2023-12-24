@@ -1,5 +1,5 @@
-import React from "react";
-import { Space, Table, Tag } from "antd";
+import React,{useState} from "react";
+import { Space, Table, Tag,Spin } from "antd";
 import { DATA2 } from "../data";
 import {
     CheckCircleOutlined,
@@ -14,11 +14,15 @@ export const renderIcon = (status) => {
             return <CheckCircleOutlined color="#fff" />;
         case "Acceptée":
             return <CheckCircleOutlined color="#fff" />;
+        case "Activé":
+            return <CheckCircleOutlined color="#fff" />;
         case "Terminée":
             return <CheckCircleOutlined color="#fff" />;
         case "Confirmée":
             return <CheckCircleOutlined color="#fff" />;
         case "Remboursée":
+            return <CheckCircleOutlined color="#fff" />;
+        case "Payée":
             return <CheckCircleOutlined color="#fff" />;
         case "Rejeté":
             return <CloseCircleOutlined color="#fff" />;
@@ -47,6 +51,8 @@ export const renderColor = (status) => {
     switch (status) {
         case "Validé":
             return "#22C55E";
+        case "Activé":
+            return "#22C55E";
         case "Acceptée":
             return "#22C55E";
         case "Confirmée":
@@ -67,6 +73,8 @@ export const renderColor = (status) => {
             return "#F59F0B";
         case "Remboursée":
             return "#A273FF";
+        case "Payée":
+            return "#A273FF";
         default:
             return null;
     }
@@ -78,10 +86,12 @@ export function FormatDate(dateStr) {
 }
 
 
-const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,onConfirm,onCancel,onHide }) => {
+const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,onConfirm,onCancel,onHide,spin,onDelet }) => {
     const handleRowClick = (record) => {
         onclick && onclick(record);
     };
+        const [selectItem,setSelectItem]=useState(null)
+
     const columns = [
         {
             title: "Résidences",
@@ -187,12 +197,26 @@ const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,o
             key: "action",
             render: (_, record) => {
                 return record.status == "Désactivé" ? (
-                    <img
-                        onClick={() => onHide(record.id, "restored")}
-                        src={Icon.eye}
-                    />
-                ) : record.status == "Validé" ? (
-                    <img onClick={() => onHide(record.id)} src={Icon.eyeOf} />
+                    <Spin spinning={selectItem?.id == record.id ? spin : null}>
+                        <img
+                            onClick={() => {
+                                setSelectItem(record);
+                                onHide(record.id, "restored");
+                            }}
+                            src={Icon.eye}
+                        />
+                    </Spin>
+                ) : record.status == "Activé" ? (
+                    <Spin spinning={selectItem?.id == record.id ? spin : null}>
+                        {" "}
+                        <img
+                                onClick={() => {
+                                    setSelectItem(record);
+                                    onDelet(record)
+                                }}
+                            src={Icon.eyeOf}
+                        />
+                    </Spin>
                 ) : record.status == "En Attente" ? (
                     <Space>
                         <img
@@ -203,11 +227,7 @@ const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,o
                         />
                         <img
                             onClick={() => {
-                                setSelectItem(record);
-                                setShowModal({
-                                    ...showModal,
-                                    rejectModal: true,
-                                });
+                                onCancel(record);
                             }}
                             src={Icon.cancel}
                         />

@@ -8,37 +8,10 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FilterBoxe from "../components/FilterBoxe";
 import { filterNullUndefinedValues } from "./Reservation";
+import exportFromJSON from "export-from-json";
 const { RangePicker } = DatePicker;
-const columns = [
-    {
-        title: "Adresse email",
-        dataIndex: "nom",
-        key: "nom",
-        render: (text, record) => (
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                }}
-            >
-                <div>
-                    <p>{text}</p>
-                    <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.email}
-                    </p>
-                </div>
-            </div>
-        ),
-    },
+import * as XLSX from "xlsx";
 
-    {
-        title: "Date d'ajout",
-        key: "date",
-        dataIndex: "date",
-        render: (text) => <span>{text}</span>,
-    },
-];
 const NewsLetter = () => {
     const [loading, setLoading] = useOutletContext();
     const [newsletter, setNewsletter] = useState([]);
@@ -47,10 +20,10 @@ const NewsLetter = () => {
         fromDate: null,
         toDate: null,
     });
-     const [pagination, setPagination] = useState({
-         page: 1,
-         total: 7,
-     });
+    const [pagination, setPagination] = useState({
+        page: 1,
+        total: 7,
+    });
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
     const openNotificationWithIcon = (type, title, message) => {
@@ -58,6 +31,10 @@ const NewsLetter = () => {
             message: title,
             description: message,
         });
+    };
+
+    const exportToCSV = (data, fileName) => {
+        exportFromJSON({ data, fileName, exportType: "csv" });
     };
     const columns = [
         {
@@ -96,16 +73,14 @@ const NewsLetter = () => {
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
     };
-     const filtreByDate = (range) => {
-         console.log(range);
-         setDateRange(range);
-         console.log("dateranded", dateRange);
-         fetchNewsletter();
-     };
+    const filtreByDate = () => {
+        console.log("dateranded", dateRange);
+        fetchNewsletter();
+    };
     const fetchNewsletter = async () => {
         setLoading(true);
         const filteredObject = filterNullUndefinedValues(params);
-console.log(filteredObject)
+        console.log(filteredObject);
         const res = await getNewsletter(filteredObject, headers);
         console.log(res);
 
@@ -123,8 +98,9 @@ console.log(filteredObject)
         }
         setNewsletter(res.data);
         setPagination({
-            ...pagination,total: res.data.length
-        })
+            ...pagination,
+            total: res.data.length,
+        });
         setLoading(false);
     };
     useEffect(() => {
@@ -140,18 +116,6 @@ console.log(filteredObject)
                     children={
                         <Space>
                             <Button
-                                icon={<DownloadOutlined />}
-                                style={{
-                                    backgroundColor: "#A273FF",
-                                    color: "#fff",
-                                    border: "none",
-                                    borderRadius: "100px",
-                                    padding: "4px 8px",
-                                }}
-                            >
-                                Importer
-                            </Button>
-                            <Button
                                 type="primary"
                                 icon={<UploadOutlined />}
                                 style={{
@@ -161,6 +125,12 @@ console.log(filteredObject)
                                     borderRadius: "100px",
                                     padding: "4px 8px",
                                 }}
+                                onClick={() => {
+                                    exportToCSV(
+                                        newsletter,
+                                        `newsLetter_page${pagination.page}`
+                                    );
+                                }}
                             >
                                 Exporter
                             </Button>
@@ -168,6 +138,9 @@ console.log(filteredObject)
                                 handleSearch={setFilterText}
                                 filtertext={filtertext}
                                 selectRange={filtreByDate}
+                                placeHolder={"Rechercher par email"}
+                                dateRange={dateRange}
+                                setDateRange={setDateRange}
                             />
                         </Space>
                     }

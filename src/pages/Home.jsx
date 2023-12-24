@@ -34,6 +34,7 @@ const Home = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useOutletContext();
     const [residence, setResidence] = useState([]);
+    const [spin,setSpin]=useState(false)
     const [stats, setStats] = useState({
         getVisits: 0,
         getResidence: 0,
@@ -75,7 +76,47 @@ const Home = () => {
         });
     };
     const onHide = async(id,status) => {
-        
+        setSpin(true)
+        const data = {
+            status
+        }
+        const res = await updateResidence(id, data, headers);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.data.message
+            );
+            if (res.status == 400) {
+                return;
+            }
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+       
+        setResidence((prev) => {
+            return prev.map((item) => {
+                if (item.id == id) {
+                    item.status = res.data.status
+                }
+                return item;
+            });
+        });
+                setSpin(false)
+
+        console.log(res);
+        openNotificationWithIcon(
+            "success",
+            "SUCCES",
+            "la résidence a été" + " " + res.data.status
+        );
+        console.log(id);
+    }
+    const onDelet = async (id, status) => {
+        setSpin(true)
         const data = {
             status
         }
@@ -98,16 +139,18 @@ const Home = () => {
         setResidence((prev) => {
             return prev.map((item) => {
                 if (item.id == id) {
-                    item.status = "Validé";
+                    item.status = res.data.status
                 }
                 return item;
             });
         });
+                setSpin(false)
+
         console.log(res);
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été" + " " + status
+            "la résidence a été" + " " + res.data.status
         );
         console.log(id);
     }
@@ -156,7 +199,7 @@ const Home = () => {
         setResidence((prev) => {
             return prev.map((item) => {
                 if (item.id == id) {
-                    item.status = status == "restored" ? "Validé" : "Désactivé";
+                    item.status = res.data.status;
                 }
                 return item;
             });
@@ -165,9 +208,7 @@ const Home = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été" + " " + status == "accepted"
-                ? "Validé"
-                : "Rejeté"
+            "la résidence a été" + " " + res.data.status
         );
 
         setShowModal({ ...showModal, addModal: false, rejectModal: false });
@@ -337,6 +378,7 @@ const Home = () => {
                     onCancel={onCancel}
                     data={residence}
                     onHide={onHide}
+                    spin={spin}
                 />
             </main>
         </>

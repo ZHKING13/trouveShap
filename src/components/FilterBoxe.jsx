@@ -17,6 +17,9 @@ const FilterBoxe = ({
     filtertext,
     children,
     onClick,
+    placeHolder,
+    setDateRange,
+    dateRange
 }) => {
     const [startDate, setStartDate] = useState();
     const [enddate, setEndDate] = useState();
@@ -28,10 +31,12 @@ const FilterBoxe = ({
         if (value[1] == null) {
             return;
         }
-        selectRange({
+        
+        setDateRange({
             fromDate: convertToISO(value[0]),
             toDate: convertToISO(value[1]),
         });
+        selectRange()
     };
     return (
         <div
@@ -49,7 +54,7 @@ const FilterBoxe = ({
         >
             <input
                 type="text"
-                placeholder="Chercher une réservation"
+                placeholder={placeHolder}
                 value={filtertext}
                 onChange={(e) => {
                     handleSearch(e.target.value);
@@ -64,7 +69,7 @@ const FilterBoxe = ({
                     minHeight: "30px",
                 }}
             />
-            <div onClick={onClick ? onClick:null} className="rangeContainer">
+            <div onClick={onClick ? onClick : null} className="rangeContainer">
                 {children ? (
                     children
                 ) : (
