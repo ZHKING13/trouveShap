@@ -657,7 +657,7 @@ export const ImgModal = ({ tab, open, setOpen }) => {
                                 resizeMode: "cover",
                                 width: "100%",
                             }}
-                            src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
+                            src={`${API_URL}/assets/uploads/residences/${item.filename}`}
                         />
                     );
                 })}
