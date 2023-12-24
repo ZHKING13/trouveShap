@@ -26,11 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Map from "../components/Map";
 import { deleteResidence, getResidence, updateResidence } from "../feature/API";
-import {
-    CheckCircleOutlined,
-    CloseCircleOutlined,
-    ExclamationCircleOutlined,
-} from "@ant-design/icons";
+
 import { useNavigate, useOutletContext } from "react-router-dom";
 import FilterBoxe from "../components/FilterBoxe";
 import { Icon } from "../constant/Icon";
@@ -44,14 +40,12 @@ const contentStyle = {
     background: "#364d79",
 };
 const Residence = () => {
-    const [open, setOpen] = useState(false);
     const [loading, setLoading] = useOutletContext();
     const [filtertext, setFilterText] = useState("");
     const [residence, setResidence] = useState([]);
     const [location, setLocation] = useState(null);
     const [selectItem, setSelectItem] = useState(null);
     const [spin, setSpin] = useState(false);
-    const [modalAray, setModalAray] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 7 });
     const [reason, setReason] = useState({
         deletReason: "",
@@ -70,6 +64,8 @@ const Residence = () => {
         maxPrice: 55000,
         numPeople: "",
     });
+    const [open, setOpen] = useState(false);
+    const [modalAray, setModalAray] = useState([]);
     const [imageModal, setImageModal] = useState(false);
     const [api, contextHolder] = notification.useNotification();
     const navigate = useNavigate();
@@ -79,161 +75,7 @@ const Residence = () => {
             description: message,
         });
     };
-    const columns = [
-        {
-            title: "Résidences",
-            dataIndex: "name",
-            key: "name",
-            render: (text, record) => (
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                    }}
-                >
-                    <img
-                        onClick={() => {
-                            showDrawer(record);
-                            setModalAray(record.medias);
-                        }}
-                        style={{
-                            width: "50px",
-                            height: "50px",
-                            borderRadius: "10%",
-                        }}
-                        src={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
-                        alt=""
-                    />
-                    <div>
-                        <p>{text}</p>
-                        <p style={{ fontSize: 12, color: "#888" }}>
-                            {record.address}
-                        </p>
-                    </div>
-                </div>
-            ),
-        },
-        {
-            title: "Hôte",
-            dataIndex: "owner",
-            key: "owner",
-            render: (text, record) => (
-                <div>
-                    <p>
-                        {record.host.firstname} {record.host.lastname}
-                    </p>
-                    <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.email}
-                    </p>
-                </div>
-            ),
-            responsive: ["md"],
-        },
-        {
-            title: "Document hotes",
-            key: "docs",
-            dataIndex: "docs",
-            render: (text, record) =>
-                record?.host?.identityDoc == null ? (
-                    <span>non fournis</span>
-                ) : (
-                    <a
-                        style={{
-                            color: "#64748B",
-                            textDecoration: "none",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "flex-start",
-                        }}
-                        href={`https://api.trouvechap.com/assets/uploads/docs/${record.host.identityDoc}`}
-                        download={`doc_${record?.host?.firstname}.png`}
-                        target="_blank"
-                    >
-                        <img src={Icon.doc} /> doc_{record?.host?.firstname}.png
-                    </a>
-                ),
-            responsive: ["md"],
-        },
-        {
-            title: "Prix / nuits",
-            dataIndex: "price",
-            key: "price",
-            render: (text) => <span>{text} fcfa </span>,
-            responsive: ["md"],
-        },
 
-        {
-            title: "Date d'ajout",
-            key: "createdAt",
-            dataIndex: "createdAt",
-            render: (text) => <span>{FormatDate(text)}</span>,
-            responsive: ["lg"],
-        },
-        {
-            title: "Status",
-            key: "status",
-            render: (_, record) => (
-                <Tag
-                    icon={renderIcon(record.status)}
-                    color={renderColor(record.status)}
-                    key={record.status}
-                >
-                    {record.status}
-                </Tag>
-            ),
-            responsive: ["md"],
-        },
-        {
-            title: "Action",
-            key: "action",
-            render: (_, record) => {
-                return record.status == "Désactivé" ? (
-                    <img
-                        onClick={() =>
-                            setResidence((prev) => {
-                                anableResidence(record.id);
-                            })
-                        }
-                        src={Icon.eye}
-                    />
-                ) : record.status == "Validé" ? (
-                    <img
-                        onClick={() =>
-                            setResidence((prev) => {
-                                updateResidence(record.id, "ok", "desabled");
-                            })
-                        }
-                        src={Icon.eyeOf}
-                    />
-                ) : record.status == "En Attente" ? (
-                    <Space>
-                        <img
-                            onClick={() => {
-                                setSelectItem(record);
-                                setShowModal({
-                                    ...showModal,
-                                    addModal: true,
-                                });
-                            }}
-                            src={Icon.valid}
-                        />
-                        <img
-                            onClick={() => {
-                                setSelectItem(record);
-                                setShowModal({
-                                    ...showModal,
-                                    rejectModal: true,
-                                });
-                            }}
-                            src={Icon.cancel}
-                        />
-                    </Space>
-                ) : null;
-            },
-            responsive: ["lg"],
-        },
-    ];
     const onCancel = (data) => {
         setSelectItem(data);
         setShowModal({
@@ -343,7 +185,7 @@ const Residence = () => {
         });
     };
     const showDrawer = async (data) => {
-         setModalAray(data.medias);
+        setModalAray(data.medias);
         setSelectItem(data);
 
         let loc = {
@@ -424,8 +266,7 @@ const Residence = () => {
                     item.status = "Désactivé";
                 }
                 return item;
-            }
-            );
+            });
         });
         setShowModal({ ...showModal, deletModal: false });
         setReason({
@@ -922,7 +763,7 @@ const FilterModal = ({
         </Modal>
     );
 };
-const DeletModal = ({
+export const DeletModal = ({
     setShowModal,
     showModal,
     onConfirme,

@@ -297,7 +297,7 @@ const listStyle = {
     fontWeight: "bold",
 };
 
-const DrawerComponent = ({
+export const DrawerComponent = ({
     selectItem,
     onClose,
     showDrawer,
