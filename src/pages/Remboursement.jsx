@@ -596,9 +596,10 @@ const Remboursement = () => {
                         }}
                         className="user"
                     >
-                        <Avatar src={
-                            selectItem?.booking?.residence?.host?.avatar
-                        } size={64} />
+                        <Avatar
+                            src={`${API_URL}/assets/uploads/avatars/${selectItem?.booking?.residence?.host?.avatar}`}
+                            size={64}
+                        />
                         <div
                             style={{
                                 display: "flex",
@@ -646,9 +647,14 @@ const Remboursement = () => {
                         }}
                         className="user"
                     >
-                        <Avatar src={
-                            selectItem?.booking?.user?.avatar
-                        } size={64} />
+                        <Avatar
+                            src={
+                                selectItem &&
+                                selectItem?.booking?.user?.avatar &&
+                                `${API_URL}/assets/uploads/avatars/${selectItem?.booking?.user?.avatar}`
+                           }
+                            size={64}
+                        />
                         <div
                             style={{
                                 display: "flex",

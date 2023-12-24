@@ -400,9 +400,13 @@ export const DrawerComponent = ({
                 }}
                 className="user"
             >
-                <Avatar src={
-                    selectItem && selectItem?.residence?.host?.avatar
-                } size={64} />
+                <Avatar
+                    src={
+                        selectItem &&
+                        `${API_URL}/assets/uploads/avatars/${selectItem?.residence?.host?.avatar}`
+                    }
+                    size={64}
+                />
                 <div
                     style={{
                         display: "flex",
@@ -435,9 +439,10 @@ export const DrawerComponent = ({
                 }}
                 className="user"
             >
-                <Avatar src={
-                    selectItem && selectItem?.user?.avatar
-                } size={64} />
+                <Avatar
+                    src={`${API_URL}/assets/uploads/avatars/${selectItem?.user?.avatar}`}
+                    size={64}
+                />
                 <div
                     style={{
                         display: "flex",

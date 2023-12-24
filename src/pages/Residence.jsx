@@ -445,7 +445,7 @@ const Residence = () => {
                         className="user"
                     >
                         <Avatar
-                            src={selectItem && selectItem.host.avatar}
+                            src={`${API_URL}/assets/uploads/avatars/${selectItem?.host?.avatar}`}
                             size={64}
                         />
                         <div
@@ -463,14 +463,8 @@ const Residence = () => {
                                 {selectItem && selectItem.host.firstname}{" "}
                                 {selectItem && selectItem.host.lastname}
                             </h3>
-                            <p>
-                                {selectItem &&
-                                    selectItem?.host?.email}
-                            </p>
-                            <p>
-                                {selectItem &&
-                                    selectItem?.host?.contact}
-                            </p>
+                            <p>{selectItem && selectItem?.host?.email}</p>
+                            <p>{selectItem && selectItem?.host?.contact}</p>
                         </div>
                     </div>
                     <Divider />
