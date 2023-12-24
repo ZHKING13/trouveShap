@@ -479,12 +479,12 @@ const Remboursement = () => {
         <main>
             <>
                 <Header
-                    title={"RESIDENCES"}
-                    path={"Résidences"}
+                    title={"REMBOURSEMENTS"}
+                    path={"Remboursement"}
                     children={
                         <FilterBoxe
-                            handleSearch={setFilterText}
                             setDateRange={setDateRange}
+                            handleSearch={setFilterText}
                             dateRange={dateRange}
                             selectRange={filtResidence}
                             filtertext={filtertext}
@@ -499,7 +499,12 @@ const Remboursement = () => {
                     setOpen={setImageModal}
                 /> */}
 
-                <Drawer destroyOnClose={true} placement="right" onClose={onClose} open={open}>
+                <Drawer
+                    destroyOnClose={true}
+                    placement="right"
+                    onClose={onClose}
+                    open={open}
+                >
                     <div
                         style={{
                             position: "relative",
@@ -616,7 +621,8 @@ const Remboursement = () => {
                             </p>
                             <p>
                                 {selectItem &&
-                                    selectItem?.booking?.residence?.host.contact}
+                                    selectItem?.booking?.residence?.host
+                                        .contact}
                             </p>
                         </div>
                     </div>
@@ -693,16 +699,18 @@ const Remboursement = () => {
                         >
                             Statut de la demande
                         </h3>
-                        <Tag style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "3px",
-                            justifyContent: "center",
-                            fontSize: "12px",
-                            height: "18px",
-                            padding: " 10px",
-
-                        }} color={renderColor(selectItem?.status)}>
+                        <Tag
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "3px",
+                                justifyContent: "center",
+                                fontSize: "12px",
+                                height: "18px",
+                                padding: " 10px",
+                            }}
+                            color={renderColor(selectItem?.status)}
+                        >
                             {selectItem?.status}
                         </Tag>
                     </div>
@@ -717,7 +725,7 @@ const Remboursement = () => {
                                 >
                                     Motif de la demande
                                 </h3>
-                                <h3> {selectItem?.requestReason} </h3>
+                                <h4> {selectItem?.requestReason} </h4>
                             </div>
                         </>
                     )}

@@ -86,11 +86,25 @@ export function FormatDate(dateStr) {
 }
 
 
-const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,onConfirm,onCancel,onHide,spin,onDelet }) => {
+const DataTable = ({
+    column,
+    data,
+    size,
+    onclick,
+    onChange,
+    pagination,
+    loading,
+    onConfirm,
+    onCancel,
+    onHide,
+    spin,
+    onDelet,
+    showDrawer,
+}) => {
     const handleRowClick = (record) => {
         onclick && onclick(record);
     };
-        const [selectItem,setSelectItem]=useState(null)
+    const [selectItem, setSelectItem] = useState(null);
 
     const columns = [
         {
@@ -113,6 +127,7 @@ const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,o
                         }}
                         src={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
                         alt=""
+                        onClick={() => showDrawer ? showDrawer(record) : null}
                     />
                     <div>
                         <p>{text}</p>
@@ -210,10 +225,10 @@ const DataTable = ({ column, data, size, onclick, onChange, pagination,loading,o
                     <Spin spinning={selectItem?.id == record.id ? spin : null}>
                         {" "}
                         <img
-                                onClick={() => {
-                                    setSelectItem(record);
-                                    onDelet(record)
-                                }}
+                            onClick={() => {
+                                setSelectItem(record);
+                                onDelet(record);
+                            }}
                             src={Icon.eyeOf}
                         />
                     </Spin>

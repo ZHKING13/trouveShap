@@ -343,7 +343,9 @@ const Residence = () => {
         });
     };
     const showDrawer = async (data) => {
+         setModalAray(data.medias);
         setSelectItem(data);
+
         let loc = {
             address: data.address,
             lat: parseInt(data.lat),
@@ -438,7 +440,7 @@ const Residence = () => {
             filterModal: false,
         });
         const filteredObject = Object.fromEntries(
-            Object.entries(filterValue).filter(
+            Object.entries(params).filter(
                 ([key, value]) =>
                     value !== null &&
                     value !== undefined &&
@@ -742,7 +744,7 @@ const Residence = () => {
                     max={filterValue.max}
                     loading={showModal.loading}
                     onConfirme={() => {
-                        console.log(selectItem)
+                        console.log(selectItem);
                         deletResidence(selectItem.id);
                     }}
                     reason={reason}
@@ -789,14 +791,14 @@ const Residence = () => {
                         console.log(page);
                         setPagination({ ...pagination, current: page.current });
                     }}
-                    // column={columns}
                     onHide={onHide}
                     onConfirm={onConfirme}
                     onCancel={onCancel}
-                    onDelet={(data) =>
-                        {setSelectItem(data)
-                        setShowModal({ ...showModal, deletModal: true })}
-                    }
+                    onDelet={(data) => {
+                        setSelectItem(data);
+                        setShowModal({ ...showModal, deletModal: true });
+                    }}
+                    showDrawer={showDrawer}
                     pagination={{
                         total: pagination.total,
                         showSizeChanger: false,
