@@ -38,6 +38,7 @@ export const renderIcon = (status) => {
             return null;
     }
 };
+import {API_URL} from "../feature/API"
 //  waiting = 'En Attente',
 //     accepted = 'Acceptée',
 //     planified = 'Confirmée',
@@ -125,9 +126,9 @@ const DataTable = ({
                             height: "50px",
                             borderRadius: "10%",
                         }}
-                        src={`https://api.trouvechap.com/assets/uploads/residences/${record.medias[0].filename}`}
+                        src={`${API_URL}/assets/uploads/residences/${record.medias[0].filename}`}
                         alt=""
-                        onClick={() => showDrawer ? showDrawer(record) : null}
+                        onClick={() => (showDrawer ? showDrawer(record) : null)}
                     />
                     <div>
                         <p>{text}</p>
@@ -177,7 +178,7 @@ const DataTable = ({
                             alignItems: "center",
                             justifyContent: "flex-start",
                         }}
-                        href={`https://api.trouvechap.com/assets/uploads/docs/${record.host.identityDoc}`}
+                        href={`${API_URL}/assets/uploads/docs/${record.host.identityDoc}`}
                         download={`doc_${record?.host?.firstname}.png`}
                         target="_blank"
                     >

@@ -106,7 +106,7 @@ const Home = () => {
         "refresh-token": localStorage.getItem("refreshToken"),
     };
     const params = {
-        page: 4,
+        page: 1,
         limit: 20,
     };
     const onConfirme = (data) => {

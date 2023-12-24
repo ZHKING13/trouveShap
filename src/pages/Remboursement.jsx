@@ -34,6 +34,7 @@ import {
     AccepteReimbursment,
     RejectReimbursment,
     PayReimbursment,
+    API_URL,
 } from "../feature/API";
 import {
     CheckCircleOutlined,
@@ -120,7 +121,7 @@ const Remboursement = () => {
                             height: "50px",
                             borderRadius: "10%",
                         }}
-                        src={`https://api.trouvechap.com/assets/uploads/residences/${record?.booking?.residence?.medias[0]?.filename}`}
+                        src={`${API_URL}/assets/uploads/residences/${record?.booking?.residence?.medias[0]?.filename}`}
                         alt=""
                     /> */}
                     <div>
@@ -524,7 +525,7 @@ const Remboursement = () => {
                                                     resizeMode: "cover",
                                                 }}
                                                 width={320}
-                                                src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
+                                                src={`${API_URL}/assets/uploads/residences/${item.filename}`}
                                                 alt=""
                                                 className="carouselImg"
                                             />

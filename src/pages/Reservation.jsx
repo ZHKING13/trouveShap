@@ -18,7 +18,7 @@ import { PictureOutlined } from "@ant-design/icons";
 
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { getReservation } from "../feature/API";
+import { API_URL, getReservation } from "../feature/API";
 import FilterBoxe from "../components/FilterBoxe";
 import Map from "../components/Map";
 import { Icon } from "../constant/Icon";
@@ -63,8 +63,8 @@ const Reservation = () => {
                             height: "50px",
                             borderRadius: "10%",
                         }}
-                        src={`https://api.trouvechap.com/assets/uploads/residences/${record?.residence?.medias[0].filename}`}
-                        alt=""
+                        src={`${API_URL}/assets/uploads/residences/${record?.residence?.medias[0].filename}`}
+                        alt="residence image"
                     />
                     <div>
                         <p> {record.residence.name}</p>
@@ -333,7 +333,7 @@ export const DrawerComponent = ({
                                         resizeMode: "cover",
                                     }}
                                     width={320}
-                                    src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
+                                    src={`${API_URL}/assets/uploads/residences/${item.filename}`}
                                     alt=""
                                     className="carouselImg"
                                 />

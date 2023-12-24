@@ -25,7 +25,7 @@ import { PictureOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Map from "../components/Map";
-import { deleteResidence, getResidence, updateResidence } from "../feature/API";
+import { API_URL, deleteResidence, getResidence, updateResidence } from "../feature/API";
 
 import { useNavigate, useOutletContext } from "react-router-dom";
 import FilterBoxe from "../components/FilterBoxe";
@@ -381,7 +381,7 @@ const Residence = () => {
                                                 resizeMode: "cover",
                                             }}
                                             width={320}
-                                            src={`https://api.trouvechap.com/assets/uploads/residences/${item.filename}`}
+                                            src={`${API_URL}/assets/uploads/residences/${item.filename}`}
                                             alt=""
                                             className="carouselImg"
                                         />

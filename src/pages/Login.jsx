@@ -172,7 +172,7 @@ const Login = () => {
                             }}
                             onClick={handleSubmit}
                         >
-                            <span style={{ color: "#f1f1f1" }}>Conexion</span>
+                            <span style={{ color: "#f1f1f1" }}>Connexion</span>
                         </Button>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const API_URL = "https://preprodapi.trouvechap.com";
+export const API_URL = "https://tc-preprod.onrender.com";
 const privateService = axios.create({
     baseURL: API_URL,
 });
