@@ -192,6 +192,7 @@ const Reservation = () => {
     const filtreByDate = () => {
         console.log(dateRange);
         console.log("dateranded", dateRange);
+        console.log("params", params);
         fetchReservation();
     };
 

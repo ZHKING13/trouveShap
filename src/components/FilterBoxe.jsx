@@ -1,9 +1,7 @@
 // import { DatePicker } from "antd";
-import ColumnGroup from "antd/es/table/ColumnGroup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { DateRangePicker } from "rsuite";
 import { Icon } from "../constant/Icon";
 // const { RangePicker } = DatePicker;
 function convertToISO(dateString) {
@@ -19,25 +17,30 @@ const FilterBoxe = ({
     onClick,
     placeHolder,
     setDateRange,
-    dateRange
+    dateRange,
 }) => {
-    const [startDate, setStartDate] = useState();
-    const [enddate, setEndDate] = useState();
-    const [open, setOpen] = useState(false);
+   const [startDate, setStartDate] = useState(null);
+   const [endDate, setEndDate] = useState(null);
+
     const rangPicker = (value) => {
         console.log(value);
-        setStartDate(value[0]);
-        setEndDate(value[1]);
-        if (value[1] == null) {
+        
+        const [start, end] = value;
+        setStartDate(start);
+        setEndDate(end);
+
+        if (end == null) {
             return;
         }
-        
         setDateRange({
-            fromDate: convertToISO(value[0]),
-            toDate: convertToISO(value[1]),
+            ...dateRange,
+            fromDate: convertToISO(startDate),
+            toDate: endDate !== null ? convertToISO(endDate) : null,
         });
-        selectRange()
+        selectRange();
     };
+
+   
     return (
         <div
             style={{
@@ -77,7 +80,7 @@ const FilterBoxe = ({
                         onChange={rangPicker}
                         selectsRange={true}
                         startDate={startDate}
-                        endDate={enddate}
+                        endDate={endDate}
                         withPortal
                         placeholderText="trier par date"
                         dateFormat="yyy-MM-dd"
