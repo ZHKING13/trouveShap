@@ -428,6 +428,14 @@ const Residence = () => {
                         <p>Prix</p>
                     </div>
                     <Divider />
+                    <h3
+                        style={{
+                            color: "#1B2559",
+                            margin: "10px 0",
+                        }}
+                    >
+                        Info Hôte
+                    </h3>
                     <div
                         style={{
                             display: "flex",
@@ -436,7 +444,10 @@ const Residence = () => {
                         }}
                         className="user"
                     >
-                        <Avatar size={64} />
+                        <Avatar
+                            src={selectItem && selectItem.host.avatar}
+                            size={64}
+                        />
                         <div
                             style={{
                                 display: "flex",
@@ -444,7 +455,6 @@ const Residence = () => {
                                 marginLeft: "10px",
                             }}
                         >
-                            <p>Hôte</p>
                             <h3
                                 style={{
                                     color: "#1B2559",
@@ -453,6 +463,14 @@ const Residence = () => {
                                 {selectItem && selectItem.host.firstname}{" "}
                                 {selectItem && selectItem.host.lastname}
                             </h3>
+                            <p>
+                                {selectItem &&
+                                    selectItem?.host?.email}
+                            </p>
+                            <p>
+                                {selectItem &&
+                                    selectItem?.host?.contact}
+                            </p>
                         </div>
                     </div>
                     <Divider />

@@ -400,7 +400,9 @@ export const DrawerComponent = ({
                 }}
                 className="user"
             >
-                <Avatar size={64} />
+                <Avatar src={
+                    selectItem && selectItem?.residence?.host?.avatar
+                } size={64} />
                 <div
                     style={{
                         display: "flex",
@@ -433,7 +435,9 @@ export const DrawerComponent = ({
                 }}
                 className="user"
             >
-                <Avatar size={64} />
+                <Avatar src={
+                    selectItem && selectItem?.user?.avatar
+                } size={64} />
                 <div
                     style={{
                         display: "flex",

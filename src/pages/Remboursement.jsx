@@ -111,7 +111,7 @@ const Remboursement = () => {
                         setModalAray(record.booking?.residence?.medias);
                     }}
                 >
-                    {/* <img
+                    <img
                         onClick={() => {
                             showDrawer(record);
                             setModalAray(record.booking?.residence?.medias);
@@ -123,7 +123,7 @@ const Remboursement = () => {
                         }}
                         src={`${API_URL}/assets/uploads/residences/${record?.booking?.residence?.medias[0]?.filename}`}
                         alt=""
-                    /> */}
+                    />
                     <div>
                         <p>{text}</p>
                         <p style={{ fontSize: 12, color: "#888" }}>
@@ -596,7 +596,9 @@ const Remboursement = () => {
                         }}
                         className="user"
                     >
-                        <Avatar size={64} />
+                        <Avatar src={
+                            selectItem?.booking?.residence?.host?.avatar
+                        } size={64} />
                         <div
                             style={{
                                 display: "flex",
@@ -644,7 +646,9 @@ const Remboursement = () => {
                         }}
                         className="user"
                     >
-                        <Avatar size={64} />
+                        <Avatar src={
+                            selectItem?.booking?.user?.avatar
+                        } size={64} />
                         <div
                             style={{
                                 display: "flex",
