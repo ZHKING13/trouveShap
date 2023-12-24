@@ -42,7 +42,7 @@ import Map from "../components/Map";
 
 export function formatAmount(number) {
     if (number < 1000) {
-        return number.toString();
+        return number?.toString();
     } else if (number < 1000000) {
         return (number / 1000).toFixed(3).replace(/\.?0+$/, "") + "K";
     } else {
@@ -117,13 +117,13 @@ const Home = () => {
         });
     };
     const showDrawer = async (data) => {
-        setModalAray(data.medias);
+        setModalAray(data?.medias);
         setSelectItem(data);
 
         let loc = {
             address: data.address,
-            lat: parseInt(data.lat),
-            lng: parseInt(data.lng),
+            lat: parseInt(data?.lat),
+            lng: parseInt(data?.lng),
         };
         setLocation(loc);
         console.log(selectItem);
@@ -331,28 +331,28 @@ const Home = () => {
                 <div className="stats">
                     <Stats
                         title="Gains mensuel"
-                        subtitle={formatAmount(stats.getCompanyMoneyMonth)}
+                        subtitle={formatAmount(stats?.getCompanyMoneyMonth)}
                         children="XOF"
                         icon={note}
                     />
                     <Stats
                         title="Résidences totales"
-                        subtitle={stats.getResidence}
+                        subtitle={stats?.getResidence}
                         icon={build}
                     />
                     <Stats
                         title="Réservations totales"
-                        subtitle={stats.getBooking}
+                        subtitle={stats?.getBooking}
                         icon={check}
                     />
                     <Stats
                         title="Nombre de visiteurs"
-                        subtitle={stats.getVisits}
+                        subtitle={stats?.getVisits}
                         icon={user}
                     />
                     <Stats
                         title="Portefeuille"
-                        subtitle={formatAmount(stats.getCompanyMoney)}
+                        subtitle={formatAmount(stats?.getCompanyMoney)}
                         icon={wallet}
                         children="XOF"
                     />
