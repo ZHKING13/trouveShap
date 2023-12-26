@@ -170,7 +170,7 @@ const Residence = () => {
         setResidence((prev) => {
             return prev.map((item) => {
                 if (item.id == id) {
-                    item.status = status;
+                    item.status = res?.data?.status;
                 }
                 return item;
             });
@@ -179,7 +179,7 @@ const Residence = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été" + " " + status
+            "la résidence a été" + " " + res?.data?.status
         );
 
         setShowModal({ ...showModal, addModal: false, rejectModal: false });
@@ -195,8 +195,8 @@ const Residence = () => {
 
         let loc = {
             address: data.address,
-            lat: parseInt(data.lat),
-            lng: parseInt(data.lng),
+            lat: parseFloat(data.lat),
+            lng: parseFloat(data.lng),
         };
         setLocation(loc);
         console.log(selectItem);
@@ -358,11 +358,7 @@ const Residence = () => {
                     }
                 />
                 {contextHolder}
-                <ImgModal
-                    tab={modalAray}
-                    open={imageModal}
-                    setOpen={setImageModal}
-                />
+                
 
                 <Drawer
                     placement="right"
@@ -377,25 +373,38 @@ const Residence = () => {
                         className="top"
                     >
                         <Carousel autoplay>
-                            {selectItem &&
-                                selectItem.medias.map((item) => (
-                                    <div key={item.filename}>
-                                        <Image
-                                            style={{
-                                                height: "156px",
-                                                objectFit: "cover",
-                                                resizeMode: "cover",
-                                            }}
-                                            width={320}
-                                            src={`${API_URL}/assets/uploads/residences/${item.filename}`}
-                                            alt=""
-                                            className="carouselImg"
-                                        />
-                                    </div>
-                                ))}
+                            {selectItem && (
+                                <Image.PreviewGroup>
+                                    <Image
+                                        src={`${API_URL}/assets/uploads/residences/${selectItem?.medias[0]?.filename}`}
+                                        alt=""
+                                        width={352}
+                                    />
+                                    {selectItem.medias.map((item, index) => {
+                                        return index == 0 ? null : (
+                                            <div
+                                                style={{
+                                                    display: "none",
+                                                }}
+                                                key={index}
+                                            >
+                                                <Image
+                                                    style={{
+                                                        height: "160px",
+                                                        objectFit: "cover",
+                                                        display: "none",
+                                                    }}
+                                                    src={`${API_URL}/assets/uploads/residences/${item.filename}`}
+                                                    alt=""
+                                                    width={352}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </Image.PreviewGroup>
+                            )}
                         </Carousel>
                         <div
-                            onClick={() => setImageModal(true)}
                             style={{
                                 position: "absolute",
                                 bottom: "20px",
@@ -533,12 +542,9 @@ const Residence = () => {
                                 <img src={Icon.check} alt="" />
                                 <p>Règlement interieur</p>
                             </div>
-                            {
-                                selectItem?.rules?.map((item) => {
-                                    return <span>{item.rule?.title}</span>;
-                                })
-                            }
-                           
+                            {selectItem?.rules?.map((item) => {
+                                return <span>{item.rule?.title}</span>;
+                            })}
                         </div>
                         <div
                             style={{

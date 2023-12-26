@@ -39,6 +39,7 @@ const Map = ({ location }) => {
  
     useEffect(() => {
         setRerenderTrigger((prev) => prev + 1);
+        console.log("rerender",location);
     }, [location.lat, location.lng]);
     return (
         <div
@@ -54,14 +55,18 @@ const Map = ({ location }) => {
                 bootstrapURLKeys={{
                     key: "AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw",
                 }}
-                center={{
-                    lat: 5.30966,
-                    lng: -4.01266,
+                options={{
+                    disableDefaultUI: true,
+                    zoomControl: false,
+                    draggable: false,
+                    scrollwheel: false,
+
+
                 }}
+                defaultCenter={location}
                 defaultZoom={13}
             >
                 <CustomMarker lat={location.lat} lng={location.lng} />
-                
             </GoogleMapReact>
         </div>
     );

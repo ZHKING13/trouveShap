@@ -121,13 +121,13 @@ const Remboursement = () => {
                             height: "50px",
                             borderRadius: "10%",
                         }}
-                        src={`${API_URL}/assets/uploads/residences/${record?.booking?.residence?.medias[0]?.filename}`}
+                        src={record?.booking?.residence?.medias && `${API_URL}/assets/uploads/residences/${record?.booking?.residence?.medias[0]?.filename}`}
                         alt=""
                     />
                     <div>
                         <p>{text}</p>
                         <p style={{ fontSize: 12, color: "#888" }}>
-                            {record.booking?.residence?.address}
+                            {record?.booking?.residence?.address}
                         </p>
                     </div>
                 </div>
@@ -140,11 +140,11 @@ const Remboursement = () => {
             render: (text, record) => (
                 <div>
                     <p>
-                        {record.booking?.residence.host?.firstname}{" "}
-                        {record.booking?.residence.host?.lastname}
+                        {record?.booking?.residence?.host?.firstname}{" "}
+                        {record?.booking?.residence?.host?.lastname}
                     </p>
                     <p style={{ fontSize: 12, color: "#888" }}>
-                        {record?.booking.residence.host.email}
+                        {record?.booking?.residence?.host?.email}
                     </p>
                 </div>
             ),
@@ -156,9 +156,9 @@ const Remboursement = () => {
             dataIndex: "client",
             render: (text, record) => (
                 <div>
-                    <p>{record.booking?.user?.firstname}</p>
+                    <p>{record?.booking?.user?.firstname}</p>
                     <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.booking?.user?.email}
+                        {record?.booking?.user?.email}
                     </p>
                 </div>
             ),
@@ -169,7 +169,7 @@ const Remboursement = () => {
             dataIndex: "price",
             key: "price",
             render: (text, record) => (
-                <span>{record.refundedAmount} fcfa </span>
+                <span>{record?.refundedAmount} fcfa </span>
             ),
             responsive: ["md"],
         },
@@ -186,8 +186,8 @@ const Remboursement = () => {
             key: "status",
             render: (_, record) => (
                 <Tag
-                    icon={renderIcon(record.status)}
-                    color={renderColor(record.status)}
+                    icon={renderIcon(record?.status)}
+                    color={renderColor(record?.status)}
                     key={record.status}
                 >
                     {record.status}
@@ -202,7 +202,7 @@ const Remboursement = () => {
                 return record.status == "En Attente" ? (
                     <Popover
                         trigger="click"
-                        open={selectItem?.id == record.id ? pophover : null}
+                        open={selectItem?.id == record?.id ? pophover : null}
                         content={
                             <Spin
                                 spinning={
@@ -498,11 +498,11 @@ const Remboursement = () => {
                     }
                 />
                 {contextHolder}
-                {/* <ImgModal
+                <ImgModal
                     tab={modalAray}
                     open={imageModal}
                     setOpen={setImageModal}
-                /> */}
+                />
 
                 <Drawer
                     destroyOnClose={true}
@@ -517,25 +517,38 @@ const Remboursement = () => {
                         className="top"
                     >
                         <Carousel autoplay>
-                            {selectItem?.booking?.residence?.medias &&
-                                selectItem?.booking?.residence?.medias.map(
-                                    (item) => (
-                                        <div key={item.filename}>
-                                            <Image
-                                                style={{
-                                                    width: "100%",
-                                                    height: "156px",
-                                                    objectFit: "cover",
-                                                    resizeMode: "cover",
-                                                }}
-                                                width={320}
-                                                src={`${API_URL}/assets/uploads/residences/${item.filename}`}
-                                                alt=""
-                                                className="carouselImg"
-                                            />
-                                        </div>
-                                    )
-                                )}
+                            {selectItem?.booking?.residence?.medias && (
+                                <Image.PreviewGroup>
+                                    <Image
+                                        src={`${API_URL}/assets/uploads/residences/${selectItem?.booking?.residence?.medias[0]?.filename}`}
+                                        alt=""
+                                        width={352}
+                                    />
+                                    {selectItem.booking?.residence?.medias.map(
+                                        (item, index) => {
+                                            return index == 0 ? null : (
+                                                <div
+                                                    style={{
+                                                        display: "none",
+                                                    }}
+                                                    key={index}
+                                                >
+                                                    <Image
+                                                        style={{
+                                                            height: "300px",
+                                                            objectFit: "cover",
+                                                            display: "none",
+                                                        }}
+                                                        src={`${API_URL}/assets/uploads/residences/${item.filename}`}
+                                                        alt=""
+                                                        width={352}
+                                                    />
+                                                </div>
+                                            );
+                                        }
+                                    )}
+                                </Image.PreviewGroup>
+                            )}
                         </Carousel>
                         <div
                             onClick={() => setImageModal(true)}
@@ -656,7 +669,7 @@ const Remboursement = () => {
                                 selectItem &&
                                 selectItem?.booking?.user?.avatar &&
                                 `${API_URL}/assets/uploads/avatars/${selectItem?.booking?.user?.avatar}`
-                           }
+                            }
                             size={64}
                         />
                         <div

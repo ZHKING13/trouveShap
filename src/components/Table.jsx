@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Space, Table, Tag } from "antd";
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
     ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import { renderColor, renderIcon } from "./DataTable";
+import { getStatusHistory } from "../feature/API";
 
 const dataSource = [
     {
@@ -33,32 +35,6 @@ const dataSource = [
     },
 ];
 
-const renderIcon = (status) => {
-    switch (status) {
-        case "Validé":
-            return <CheckCircleOutlined />;
-        case "Refusé":
-            return <CloseCircleOutlined />;
-        case "En attente":
-            return <ExclamationCircleOutlined />;
-        default:
-            return null;
-    }
-};
-
-const renderColor = (status) => {
-    switch (status) {
-        case "Validé":
-            return "#22C55E";
-        case "Refusé":
-            return "#EF4444";
-        case "En attente":
-            return "#F59F0B";
-        default:
-            return null;
-    }
-};
-
 const columns = [
     {
         title: "NOM",
@@ -84,11 +60,11 @@ const columns = [
 ];
 
 const TableComponent = () => {
+   
     return (
         <Table
             style={{
                 backgroundColor: "#fff",
-                
             }}
             size="small"
             bordered={false}

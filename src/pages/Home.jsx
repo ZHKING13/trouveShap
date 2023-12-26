@@ -17,7 +17,8 @@ import {
     Input,
     InputNumber,
     Image,
-} from "antd";import { PictureOutlined } from "@ant-design/icons";
+} from "antd";
+import { PictureOutlined } from "@ant-design/icons";
 
 import logo from "../assets/logo_sm.png";
 import icon from "../assets/build.png";
@@ -34,7 +35,13 @@ import AreaCharts from "../components/chart/AreaChart";
 import ChartHeader from "../components/CharteHeader";
 import Header from "../components/Header";
 import DataTable from "../components/DataTable";
-import { API_URL, getResidence, getStats, updateResidence } from "../feature/API";
+import {
+    API_URL,
+    getResidence,
+    getStats,
+    getStatusHistory,
+    updateResidence,
+} from "../feature/API";
 import { ConfrimeModal, DeletModal, RejectModal } from "./Residence";
 import { ImgModal } from "./Reservation";
 import { Icon } from "../constant/Icon";
@@ -71,10 +78,10 @@ const Home = () => {
     const [open, setOpen] = useState(false);
     const [modalAray, setModalAray] = useState([]);
     const [imgModal, setImgModal] = useState(false);
-    const [location, setLocation] = useState({})
+    const [location, setLocation] = useState({});
     const [loading, setLoading] = useOutletContext();
     const [residence, setResidence] = useState([]);
-    const [spin,setSpin]=useState(false)
+    const [spin, setSpin] = useState(false);
     const [stats, setStats] = useState({
         getVisits: 0,
         getResidence: 0,
@@ -122,19 +129,19 @@ const Home = () => {
 
         let loc = {
             address: data.address,
-            lat: parseInt(data?.lat),
-            lng: parseInt(data?.lng),
+            lat: parseFloat(data?.lat),
+            lng: parseFloat(data?.lng),
         };
         setLocation(loc);
         console.log(selectItem);
         console.log(location);
         setOpen(true);
     };
-    const onHide = async(id,status) => {
-        setSpin(true)
+    const onHide = async (id, status) => {
+        setSpin(true);
         const data = {
-            status
-        }
+            status,
+        };
         const res = await updateResidence(id, data, headers);
         if (res.status !== 200) {
             openNotificationWithIcon(
@@ -151,16 +158,16 @@ const Home = () => {
             }, 1500);
             return;
         }
-       
+
         setResidence((prev) => {
             return prev.map((item) => {
                 if (item.id == id) {
-                    item.status = res.data.status
+                    item.status = res.data.status;
                 }
                 return item;
             });
         });
-                setSpin(false)
+        setSpin(false);
 
         console.log(res);
         openNotificationWithIcon(
@@ -169,7 +176,7 @@ const Home = () => {
             "la résidence a été" + " " + res.data.status
         );
         console.log(id);
-    }
+    };
     const deletResidence = async (id) => {
         setShowModal({ ...showModal, loading: true });
         const header = {
@@ -269,10 +276,10 @@ const Home = () => {
             if (res.status == 400) {
                 return;
             }
-             localStorage.clear();
-             setTimeout(() => {
-                 navigate("/login");
-             }, 1500);
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
             return;
         }
         setResidence((prev) => {
@@ -297,10 +304,28 @@ const Home = () => {
             rejectReason: "",
         });
     };
+    const getResidenceHistory = async () => {
+        const res = await getStatusHistory(params, headers);
+        console.log("story", res);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Session expiré",
+                "merci de vous reconnecter"
+            );
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        setResidence(res.data.residences);
+    }
     const fetchSats = async () => {
         setLoading(true);
         const res = await getStats(headers);
         const resi = await getResidence(params, headers);
+        const history = await getResidenceHistory();
         console.log(resi);
         if (res.status !== 200 || resi.status !== 200) {
             openNotificationWithIcon(
@@ -441,12 +466,9 @@ const Home = () => {
                     onClose={() => setOpen(false)}
                     setImageModal={setImgModal}
                     open={open}
+                    location={location}
                 />
-                <ImgModal
-                    setOpen={setImgModal}
-                    open={imgModal}
-                    tab={modalAray}
-                />
+
                 <RejectModal
                     showModal={showModal}
                     setShowModal={setShowModal}
@@ -492,7 +514,13 @@ const Home = () => {
     );
 };
 export default Home;
-const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
+const DrawerComponent = ({
+    open,
+    selectItem,
+    setImageModal,
+    onClose,
+    location,
+}) => {
     return (
         <Drawer
             onClose={onClose}
@@ -507,25 +535,43 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                 className="top"
             >
                 <Carousel autoplay>
-                    {selectItem &&
-                        selectItem.medias.map((item) => (
-                            <div key={item.filename}>
-                                <Image
-                                    style={{
-                                        height: "156px",
-                                        objectFit: "cover",
-                                        resizeMode: "cover",
-                                    }}
-                                    width={320}
-                                    src={`${API_URL}/assets/uploads/residences/${item.filename}`}
-                                    alt=""
-                                    className="carouselImg"
-                                />
-                            </div>
-                        ))}
+                    {selectItem && (
+                        <Image.PreviewGroup>
+                            <Image
+                                src={`${API_URL}/assets/uploads/residences/${selectItem?.medias[0]?.filename}`}
+                                alt=""
+                                width={352}
+                                style={{
+                                    height: "160px",
+                                    objectFit: "cover",
+                                   
+                                }}
+                            />
+                            {selectItem.medias.map((item, index) => {
+                                return index == 0 ? null : (
+                                    <div
+                                        style={{
+                                            display: "none",
+                                        }}
+                                        key={index}
+                                    >
+                                        <Image
+                                            style={{
+                                                height: "160px",
+                                                objectFit: "cover",
+                                                display: "none",
+                                            }}
+                                            src={`${API_URL}/assets/uploads/residences/${item.filename}`}
+                                            alt=""
+                                            width={352}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </Image.PreviewGroup>
+                    )}
                 </Carousel>
                 <div
-                    onClick={() => setImageModal(true)}
                     style={{
                         position: "absolute",
                         bottom: "20px",
@@ -654,8 +700,8 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                         <img src={Icon.check} alt="" />
                         <p>Règlement interieur</p>
                     </div>
-                    {selectItem?.rules?.map((item) => {
-                        return <span>{item.rule?.title}</span>;
+                    {selectItem?.rules?.map((item, index) => {
+                        return <span key={index}>{item.rule?.title}</span>;
                     })}
                 </div>
                 <div
@@ -700,7 +746,6 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                             Entre 1 semaine et 1 mois avant le jour J
                         </li>
                         <span>
-                            {" "}
                             {selectItem?.refundGrid[
                                 "Entre 1 semaine et 1 mois avant le jour J"
                             ] + "%"}
@@ -711,7 +756,6 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                             Entre 48h et 1 semaine avant le jour J
                         </li>
                         <span>
-                            {" "}
                             {selectItem?.refundGrid[
                                 "Entre 48h et 1 semaine avant le jour J"
                             ] + "%"}
@@ -722,7 +766,6 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                             Moins de 48 heures avant le jour J
                         </li>
                         <span>
-                            {" "}
                             {selectItem?.refundGrid[
                                 "Moins de 48 heures avant le jour J"
                             ] + "%"}
@@ -733,7 +776,6 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                             Plus de 3 mois avant le jour J
                         </li>
                         <span>
-                            {" "}
                             {selectItem?.refundGrid[
                                 "Plus de 3 mois avant le jour J"
                             ] + "%"}

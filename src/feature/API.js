@@ -276,9 +276,26 @@ export const getNewsletter = async(params, headers) => {
 }
 
 export const getReimbusment = async(params, headers) => {
+        try {
+            const queryString = new URLSearchParams(params).toString();
+            const response = await privateService.get("/admin/requests?" + queryString, { headers })
+            const { status, data: responseData } = response;
+            return { status, data: responseData };
+        } catch (error) {
+            console.log(error);
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+                console.error('La requête a expiré en raison d\'un timeout.');
+                return { status: 408, data: { message: 'Request Timeout' } };
+            }
+            return { status: error.response.status, data: error.response.data };
+        }
+
+    }
+    //get /admin/residences/status_history
+export const getStatusHistory = async(params, headers) => {
     try {
         const queryString = new URLSearchParams(params).toString();
-        const response = await privateService.get("/admin/requests?" + queryString, { headers })
+        const response = await privateService.get("/admin/residences/status_history?" + queryString, { headers })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
@@ -289,5 +306,4 @@ export const getReimbusment = async(params, headers) => {
         }
         return { status: error.response.status, data: error.response.data };
     }
-
 }

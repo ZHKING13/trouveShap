@@ -195,9 +195,9 @@ const Reservation = () => {
     const showDrawer = async (data) => {
         setSelectItem(data);
         let loc = {
-            address: data.address,
-            lat: parseInt(data.lat),
-            lng: parseInt(data.lng),
+            address: data.residence.address,
+            lat: parseFloat(data.residence.lat),
+            lng: parseFloat(data.residence.lng),
         };
         setLocation(loc);
         console.log(selectItem);
@@ -286,6 +286,7 @@ const Reservation = () => {
                     setImgModal={setImgModal}
                     setModalAray={setModalAray}
                     imgModal={imgModal}
+                    location={location}
                 />
                 <ImgModal
                     setOpen={setImgModal}
@@ -342,6 +343,7 @@ export const DrawerComponent = ({
     open,
     setModalAray,
     setImgModal,
+    location,
 }) => {
     return (
         <Drawer
@@ -360,7 +362,7 @@ export const DrawerComponent = ({
                 className="top"
             >
                 <Carousel autoplay>
-                    {selectItem &&
+                    {selectItem?.residence?.medias &&
                         selectItem?.residence?.medias?.map((item) => (
                             <div key={item.filename}>
                                 <Image
@@ -722,7 +724,7 @@ export const ImgModal = ({ tab, open, setOpen }) => {
                     // width: "100vw",
                 }}
             >
-                {tab.map((item) => {
+                {tab?.map((item) => {
                     return (
                         <Image
                             key={item.filename}

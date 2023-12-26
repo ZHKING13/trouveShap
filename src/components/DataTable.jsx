@@ -26,6 +26,8 @@ export const renderIcon = (status) => {
             return <CheckCircleOutlined color="#fff" />;
         case "Rejeté":
             return <CloseCircleOutlined color="#fff" />;
+        case "Refusée":
+            return <CloseCircleOutlined color="#fff" />;
         case "Annulée":
             return <CloseCircleOutlined color="#fff" />;
         case "Désactivé":
@@ -39,14 +41,7 @@ export const renderIcon = (status) => {
     }
 };
 import {API_URL} from "../feature/API"
-//  waiting = 'En Attente',
-//     accepted = 'Acceptée',
-//     planified = 'Confirmée',
-//     progressing = 'En Cours',
-//     rejected = 'Rejetée',
-//     cancelled = 'Annulée',
-//     refunded = 'Remboursée',
-//     done = 'Terminée'
+
 
 export const renderColor = (status) => {
     switch (status) {
@@ -63,6 +58,8 @@ export const renderColor = (status) => {
         case "Rejeté":
             return "#EF4444";
         case "Rejetée":
+            return "#EF4444";
+        case "Refusée":
             return "#EF4444";
         case "Annulée":
             return "#EF4444";
@@ -126,14 +123,14 @@ const DataTable = ({
                             height: "50px",
                             borderRadius: "10%",
                         }}
-                        src={`${API_URL}/assets/uploads/residences/${record.medias[0].filename}`}
+                        src={`${API_URL}/assets/uploads/residences/${record?.medias[0]?.filename}`}
                         alt=""
                         onClick={() => (showDrawer ? showDrawer(record) : null)}
                     />
                     <div>
                         <p>{text}</p>
                         <p style={{ fontSize: 12, color: "#888" }}>
-                            {record.address}
+                            {record?.address}
                         </p>
                     </div>
                 </div>
@@ -146,7 +143,7 @@ const DataTable = ({
             render: (text, record) => (
                 <div>
                     <p>
-                        {record.host.firstname} {record.host.lastname}
+                        {record?.host?.firstname} {record?.host?.lastname}
                     </p>
                     <p style={{ fontSize: 12, color: "#888" }}>
                         {record.email}
