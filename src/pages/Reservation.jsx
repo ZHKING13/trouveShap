@@ -362,22 +362,35 @@ export const DrawerComponent = ({
                 className="top"
             >
                 <Carousel autoplay>
-                    {selectItem?.residence?.medias &&
-                        selectItem?.residence?.medias?.map((item) => (
-                            <div key={item.filename}>
-                                <Image
-                                    style={{
-                                        height: "156px",
-                                        objectFit: "cover",
-                                        resizeMode: "cover",
-                                    }}
-                                    width={320}
-                                    src={`${API_URL}/assets/uploads/residences/${item.filename}`}
-                                    alt=""
-                                    className="carouselImg"
-                                />
-                            </div>
-                        ))}
+                    {selectItem?.residence?.medias && (
+                        <Image.PreviewGroup>
+                            <Image
+                                src={`${API_URL}/assets/uploads/residences/${selectItem?.residence?.medias[0].filename}`}
+                            />
+                            {selectItem?.residence?.medias?.map((item, index) =>
+                                index == 0 ? null : (
+                                    <div
+                                        style={{
+                                            display: "none",
+                                        }}
+                                        key={item.filename}
+                                    >
+                                        <Image
+                                            style={{
+                                                height: "156px",
+                                                objectFit: "cover",
+                                                resizeMode: "cover",
+                                            }}
+                                            width={320}
+                                            src={`${API_URL}/assets/uploads/residences/${item.filename}`}
+                                            alt=""
+                                            className="carouselImg"
+                                        />
+                                    </div>
+                                )
+                            )}
+                        </Image.PreviewGroup>
+                    )}
                 </Carousel>
                 <div
                     style={{
