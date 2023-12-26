@@ -57,14 +57,12 @@ const Map = ({ location }) => {
                 }}
                 options={{
                     disableDefaultUI: true,
-                    zoomControl: false,
-                    draggable: false,
-                    scrollwheel: false,
+                    zoomControl: true,
 
 
                 }}
                 defaultCenter={location}
-                defaultZoom={13}
+                defaultZoom={14}
             >
                 <CustomMarker lat={location.lat} lng={location.lng} />
             </GoogleMapReact>
