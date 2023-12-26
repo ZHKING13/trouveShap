@@ -62,7 +62,7 @@ const Map = ({ location }) => {
 
                 }}
                 defaultCenter={location}
-                defaultZoom={14}
+                defaultZoom={18}
             >
                 <CustomMarker lat={location.lat} lng={location.lng} />
             </GoogleMapReact>

@@ -427,7 +427,7 @@ const Home = () => {
                     </div>
                     <div className="midleChart">
                         <ChartHeader
-                            subtitle={"Nombre de réservation"}
+                            subtitle={"Nombre de réservations"}
                             title={stats?.getBooking}
                             span={<Tag color="#22C55E">+20</Tag>}
                             children={
@@ -544,7 +544,6 @@ const DrawerComponent = ({
                                 style={{
                                     height: "160px",
                                     objectFit: "cover",
-                                   
                                 }}
                             />
                             {selectItem.medias.map((item, index) => {
@@ -605,7 +604,11 @@ const DrawerComponent = ({
                         color: "#1B2559",
                     }}
                 >
-                    {selectItem && selectItem.price} fcfa / nuits
+                    {selectItem &&
+                        selectItem.price
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                    XOF / nuits
                 </h2>
                 <p>Prix</p>
             </div>

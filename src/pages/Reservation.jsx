@@ -110,7 +110,13 @@ const Reservation = () => {
             dataIndex: "prix",
             key: "price",
             render: (text, record) => (
-                <span> {record.residence.price} fcfa </span>
+                <span>
+                    {" "}
+                    {record.residence
+                        .price.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                    XOF
+                </span>
             ),
             responsive: ["md"],
         },
@@ -398,7 +404,6 @@ export const DrawerComponent = ({
                         backgroundColor: "#fff",
                         borderRadius: "100px",
                     }}
-                   
                 >
                     <span>
                         <PictureOutlined /> +
@@ -423,7 +428,11 @@ export const DrawerComponent = ({
                         color: "#1B2559",
                     }}
                 >
-                    {selectItem && selectItem?.residence.price} fcfa / nuits
+                    {selectItem &&
+                        selectItem?.residence
+                            .price.toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                    XOF / nuits
                 </h2>
                 <p>Prix</p>
             </div>

@@ -1,16 +1,16 @@
 export const DATA = [
-    { id: 1, month: "Jan", gain: 58 },
-    { id: 2, month: "Feb", gain: 53 },
-    { id: 3, month: "Mar", gain: 72 },
-    { id: 4, month: "Apr", gain: 72 },
-    { id: 5, month: "May", gain: 91 },
-    { id: 6, month: "Jun", gain: 34 },
-    { id: 7, month: "Jul", gain: 67 },
-    { id: 8, month: "Aug", gain: 45 },
-    { id: 9, month: "Sep", gain: 69 },
-    { id: 10, month: "Oct", gain: 53 },
-    { id: 11, month: "Nov", gain: 54 },
-    { id: 12, month: "Dec", gain: 76 },
+    { id: 1, month: "Jan", gain: 0 },
+    { id: 2, month: "Feb", gain: 0 },
+    { id: 3, month: "Mar", gain: 0 },
+    { id: 4, month: "Apr", gain: 0 },
+    { id: 5, month: "May", gain: 0 },
+    { id: 6, month: "Jun", gain: 0 },
+    { id: 7, month: "Jul", gain: 0 },
+    { id: 8, month: "Aug", gain: 0 },
+    { id: 9, month: "Sep", gain: 0 },
+    { id: 10, month: "Oct", gain: 0 },
+    { id: 11, month: "Nov", gain: 0 },
+    { id: 12, month: "Dec", gain: 0 },
 ];
 import resi from "./assets/resi.png";
 export const DATA2 = [{

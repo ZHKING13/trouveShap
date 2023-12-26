@@ -137,21 +137,7 @@ const Login = () => {
                             width: "100%",
                         }}
                     >
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "5px",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <input
-                                type="checkbox"
-                                name="remember"
-                                id="remember"
-                            />
-                            <label for="remember">Me garder connecté</label>
-                        </div>
+                       
                         <p>
                             <Link to="/forgot-password">
                                 Mot de passe oublié?

@@ -358,7 +358,6 @@ const Residence = () => {
                     }
                 />
                 {contextHolder}
-                
 
                 <Drawer
                     placement="right"
@@ -438,7 +437,11 @@ const Residence = () => {
                                 color: "#1B2559",
                             }}
                         >
-                            {selectItem && selectItem.price} fcfa / nuits
+                            {selectItem &&
+                                selectItem.price
+                                    .toString()
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                            XOF / nuits
                         </h2>
                         <p>Prix</p>
                     </div>

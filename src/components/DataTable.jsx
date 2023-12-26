@@ -156,7 +156,9 @@ const DataTable = ({
             title: "Prix / nuits",
             dataIndex: "price",
             key: "price",
-            render: (text) => <span>{text} fcfa </span>,
+            render: (text) => <span>{
+                text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+            } <span></span> XOF </span>,
             responsive: ["md"],
         },
         {
@@ -188,7 +190,7 @@ const DataTable = ({
             title: "Date d'ajout",
             key: "createdAt",
             dataIndex: "createdAt",
-            render: (text) => <span  >{FormatDate(text)}</span>,
+            render: (text) => <span>{FormatDate(text)}</span>,
             responsive: ["lg"],
         },
         {
@@ -221,7 +223,6 @@ const DataTable = ({
                     </Spin>
                 ) : record.status == "Activé" ? (
                     <Spin spinning={selectItem?.id == record.id ? spin : null}>
-                       
                         <img
                             onClick={() => {
                                 setSelectItem(record);

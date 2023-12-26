@@ -121,7 +121,10 @@ const Remboursement = () => {
                             height: "50px",
                             borderRadius: "10%",
                         }}
-                        src={record?.booking?.residence?.medias && `${API_URL}/assets/uploads/residences/${record?.booking?.residence?.medias[0]?.filename}`}
+                        src={
+                            record?.booking?.residence?.medias &&
+                            `${API_URL}/assets/uploads/residences/${record?.booking?.residence?.medias[0]?.filename}`
+                        }
                         alt=""
                     />
                     <div>
@@ -169,7 +172,12 @@ const Remboursement = () => {
             dataIndex: "price",
             key: "price",
             render: (text, record) => (
-                <span>{record?.refundedAmount} fcfa </span>
+                <span>
+                    {record?.refundedAmount
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                    XOF
+                </span>
             ),
             responsive: ["md"],
         },
@@ -591,8 +599,10 @@ const Remboursement = () => {
                             }}
                         >
                             {selectItem &&
-                                selectItem?.booking?.residence?.price}{" "}
-                            fcfa / nuits
+                                selectItem?.booking?.residence?.price
+                                    .toString()
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                            XOF / nuits
                         </h2>
                         <p>Prix</p>
                     </div>
