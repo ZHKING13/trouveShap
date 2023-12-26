@@ -306,7 +306,7 @@ const Home = () => {
         });
     };
     const getResidenceHistory = async () => {
-        const res = await getStatusHistory(params, headers);
+        const res = await getStatusHistory({page:1,limit:4}, headers);
         console.log("story", res);
         if (res.status !== 200) {
             openNotificationWithIcon(
