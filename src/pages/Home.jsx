@@ -403,7 +403,7 @@ const Home = () => {
                     <div className="midleChart">
                         <ChartHeader
                             subtitle={"Nombre de réservation"}
-                            title={230}
+                            title={stats?.getBooking}
                             span={<Tag color="#22C55E">+20</Tag>}
                             children={
                                 <Tag
@@ -417,7 +417,7 @@ const Home = () => {
                     <div className="barChart">
                         <ChartHeader
                             subtitle={"Résumé du trafic"}
-                            title={"1.243"}
+                            title={stats?.getVisits}
                             span={"visiteur"}
                             children={<Tag color="#22C55E">+2,45%</Tag>}
                         />
@@ -427,7 +427,6 @@ const Home = () => {
                 <DeletModal
                     showModal={showModal}
                     setShowModal={setShowModal}
-                    
                     loading={showModal.loading}
                     onConfirme={() => {
                         console.log(selectItem);

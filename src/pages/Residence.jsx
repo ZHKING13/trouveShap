@@ -25,7 +25,12 @@ import { PictureOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Map from "../components/Map";
-import { API_URL, deleteResidence, getResidence, updateResidence } from "../feature/API";
+import {
+    API_URL,
+    deleteResidence,
+    getResidence,
+    updateResidence,
+} from "../feature/API";
 
 import { useNavigate, useOutletContext } from "react-router-dom";
 import FilterBoxe from "../components/FilterBoxe";
@@ -60,8 +65,8 @@ const Residence = () => {
         rejectModal: false,
     });
     const [filterValue, setFilterValue] = useState({
-        minPrice: 20000,
-        maxPrice: 55000,
+        minPrice: 0,
+        maxPrice: 0,
         numPeople: "",
     });
     const [open, setOpen] = useState(false);
@@ -207,8 +212,9 @@ const Residence = () => {
     };
     const params = {
         page: pagination.current,
-        fromDate: "2023-11-11T00:00:00.000Z",
-        toDate: "2023-12-20T00:00:00.000Z",
+        minPrice: filterValue.minPrice,
+        maxPrice: filterValue.maxPrice,
+        numPeople: filterValue.numPeople,
         limit: 7,
     };
 
@@ -586,8 +592,10 @@ const Residence = () => {
                     setFilterValue={setFilterValue}
                     min={filterValue.minPrice}
                     max={filterValue.maxPrice}
+                    numPeople={filterValue.numPeople}
                     filterValue={filterValue}
                     onConfirme={filtResidence}
+                    filtResidence={filtResidence}
                 />
                 <DeletModal
                     showModal={showModal}
@@ -672,21 +680,34 @@ const FilterModal = ({
     setShowModal,
     onConfirme,
     filterValue,
+    filtResidence,
+    numPeople,
 }) => {
     return (
         <Modal
-            onCancel={() => setShowModal({ ...showModal, filterModal: false })}
+            onCancel={() => {
+                setShowModal({ ...showModal, filterModal: false });
+            }}
             footer={
                 <>
                     <Divider />
                     <div style={spaceStyle}>
                         <Button
-                            onClick={() =>
+                            onClick={() => {
+                                setFilterValue({
+                                    ...filterValue,
+                                    minPrice: 0,
+                                    maxPrice: 0,
+                                    numPeople: "",
+                                });
+                                console.log(filterValue);
                                 setShowModal({
                                     ...showModal,
                                     filterModal: false,
-                                })
-                            }
+                                });
+
+                                filtResidence();
+                            }}
                             danger
                             type="text"
                         >
@@ -706,12 +727,13 @@ const FilterModal = ({
                     onChange={(value) => {
                         console.log(value);
                         setFilterValue({
+                            ...filterValue,
                             minPrice: value[0],
                             maxPrice: value[1],
                         });
                     }}
                     min={10000}
-                    max={200000}
+                    max={500000}
                     range
                     defaultValue={[min, max]}
                     step={1000}
@@ -756,8 +778,9 @@ const FilterModal = ({
                     <span>Nombre de personnes</span>
                     <InputNumber
                         min={1}
-                        max={7}
+                        max={10}
                         placeholder="00"
+                        value={numPeople}
                         style={{
                             textAlign: "center",
                             width: "125px",

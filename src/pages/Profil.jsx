@@ -1,4 +1,4 @@
-import { Card, Divider, Space, Tag, notification } from "antd";
+import { Button, Card, Divider, Input, Space, Tag, notification } from "antd";
 import Header from "../components/Header";
 const { Meta } = Card;
 import back from "../assets/back.jpeg";
@@ -15,13 +15,16 @@ import user from "../assets/users.png";
 import Stats from "../components/Stats";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getProfilStats } from "../feature/API";
+import { UpdatePassword, getProfilStats } from "../feature/API";
 import { formatAmount } from "./Home";
 
 const Profil = () => {
     const [loading, setLoading] = useOutletContext();
     const [stats, setStats] = useState([]);
-    const [selectItem, setSelectItem] = useState(null);
+    const [editMode, setEditMode] = useState(false);
+    const [passWord, setPassWord] = useState("");
+    const [loading2, setLoading2] = useState(false);
+    const [oldPassword, setOldPassword] = useState("");
     const [api, contextHolder] = notification.useNotification();
     const logUser = JSON.parse(localStorage.getItem("user"));
     const navigate = useNavigate();
@@ -36,6 +39,45 @@ const Profil = () => {
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         "refresh-token": localStorage.getItem("refreshToken"),
     };
+    const handleChange = (e) => {
+        setPassWord(e.target.value);
+    }
+    const onSubmite = async () => {
+        setLoading2(true);
+        if (passWord === "" || oldPassword === "") {
+            openNotificationWithIcon(
+                "error",
+                "Erreur",
+                "merci de remplir tout les champs"
+            );
+            setLoading2(false);
+            return;
+        }
+        let data = {
+            newPassword: passWord,
+            oldPassword: oldPassword,
+        };
+        const res = await UpdatePassword(data, headers);
+        console.log(res);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Erreur",
+                res.data.message
+            );
+            setOldPassword("");
+            setPassWord("");
+            setLoading2(false);
+            return;
+        }
+        openNotificationWithIcon(
+            "success",
+            "Succès",
+            "Votre mot de passe a été modifié avec succès"
+        );
+        setLoading2(false);
+        setEditMode(false);
+    }
     const fetchProfilStats = async () => {
         setLoading(true);
         const res = await getProfilStats(headers);
@@ -113,12 +155,70 @@ const Profil = () => {
                                         <div className="left">
                                             <img src={lock} alt="" />
                                             <div>
-                                                <p>Mot de passe</p>
-                                                <h4>**********</h4>
+                                                <p>
+                                                    {editMode
+                                                        ? "Changer le mot de passe"
+                                                        : "Mot de passe"}{" "}
+                                                </p>
+                                                {editMode ? (
+                                                    <Space
+                                                        direction="vertical"
+                                                        size={10}
+                                                    >
+                                                        <Input.Password
+                                                            onChange={(e) =>
+                                                                setOldPassword(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                            placeholder="mots de pass actuel"
+                                                        />
+                                                        <Input.Password
+                                                            onChange={
+                                                                handleChange
+                                                            }
+                                                            placeholder="nouveau mots de passe"
+                                                        />
+                                                        <Space>
+                                                            <Button
+                                                                onClick={() =>
+                                                                    setEditMode(
+                                                                        false
+                                                                    )
+                                                                }
+                                                                danger
+                                                            >
+                                                                Annuler
+                                                            </Button>
+                                                            <Button
+                                                                onClick={
+                                                                    onSubmite
+                                                                }
+                                                                type="primary"
+                                                                loading={
+                                                                    loading2
+                                                                }
+                                                            >
+                                                                Valider
+                                                            </Button>
+                                                        </Space>
+                                                    </Space>
+                                                ) : (
+                                                    <h4>********</h4>
+                                                )}
                                             </div>
                                         </div>
                                         <div>
-                                            <img src={edit} alt="" />
+                                            {!editMode && (
+                                                <img
+                                                    onClick={() => {
+                                                        setEditMode(true);
+                                                    }}
+                                                    src={edit}
+                                                    alt=""
+                                                />
+                                            )}{" "}
                                         </div>
                                     </Space>
                                     <div className="profilItem">

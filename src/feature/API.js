@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const API_URL = "https://tc-preprod.onrender.com";
+export const API_URL = "https://api.trouvechap.com";
 const privateService = axios.create({
     baseURL: API_URL,
 });
@@ -46,8 +46,25 @@ export const RecoverPassword = async(data) => {
     }
 }
 export const CheckPasswordRecoveryCode = async(data) => {
+        try {
+            const response = await privateService.post("/users/check_password_recovery_code", data)
+            const { status, data: responseData } = response;
+            return { status, data: responseData };
+        } catch (error) {
+            console.log(error);
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+                console.error('La requête a expiré en raison d\'un timeout.');
+                return { status: 408, data: { message: 'Request Timeout' } };
+            }
+            return { status: error.response.status, data: error.response.data };
+
+        }
+
+    }
+    //put users/update-password
+export const UpdatePassword = async(data, headers) => {
     try {
-        const response = await privateService.post("/users/check_password_recovery_code", data)
+        const response = await privateService.put("/users/update-password", data, { headers })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
@@ -162,6 +179,7 @@ export const updateResidence = async(id, data, headers) => {
         try {
             const response = await privateService.put(`/admin/residences/update_status/${id}`, data, { headers })
             const { status, data: responseData } = response;
+            console.log(response)
             return { status, data: responseData };
         } catch (error) {
             console.log(error);

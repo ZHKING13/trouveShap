@@ -331,7 +331,7 @@ const Remboursement = () => {
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         // "refresh-token": localStorage.getItem("refreshToken"),
     };
-    const params = {
+    let params = {
         page: pagination.current,
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
@@ -398,8 +398,12 @@ const Remboursement = () => {
         });
         // setResidence(res.data.residences);
     };
-    const filtResidence = async () => {
-        console.log(dateRange);
+    const filtResidence = async (data) => {
+        params = {
+            ...params,
+            fromDate: data[0],
+            toDate: data[1],
+        };
         fetReimbursment();
     };
     const refund = async (id) => {

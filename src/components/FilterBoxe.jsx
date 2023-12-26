@@ -19,28 +19,33 @@ const FilterBoxe = ({
     setDateRange,
     dateRange,
 }) => {
-   const [startDate, setStartDate] = useState(null);
-   const [endDate, setEndDate] = useState(null);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
     const rangPicker = (value) => {
         console.log(value);
-        
+
         const [start, end] = value;
         setStartDate(start);
         setEndDate(end);
-
+        if (start == null) {
+            selectRange([null, null]);
+            return;
+        }
         if (end == null) {
             return;
         }
-        setDateRange({
-            ...dateRange,
-            fromDate: convertToISO(startDate),
-            toDate: endDate !== null ? convertToISO(endDate) : null,
-        });
-        selectRange();
+        
+                console.log(end);
+
+        const startISO = convertToISO(start);
+        const endISO = convertToISO(end);
+        
+                console.log(dateRange);
+
+        selectRange([startISO, endISO]);
     };
 
-   
     return (
         <div
             style={{
@@ -84,6 +89,7 @@ const FilterBoxe = ({
                         withPortal
                         placeholderText="trier par date"
                         dateFormat="yyy-MM-dd"
+                        isClearable={true}
                     />
                 )}
             </div>

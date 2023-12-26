@@ -67,14 +67,18 @@ const NewsLetter = () => {
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         "refresh-token": localStorage.getItem("refreshToken"),
     };
-    const params = {
+    let params = {
         page: pagination.page,
         limit: 12,
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
     };
-    const filtreByDate = () => {
-        console.log("dateranded", dateRange);
+    const filtreByDate = (data) => {
+        params = {
+            ...params,
+            fromDate: data[0],
+            toDate: data[1],
+        };
         fetchNewsletter();
     };
     const fetchNewsletter = async () => {

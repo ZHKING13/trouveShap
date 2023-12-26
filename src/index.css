@@ -106,3 +106,28 @@ body {
     background-color: #A273FF !important;
     color: #fff !important;
 }
+
+.react-datepicker__close-icon {
+    right: -21x
+}
+
+.ant-image-mask-info::before {
+    content: "Aperçu" !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1px 12px;
+    background: "transparent";
+    color: #fff;
+}
+
+.ant-image-mask-info {
+    color: #ffffff07!important;
+}
+
+.react-datepicker__close-icon::after {
+    background-color: #A273FF !important;
+    display: flex;
+    justify-content: center;
+}

@@ -191,7 +191,7 @@ const DataTable = ({
             title: "Date d'ajout",
             key: "createdAt",
             dataIndex: "createdAt",
-            render: (text) => <span>{FormatDate(text)}</span>,
+            render: (text) => <span  >{FormatDate(text)}</span>,
             responsive: ["lg"],
         },
         {
@@ -224,7 +224,7 @@ const DataTable = ({
                     </Spin>
                 ) : record.status == "Activé" ? (
                     <Spin spinning={selectItem?.id == record.id ? spin : null}>
-                        {" "}
+                       
                         <img
                             onClick={() => {
                                 setSelectItem(record);

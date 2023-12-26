@@ -23,7 +23,7 @@ import FilterBoxe from "../components/FilterBoxe";
 import Map from "../components/Map";
 import { Icon } from "../constant/Icon";
 function FormatDate(dateStr) {
-    const options = { year: "numeric", month: "long", day: "numeric" };
+    const options = { year: "numeric", month: "short", day: "numeric" };
     const date = new Date(dateStr);
     return date.toLocaleDateString("fr-FR", options);
 }
@@ -120,7 +120,37 @@ const Reservation = () => {
             key: "date",
             dataIndex: "createdAt",
             render: (text) => <span>{FormatDate(text)}</span>,
+            responsive: ["md"],
+        },
+        {
+            title: "Date de debut",
+            key: "date",
+            dataIndex: "fromDate",
+            render: (text) => (
+                <span
+                    style={{
+                        fontSize: 12,
+                    }}
+                >
+                    {FormatDate(text)}
+                </span>
+            ),
             responsive: ["lg"],
+        },
+        {
+            title: "Date de fin",
+            key: "date",
+            dataIndex: "toDate",
+            render: (text) => (
+                <span
+                    style={{
+                        fontSize: 12,
+                    }}
+                >
+                    {FormatDate(text)}
+                </span>
+            ),
+            responsive: ["md"],
         },
         {
             title: "Statut",
@@ -148,8 +178,8 @@ const Reservation = () => {
         total: 7,
     });
     const [dateRange, setDateRange] = useState({
-        fromDate: null,
-        toDate: null,
+        fromDate: "",
+        toDate: "",
     });
     const [location, setLocation] = useState(null);
     const [api, contextHolder] = notification.useNotification();
@@ -183,16 +213,23 @@ const Reservation = () => {
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         "refresh-token": localStorage.getItem("refreshToken"),
     };
-    const params = {
+    let params = {
         page: pagination.page,
         limit: 7,
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
     };
-    const filtreByDate = () => {
-        console.log(dateRange);
-        console.log("dateranded", dateRange);
-        console.log("params", params);
+    const filtreByDate = (data) => {
+        console.log("value", data);
+
+        // Stocker la nouvelle valeur dans une variable locale
+        params = {
+            ...params,
+            fromDate: data[0],
+            toDate: data[1],
+        };
+
+        console.log("dateRange après la mise à jour", params);
         fetchReservation();
     };
 
@@ -556,7 +593,9 @@ export const DrawerComponent = ({
                 >
                     Code de validation
                 </h2>
-                <h3 style={{ color: "#A273FF" }}>{selectItem?.clientCode}</h3>
+                <h3 style={{ color: "#A273FF" }}>
+                    {selectItem?.clientCode || "--"}
+                </h3>
             </div>
             <Divider />
             <div style={spaceStyle}>
@@ -598,21 +637,57 @@ export const DrawerComponent = ({
                 <ul>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Annulation entre 48h et 1 semaine
+                            Entre 1 et 3 mois avant le jour J
                         </li>
-                        <span>25.000 fcfa</span>
+                        <span>
+                            {selectItem?.residence?.refundGrid[
+                                "Entre 1 mois et 3 mois avant le jour J"
+                            ] + "%"}
+                        </span>
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Annulation entre 48h et 1 semaine
+                            Entre 1 semaine et 1 mois avant le jour J
                         </li>
-                        <span>25.000 fcfa</span>
+                        <span>
+                            {" "}
+                            {selectItem?.residence?.refundGrid[
+                                "Entre 1 semaine et 1 mois avant le jour J"
+                            ] + "%"}
+                        </span>
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Annulation entre 1 mois et 3 mois
+                            Entre 48h et 1 semaine avant le jour J
                         </li>
-                        <span>25.000 fcfa</span>
+                        <span>
+                            {" "}
+                            {selectItem?.residence?.refundGrid[
+                                "Entre 48h et 1 semaine avant le jour J"
+                            ] + "%"}
+                        </span>
+                    </div>
+                    <div style={spaceStyle}>
+                        <li style={listStyle}>
+                            Moins de 48 heures avant le jour J
+                        </li>
+                        <span>
+                            {" "}
+                            {selectItem?.residence?.refundGrid[
+                                "Moins de 48 heures avant le jour J"
+                            ] + "%"}
+                        </span>
+                    </div>
+                    <div style={spaceStyle}>
+                        <li style={listStyle}>
+                            Plus de 3 mois avant le jour J
+                        </li>
+                        <span>
+                            {" "}
+                            {selectItem?.residence?.refundGrid[
+                                "Plus de 3 mois avant le jour J"
+                            ] + "%"}
+                        </span>
                     </div>
                 </ul>
             </div>
