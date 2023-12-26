@@ -288,11 +288,7 @@ const Reservation = () => {
                     imgModal={imgModal}
                     location={location}
                 />
-                <ImgModal
-                    setOpen={setImgModal}
-                    open={imgModal}
-                    tab={modalAray}
-                />
+               
                 <DataTable
                     column={columns}
                     data={reservation.filter((item) => {
@@ -402,11 +398,7 @@ export const DrawerComponent = ({
                         backgroundColor: "#fff",
                         borderRadius: "100px",
                     }}
-                    onClick={() => {
-                        console.log("okay clické");
-                        setModalAray(selectItem?.residence?.medias);
-                        setImgModal(true);
-                    }}
+                   
                 >
                     <span>
                         <PictureOutlined /> +
