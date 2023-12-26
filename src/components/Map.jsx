@@ -56,8 +56,8 @@ const Map = ({ location }) => {
                     key: "AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw",
                 }}
                 options={{
-                    disableDefaultUI: true,
                     zoomControl: true,
+                    draggable: false,
 
 
                 }}
