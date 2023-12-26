@@ -572,10 +572,10 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                 }}
                 className="user"
             >
-                <Avatar src={
-                     `${API_URL}/assets/uploads/avatars/${selectItem?.host?.avatar}`
-
-                } size={64} />
+                <Avatar
+                    src={`${API_URL}/assets/uploads/avatars/${selectItem?.host?.avatar}`}
+                    size={64}
+                />
                 <div
                     style={{
                         display: "flex",
@@ -654,8 +654,9 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
                         <img src={Icon.check} alt="" />
                         <p>Règlement interieur</p>
                     </div>
-                    <span>Animaux autorisé </span>
-                    <span> Interdiction de fumer</span>
+                    {selectItem?.rules?.map((item) => {
+                        return <span>{item.rule?.title}</span>;
+                    })}
                 </div>
                 <div
                     style={{
@@ -684,12 +685,60 @@ const DrawerComponent = ({ open, selectItem, setImageModal, onClose }) => {
             </h2>
             <div>
                 <ul>
-                    <li style={listStyle}>Annulation entre 48h et 1 semaine</li>
-                    <span>Montant à rembourser : 25% du montant total</span>
-                    <li style={listStyle}>Annulation entre 1 semaine 1 mois</li>
-                    <span>Montant à rembourser : 25% du montant total</span>
-                    <li style={listStyle}>Annulation entre 1 mois et 3 mois</li>
-                    <span>Montant à rembourser : 25% du montant total</span>
+                    <div style={spaceStyle}>
+                        <li style={listStyle}>
+                            Entre 1 et 3 mois avant le jour J
+                        </li>
+                        <span>
+                            {selectItem?.refundGrid[
+                                "Entre 1 mois et 3 mois avant le jour J"
+                            ] + "%"}
+                        </span>
+                    </div>
+                    <div style={spaceStyle}>
+                        <li style={listStyle}>
+                            Entre 1 semaine et 1 mois avant le jour J
+                        </li>
+                        <span>
+                            {" "}
+                            {selectItem?.refundGrid[
+                                "Entre 1 semaine et 1 mois avant le jour J"
+                            ] + "%"}
+                        </span>
+                    </div>
+                    <div style={spaceStyle}>
+                        <li style={listStyle}>
+                            Entre 48h et 1 semaine avant le jour J
+                        </li>
+                        <span>
+                            {" "}
+                            {selectItem?.refundGrid[
+                                "Entre 48h et 1 semaine avant le jour J"
+                            ] + "%"}
+                        </span>
+                    </div>
+                    <div style={spaceStyle}>
+                        <li style={listStyle}>
+                            Moins de 48 heures avant le jour J
+                        </li>
+                        <span>
+                            {" "}
+                            {selectItem?.refundGrid[
+                                "Moins de 48 heures avant le jour J"
+                            ] + "%"}
+                        </span>
+                    </div>
+                    <div style={spaceStyle}>
+                        <li style={listStyle}>
+                            Plus de 3 mois avant le jour J
+                        </li>
+                        <span>
+                            {" "}
+                            {selectItem?.refundGrid[
+                                "Plus de 3 mois avant le jour J"
+                            ] + "%"}
+                        </span>
+                    </div>
                 </ul>
             </div>
             <Divider />
