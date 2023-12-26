@@ -5,7 +5,7 @@ import {
     CloseCircleOutlined,
     ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { renderColor, renderIcon } from "./DataTable";
+import { FormatDate, renderColor, renderIcon } from "./DataTable";
 import { getStatusHistory } from "../feature/API";
 
 const dataSource = [
@@ -35,31 +35,38 @@ const dataSource = [
     },
 ];
 
-const columns = [
-    {
-        title: "NOM",
-        dataIndex: "name",
-        key: "name",
-    },
-    {
-        title: "STATUS",
-        dataIndex: "age",
-        key: "age",
-        render: (age) => (
-            <Tag icon={renderIcon(age)} color={renderColor(age)} key={age}>
-                {age}
-            </Tag>
-        ),
-    },
-    {
-        title: "DATE",
-        dataIndex: "date",
-        key: "date",
-        responsive: ["md"],
-    },
-];
 
-const TableComponent = () => {
+
+const TableComponent = ({Data}) => {
+    const columns = [
+        {
+            title: "NOM",
+            dataIndex: "residence.name",
+            key: "residence.name",
+            render: (text, record) => <span>{record?.residence?.name}</span>,
+        },
+        {
+            title: "STATUS",
+            dataIndex: "newStatus",
+            key: "newStatus",
+            render: (text, record) => (
+                <Tag
+                    icon={renderIcon(text)}
+                    color={renderColor(text)}
+                    key={text}
+                >
+                    {text}
+                </Tag>
+            ),
+        },
+        {
+            title: "DATE",
+            dataIndex: "createdAt",
+            key: "createdAt",
+            responsive: ["md"],
+            render: (text) => <span>{FormatDate(text)}</span>,
+        },
+    ];
    
     return (
         <Table
@@ -70,7 +77,7 @@ const TableComponent = () => {
             bordered={false}
             columns={columns}
             pagination={false}
-            dataSource={dataSource}
+            dataSource={Data}
         />
     );
 };

@@ -77,6 +77,10 @@ const Profil = () => {
         );
         setLoading2(false);
         setEditMode(false);
+        localStorage.clear();
+        setTimeout(() => {
+            navigate("/login");
+        }, 1000);
     }
     const fetchProfilStats = async () => {
         setLoading(true);

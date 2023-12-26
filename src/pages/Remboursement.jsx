@@ -310,7 +310,7 @@ const Remboursement = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été" + " " + res.data.status
+            "la demande de remboursement a été" + " " + res.data.status
         );
         setPophover(false);
         setShowModal({ ...showModal, addModal: false });
@@ -392,7 +392,7 @@ const Remboursement = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la de remboursement  a été refusée"
+            "la demande de remboursement  a été refusée"
         );
         setResidence((prev) => {
             return prev.map((item) =>
@@ -450,7 +450,7 @@ const Remboursement = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été" + " " + res.data.status
+            "la remboursement a été" + " " + res.data.status
         );
     };
     const fetReimbursment = async () => {

@@ -131,3 +131,13 @@ body {
     display: flex;
     justify-content: center;
 }
+
+.ant-image-preview-switch-right {
+    right: 10% !important;
+    background-color: #A273FF !important;
+}
+
+.ant-image-preview-switch-left {
+    left: 10% !important;
+    background-color: #A273FF !important;
+}

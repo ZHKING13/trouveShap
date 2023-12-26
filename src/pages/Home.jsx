@@ -79,6 +79,7 @@ const Home = () => {
     const [modalAray, setModalAray] = useState([]);
     const [imgModal, setImgModal] = useState(false);
     const [location, setLocation] = useState({});
+    const [story, setStory] = useState([]);
     const [loading, setLoading] = useOutletContext();
     const [residence, setResidence] = useState([]);
     const [spin, setSpin] = useState(false);
@@ -319,15 +320,15 @@ const Home = () => {
             }, 1500);
             return;
         }
-        setResidence(res.data.residences);
+        setStory(res.data);
     }
     const fetchSats = async () => {
         setLoading(true);
         const res = await getStats(headers);
-        const resi = await getResidence(params, headers);
         const history = await getResidenceHistory();
+        const resi = await getResidence(params, headers);
         console.log(resi);
-        if (res.status !== 200 || resi.status !== 200) {
+        if (res.status !== 200 || resi.status !== 200 ) {
             openNotificationWithIcon(
                 "error",
                 "Session expiré",
@@ -407,9 +408,9 @@ const Home = () => {
                         </div>
                         <div className="detail">
                             <p>{formatAmount(stats.getCompanyMoneyMonth)}</p>
-                            <p className="gain">
+                            {/* <p className="gain">
                                 Gain<span> +2,45%</span>
-                            </p>
+                            </p> */}
                         </div>
                     </div>
                     <div className="chart">
@@ -423,13 +424,13 @@ const Home = () => {
                                 Historique de validation des résidences
                             </div>
                         </div>
-                        <TableComponent />
+                        <TableComponent Data={story} />
                     </div>
                     <div className="midleChart">
                         <ChartHeader
                             subtitle={"Nombre de réservations"}
                             title={stats?.getBooking}
-                            span={<Tag color="#22C55E">+20</Tag>}
+                            // span={<Tag color="#22C55E">+20</Tag>}
                             children={
                                 <Tag
                                     color="#A"
@@ -444,7 +445,7 @@ const Home = () => {
                             subtitle={"Résumé du trafic"}
                             title={stats?.getVisits}
                             span={"visiteur"}
-                            children={<Tag color="#22C55E">+2,45%</Tag>}
+                            // children={<Tag color="#22C55E">+2,45%</Tag>}
                         />
                         <BarCharts />
                     </div>
