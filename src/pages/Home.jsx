@@ -37,6 +37,7 @@ import Header from "../components/Header";
 import DataTable from "../components/DataTable";
 import {
     API_URL,
+    deleteResidence,
     getResidence,
     getStats,
     getStatusHistory,
