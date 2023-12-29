@@ -118,12 +118,15 @@ const Home = () => {
         page: 1,
         limit: 20,
     };
-    const onConfirme = (data) => {
-        setSelectItem(data);
-        setShowModal({
-            ...showModal,
-            addModal: true,
-        });
+    const onConfirme = async(data) => {
+        setSpin(true)
+        await updateResidences(
+            data.id,
+            "accepted",
+           
+        );
+        setSpin(false)
+        
     };
     const showDrawer = async (data) => {
         setModalAray(data?.medias);
@@ -249,25 +252,16 @@ const Home = () => {
             rejectModal: true,
         });
     };
-    const updateResidences = async (id, status, reason) => {
+    const updateResidences = async (id, status) => {
         setShowModal({ ...showModal, loading: true });
         const formeData = {
             status,
-            reason,
+           
         };
         console.log(selectItem);
         console.log(formeData);
-        if (reason == "") {
-            openNotificationWithIcon(
-                "error",
-                "ERREUR",
-                "merci de remplir le champ raison"
-            );
-            setShowModal({ ...showModal, loading: false });
-            return;
-        }
+       
         const res = await updateResidence(id, formeData, headers);
-        setShowModal({ ...showModal, loading: false });
         console.log(res);
         if (res.status !== 200) {
             openNotificationWithIcon(
@@ -299,12 +293,7 @@ const Home = () => {
             "la résidence a été" + " " + res.data.status
         );
 
-        setShowModal({ ...showModal, addModal: false, rejectModal: false });
-        setReason({
-            ...reason,
-            acceptReason: "",
-            rejectReason: "",
-        });
+       
     };
     const getResidenceHistory = async () => {
         const res = await getStatusHistory({page:1,limit:4}, headers);
@@ -485,7 +474,7 @@ const Home = () => {
                         );
                     }}
                 />
-                <ConfrimeModal
+                {/* <ConfrimeModal
                     showModal={showModal}
                     setShowModal={setShowModal}
                     loading={showModal.loading}
@@ -498,7 +487,7 @@ const Home = () => {
                     }}
                     reason={reason}
                     setReason={setReason}
-                />
+                /> */}
                 <DataTable
                     onConfirm={onConfirme}
                     onCancel={onCancel}

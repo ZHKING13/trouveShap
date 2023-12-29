@@ -233,8 +233,8 @@ const DataTable = ({
                         />
                     </Spin>
                 ) : record.status == "En Attente" ? (
-                    <Space>
-                        <Spin
+                    <Spin spinning={selectItem?.id == record.id ? spin : null}>
+                        <Space
                             spinning={selectItem?.id == record.id ? spin : null}
                         >
                             <img
@@ -244,19 +244,17 @@ const DataTable = ({
                                 }}
                                 src={Icon.valid}
                             />
-                        </Spin>
-                        <Spin
-                            spinning={selectItem?.id == record.id ? spin : null}
-                        >
-                            <img
+                             <img
                                         onClick={() => {
                                             setSelectItem(record);
                                     onCancel(record);
                                 }}
                                 src={Icon.cancel}
                             />
-                        </Spin>
-                    </Space>
+                        </Space>
+                        
+                      
+                    </Spin>
                 ) : null;
             },
             responsive: ["lg"],
