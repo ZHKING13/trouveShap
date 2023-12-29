@@ -591,6 +591,19 @@ const DrawerComponent = ({
                 </div>
             </div>
             <Divider />
+            <div  style={spaceStyle}>
+                    <h2>
+                            Numero de Serie
+                        </h2>
+                    <h2
+                        style={{
+                            color: "#1B2559",
+                        }}
+                    >
+                        {selectItem && selectItem.serial_number}
+                    </h2>
+                    </div>
+            <Divider />
             <h2
                 style={{
                     color: "#1B2559",
