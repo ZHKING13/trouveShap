@@ -598,6 +598,19 @@ const Remboursement = () => {
                     </h2>
                     </div>
                     <Divider />
+                    <div  style={spaceStyle}>
+                        <h4>
+                            Methode de versement hôte
+                        </h4>
+                    <h4
+                        style={{
+                            color: "#1B2559",
+                        }}
+                    >
+                        {selectItem && selectItem.booking?.residence?.host?.payment_method || "--"}
+                    </h4>
+                    </div>
+                    <Divider />
                     <h2
                         style={{
                             color: "#1B2559",

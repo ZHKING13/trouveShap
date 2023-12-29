@@ -474,20 +474,7 @@ const Home = () => {
                         );
                     }}
                 />
-                {/* <ConfrimeModal
-                    showModal={showModal}
-                    setShowModal={setShowModal}
-                    loading={showModal.loading}
-                    onConfirme={() => {
-                        updateResidences(
-                            selectItem.id,
-                            "accepted",
-                            reason.acceptReason
-                        );
-                    }}
-                    reason={reason}
-                    setReason={setReason}
-                /> */}
+               
                 <DataTable
                     onConfirm={onConfirme}
                     onCancel={onCancel}
@@ -591,6 +578,19 @@ const DrawerComponent = ({
                     >
                         {selectItem && selectItem.serial_number}
                     </h2>
+                    </div>
+            <Divider />
+            <div  style={spaceStyle}>
+                    <h4>
+                            Methode de versement hôte
+                        </h4>
+                    <h4
+                        style={{
+                            color: "#1B2559",
+                        }}
+                    >
+                        {selectItem && selectItem?.host?.payment_method || "--"}
+                    </h4>
                     </div>
             <Divider />
             <h2
