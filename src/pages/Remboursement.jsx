@@ -84,6 +84,7 @@ const Remboursement = () => {
         minPrice: 20000,
         maxPrice: 55000,
         numPeople: "",
+        status:""
     });
     const [imageModal, setImageModal] = useState(false);
     const [api, contextHolder] = notification.useNotification();
@@ -345,6 +346,8 @@ const Remboursement = () => {
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
         limit: 7,
+        status:filterValue.status,
+        admin_search:filtertext
     };
 
     const deletResidence = async (id) => {
@@ -487,7 +490,7 @@ const Remboursement = () => {
     };
     useEffect(() => {
         fetReimbursment();
-    }, [pagination.current]);
+    }, [pagination.current,filterValue.status,filtertext]);
 
     return (
         <main>
@@ -802,11 +805,7 @@ const Remboursement = () => {
                     }}
                 />
                 <DataTable
-                    data={residence?.filter((item) => {
-                        return item?.booking?.residence?.name
-                            ?.toLowerCase()
-                            .includes(filtertext?.toLowerCase());
-                    })}
+                    data={residence}
                     size={12}
                     onChange={(page) => {
                         console.log(page);
@@ -824,6 +823,10 @@ const Remboursement = () => {
                             style={{ width: 180, marginRight: "13px" }}
                             allowClear
                             onChange={(value) => {
+                                setFilterValue({
+                                    ...filterValue,
+                                    status:value
+                                })
                                 console.log("ok", value);
                             }}
                             size="large"

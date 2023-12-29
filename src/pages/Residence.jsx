@@ -208,6 +208,8 @@ const Residence = () => {
         numPeople: filterValue.numPeople,
         limit: 7,
         status: filterValue.status,
+        admin_search:filtertext
+
     };
 
     const deletResidence = async (id) => {
@@ -325,7 +327,7 @@ const Residence = () => {
             page: pagination.current,
             status: filterValue.status,
         });
-    }, [pagination.current, filterValue.status]);
+    }, [pagination.current, filterValue.status,filtertext]);
 
     return (
         <main>
@@ -679,11 +681,7 @@ const Residence = () => {
                     }}
                 />
                 <DataTable
-                    data={residence?.filter((item) => {
-                        return item?.name
-                            ?.toLowerCase()
-                            .includes(filtertext?.toLowerCase());
-                    })}
+                    data={residence}
                     size={12}
                     onChange={(page) => {
                         console.log(page);
@@ -717,7 +715,6 @@ const Residence = () => {
                                 console.log("filter", filterValue);
                             }}
                             size="large"
-                            value={filterValue.status}
                             options={[
                                 {
                                     value: "waiting",

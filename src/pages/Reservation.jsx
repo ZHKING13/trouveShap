@@ -10,6 +10,7 @@ import {
     Image,
     Modal,
     Button,
+    Select
 } from "antd";
 import DataTable, { renderColor, renderIcon } from "../components/DataTable";
 import Header from "../components/Header";
@@ -179,6 +180,7 @@ const Reservation = () => {
     const [imgModal, setImgModal] = useState(false);
     const [selectItem, setSelectItem] = useState(null);
     const [modalAray, setModalAray] = useState([]);
+    const [status,setStatus]=useState('')
     const [pagination, setPagination] = useState({
         page: 1,
         total: 7,
@@ -224,6 +226,9 @@ const Reservation = () => {
         limit: 7,
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
+        status:status,
+        admin_search:filtertext
+
     };
     const filtreByDate = (data) => {
         console.log("value", data);
@@ -266,7 +271,7 @@ const Reservation = () => {
     };
     useEffect(() => {
         fetchReservation();
-    }, [pagination.page]);
+    }, [pagination.page,status,filtertext]);
     return (
         <main>
             <>
@@ -297,11 +302,7 @@ const Reservation = () => {
 
                 <DataTable
                     column={columns}
-                    data={reservation.filter((item) => {
-                        return item?.residence?.name
-                            .toLowerCase()
-                            .includes(filtertext.toLowerCase());
-                    })}
+                    data={reservation}
                     size={7}
                     onChange={({ current }) => {
                         setPagination({
@@ -320,6 +321,7 @@ const Reservation = () => {
                             style={{ width: 180, marginRight: "13px" }}
                             allowClear
                             onChange={(value) => {
+                                setStatus(value)
                                 console.log("ok", value);
                             }}
                             size="large"
@@ -337,7 +339,7 @@ const Reservation = () => {
                                     label: "Terminée",
                                 },
                                 {
-                                    value: "progressing ",
+                                    value: "progressing",
                                     label: "En Cours",
                                 },
                                 {
@@ -349,11 +351,11 @@ const Reservation = () => {
                                     label: "Annulée",
                                 },
                                 {
-                                    value: "refunded ",
+                                    value: "refunded",
                                     label: "Remboursée",
                                 },
                                 {
-                                    value: "planified ",
+                                    value: "planified",
                                     label: "Confirmée",
                                 },
                             ]}
