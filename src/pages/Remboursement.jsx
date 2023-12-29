@@ -21,6 +21,7 @@ import {
     InputNumber,
     Image,
     Popover,
+    Select,
 } from "antd";
 import { PictureOutlined, DashOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -817,6 +818,39 @@ const Remboursement = () => {
                         showSizeChanger: false,
                         pageSize: 12,
                     }}
+                    children={
+                        <Select
+                            placeholder="Filtrer par status"
+                            style={{ width: 180, marginRight: "13px" }}
+                            allowClear
+                            onChange={(value) => {
+                                console.log("ok", value);
+                            }}
+                            size="large"
+                            options={[
+                                {
+                                    value: "waiting",
+                                    label: "En Attente",
+                                },
+                                {
+                                    value: "accepted",
+                                    label: "Acceptée",
+                                },
+                                {
+                                    value: "rejected",
+                                    label: "Rejetée",
+                                },
+                                {
+                                    value: "cancelled",
+                                    label: "Annulée",
+                                },
+                                {
+                                    value: "paid",
+                                    label: "Payée",
+                                },
+                            ]}
+                        />
+                    }
                 />
             </>
         </main>

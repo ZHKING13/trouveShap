@@ -294,7 +294,7 @@ const Reservation = () => {
                     imgModal={imgModal}
                     location={location}
                 />
-               
+
                 <DataTable
                     column={columns}
                     data={reservation.filter((item) => {
@@ -314,6 +314,51 @@ const Reservation = () => {
                         showSizeChanger: false,
                         pageSize: 12,
                     }}
+                    children={
+                        <Select
+                            placeholder="Filtrer par status"
+                            style={{ width: 180, marginRight: "13px" }}
+                            allowClear
+                            onChange={(value) => {
+                                console.log("ok", value);
+                            }}
+                            size="large"
+                            options={[
+                                {
+                                    value: "waiting",
+                                    label: "En Attente",
+                                },
+                                {
+                                    value: "accepted",
+                                    label: "Acceptée",
+                                },
+                                {
+                                    value: "done",
+                                    label: "Terminée",
+                                },
+                                {
+                                    value: "progressing ",
+                                    label: "En Cours",
+                                },
+                                {
+                                    value: "rejected",
+                                    label: "Rejetée",
+                                },
+                                {
+                                    value: "cancelled",
+                                    label: "Annulée",
+                                },
+                                {
+                                    value: "refunded ",
+                                    label: "Remboursée",
+                                },
+                                {
+                                    value: "planified ",
+                                    label: "Confirmée",
+                                },
+                            ]}
+                        />
+                    }
                 />
             </>
         </main>

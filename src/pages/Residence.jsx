@@ -20,6 +20,7 @@ import {
     Input,
     InputNumber,
     Image,
+    Select,
 } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -68,6 +69,7 @@ const Residence = () => {
         minPrice: 0,
         maxPrice: 0,
         numPeople: "",
+        status: "",
     });
     const [open, setOpen] = useState(false);
     const [modalAray, setModalAray] = useState([]);
@@ -88,12 +90,12 @@ const Residence = () => {
             rejectModal: true,
         });
     };
-    const onConfirme = (data) => {
+    const onConfirme = async (data) => {
+        setSpin(true);
         setSelectItem(data);
-        setShowModal({
-            ...showModal,
-            addModal: true,
-        });
+        console.log(data);
+        await updateResidences(data.id, "accepted");
+        setSpin(false);
     };
     const onHide = async (id, status) => {
         setSpin(true);
@@ -132,23 +134,12 @@ const Residence = () => {
             "la résidence a été" + " " + res.data.status
         );
     };
-    const updateResidences = async (id, status, reason) => {
+    const updateResidences = async (id, status) => {
         setShowModal({ ...showModal, loading: true });
         const formeData = {
             status,
-            reason,
         };
 
-        console.log(formeData);
-        if (reason == "") {
-            openNotificationWithIcon(
-                "error",
-                "ERREUR",
-                "merci de remplir le champ raison"
-            );
-            setShowModal({ ...showModal, loading: false });
-            return;
-        }
         const res = await updateResidence(id, formeData, headers);
         setShowModal({ ...showModal, loading: false });
         console.log(res);
@@ -182,7 +173,7 @@ const Residence = () => {
             "la résidence a été" + " " + res?.data?.status
         );
 
-        setShowModal({ ...showModal, addModal: false, rejectModal: false });
+        // setShowModal({ ...showModal, addModal: false, rejectModal: false });
         setReason({
             ...reason,
             acceptReason: "",
@@ -216,6 +207,7 @@ const Residence = () => {
         maxPrice: filterValue.maxPrice,
         numPeople: filterValue.numPeople,
         limit: 7,
+        status: filterValue.status,
     };
 
     const deletResidence = async (id) => {
@@ -296,14 +288,20 @@ const Residence = () => {
             )
         );
         console.log(filteredObject);
-        fetchResidence({
-            ...filteredObject,
-            limit: 7,
-        });
+        fetchResidence();
     };
-    const fetchResidence = async (params) => {
+    const fetchResidence = async () => {
+        const filteredObject = Object.fromEntries(
+            Object.entries(params).filter(
+                ([key, value]) =>
+                    value !== null &&
+                    value !== undefined &&
+                    value !== "" &&
+                    value !== 0
+            )
+        );
         setLoading(true);
-        const res = await getResidence(params, headers);
+        const res = await getResidence(filteredObject, headers);
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
@@ -322,8 +320,12 @@ const Residence = () => {
         console.log(residence);
     };
     useEffect(() => {
-        fetchResidence({ limit: 7, page: pagination.current });
-    }, [pagination.current]);
+        fetchResidence({
+            limit: 7,
+            page: pagination.current,
+            status: filterValue.status,
+        });
+    }, [pagination.current, filterValue.status]);
 
     return (
         <main>
@@ -660,21 +662,7 @@ const Residence = () => {
                     reason={reason}
                     setReason={setReason}
                 />
-                <ConfrimeModal
-                    showModal={showModal}
-                    setShowModal={setShowModal}
-                    setFilterValue={setFilterValue}
-                    loading={showModal.loading}
-                    onConfirme={() => {
-                        updateResidences(
-                            selectItem.id,
-                            "accepted",
-                            reason.acceptReason
-                        );
-                    }}
-                    reason={reason}
-                    setReason={setReason}
-                />
+
                 <RejectModal
                     showModal={showModal}
                     setShowModal={setShowModal}
@@ -715,6 +703,41 @@ const Residence = () => {
                         pageSize: 12,
                     }}
                     spin={spin}
+                    children={
+                        <Select
+                            placeholder="Filtrer par status"
+                            style={{ width: 180, marginRight: "13px" }}
+                            allowClear
+                            onChange={(value) => {
+                                setFilterValue({
+                                    ...filterValue,
+                                    status: value,
+                                });
+                                console.log("ok", value);
+                                console.log("filter", filterValue);
+                            }}
+                            size="large"
+                            value={filterValue.status}
+                            options={[
+                                {
+                                    value: "waiting",
+                                    label: "En Attente",
+                                },
+                                {
+                                    value: "active",
+                                    label: "Activé",
+                                },
+                                {
+                                    value: "rejected",
+                                    label: "Rejeté",
+                                },
+                                {
+                                    value: "deleted",
+                                    label: "Désactivé",
+                                },
+                            ]}
+                        />
+                    }
                 />
             </>
         </main>

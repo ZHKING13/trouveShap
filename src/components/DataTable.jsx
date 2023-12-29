@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import { Space, Table, Tag,Spin } from "antd";
+import { Space, Table, Tag,Spin, Select } from "antd";
 import { DATA2 } from "../data";
 import {
     CheckCircleOutlined,
@@ -98,6 +98,7 @@ const DataTable = ({
     spin,
     onDelet,
     showDrawer,
+    children
 }) => {
     const handleRowClick = (record) => {
         onclick && onclick(record);
@@ -233,18 +234,28 @@ const DataTable = ({
                     </Spin>
                 ) : record.status == "En Attente" ? (
                     <Space>
-                        <img
-                            onClick={() => {
-                                onConfirm(record);
-                            }}
-                            src={Icon.valid}
-                        />
-                        <img
-                            onClick={() => {
-                                onCancel(record);
-                            }}
-                            src={Icon.cancel}
-                        />
+                        <Spin
+                            spinning={selectItem?.id == record.id ? spin : null}
+                        >
+                            <img
+                                onClick={() => {
+                                    setSelectItem(record);
+                                    onConfirm(record);
+                                }}
+                                src={Icon.valid}
+                            />
+                        </Spin>
+                        <Spin
+                            spinning={selectItem?.id == record.id ? spin : null}
+                        >
+                            <img
+                                        onClick={() => {
+                                            setSelectItem(record);
+                                    onCancel(record);
+                                }}
+                                src={Icon.cancel}
+                            />
+                        </Spin>
                     </Space>
                 ) : null;
             },
@@ -252,30 +263,45 @@ const DataTable = ({
         },
     ];
     return (
-        <Table
-            style={{
-                backgroundColor: "#fff",
-                borderRadius: "18px",
-                padding: "10px",
-                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.04)",
-            }}
-            rowKey={(record) => record.id}
-            key={(record) => record.id}
-            className="dataTable"
-            size="small"
-            bordered={false}
-            columns={column ? column : columns}
-            dataSource={data ? data : DATA2}
-            pagination={{
-                pageSize: size ? size : 5,
-                ...pagination,
-            }}
-            onRow={(record) => ({
-                onClick: () => handleRowClick(record),
-            })}
-            onChange={onChange}
-            loading={loading}
-        />
+        <div>
+            <div
+                style={{
+                    display: "flex",
+                    alignItem: "center",
+                    margin: "7px",
+                    width: "100%",
+                    justifyContent: "flex-end",
+                    paddingRight: "29px",
+                }}
+            >
+               {children}
+            </div>
+
+            <Table
+                style={{
+                    backgroundColor: "#fff",
+                    borderRadius: "18px",
+                    padding: "10px",
+                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.04)",
+                }}
+                rowKey={(record) => record.id}
+                key={(record) => record.id}
+                className="dataTable"
+                size="small"
+                bordered={false}
+                columns={column ? column : columns}
+                dataSource={data ? data : DATA2}
+                pagination={{
+                    pageSize: size ? size : 5,
+                    ...pagination,
+                }}
+                onRow={(record) => ({
+                    onClick: () => handleRowClick(record),
+                })}
+                onChange={onChange}
+                loading={loading}
+            />
+        </div>
     );
 };
 
