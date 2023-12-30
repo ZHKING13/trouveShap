@@ -427,16 +427,16 @@ const Residence = () => {
                     </div>
                     <Divider />
                     <div  style={spaceStyle}>
-                    <h2>
+                    <h4>
                             Numero de Serie
-                        </h2>
-                    <h2
+                        </h4>
+                    <h4
                         style={{
                             color: "#1B2559",
                         }}
                     >
                         {selectItem && selectItem.serial_number}
-                    </h2>
+                    </h4>
                     </div>
                     <Divider />
                     <div  style={spaceStyle}>
@@ -515,6 +515,39 @@ const Residence = () => {
                             <p>{selectItem && selectItem?.host?.contact}</p>
                         </div>
                     </div>
+                    <Divider />
+                    <h3
+                        style={{
+                            color: "#1B2559",
+                            margin: "10px 0",
+                        }}
+                    >
+                      Description
+                    </h3>
+                    {
+                                selectItem?.description?.map((item,index)=>{
+                                    return (
+                                        <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            marginLeft: "10px",
+                                        }}
+                                    >
+                                        
+                                        <h4
+                                            style={{
+                                                color: "#1B2559",
+                                            }}
+                                        >
+                                            {item.title}
+                                        </h4>
+                                        <p>{item.text}</p>
+                                    </div>
+                                    )
+                                })
+                            }
+                    
                     <Divider />
                     <div orientation="vertical">
                         <h2>Comodités</h2>

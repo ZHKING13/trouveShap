@@ -461,16 +461,16 @@ export const DrawerComponent = ({
             </div>
             <Divider />
             <div  style={spaceStyle}>
-            <h2>
+            <h4>
                             Numero de Serie
-                        </h2>
-                    <h2
+                        </h4>
+                    <h4
                         style={{
                             color: "#1B2559",
                         }}
                     >
                         {selectItem && selectItem.residence.serial_number}
-                    </h2>
+                    </h4>
                     </div>
             <Divider />
             <div  style={spaceStyle}>
