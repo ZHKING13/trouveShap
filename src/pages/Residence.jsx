@@ -382,6 +382,12 @@ const Residence = () => {
                                         src={`${API_URL}/assets/uploads/residences/${selectItem?.medias[0]?.filename}`}
                                         alt=""
                                         width={352}
+                                        style={{
+                                            height: "160px",
+                                            objectFit: "cover",
+                                        }}
+                                        className="carouselImg"
+
                                     />
                                     {selectItem.medias.map((item, index) => {
                                         return index == 0 ? null : (
@@ -435,7 +441,7 @@ const Residence = () => {
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem.serial_number}
+                        {selectItem && selectItem?.serial_number}
                     </h4>
                     </div>
                     <Divider />
@@ -448,7 +454,7 @@ const Residence = () => {
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem.host?.payment_method || "--"}
+                        {selectItem && selectItem.host?.payment_method.label || "--"}
                     </h4>
                     </div>
                     <Divider />
@@ -533,6 +539,7 @@ const Residence = () => {
                                             flexDirection: "column",
                                             marginLeft: "10px",
                                         }}
+                                        key={index}
                                     >
                                         
                                         <h4
@@ -540,9 +547,9 @@ const Residence = () => {
                                                 color: "#1B2559",
                                             }}
                                         >
-                                            {item.title}
+                                            {item?.title}
                                         </h4>
-                                        <p>{item.text}</p>
+                                        <p>{item?.text}</p>
                                     </div>
                                     )
                                 })
@@ -608,7 +615,7 @@ const Residence = () => {
                                 <img src={Icon.check} alt="" />
                                 <p>Règlement interieur</p>
                             </div>
-                            {selectItem?.rules?.map((item) => {
+                            { selectItem?.rules?.map((item) => {
                                 return <span>{item.rule?.title}</span>;
                             })}
                         </div>

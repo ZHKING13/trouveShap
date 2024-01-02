@@ -39,15 +39,46 @@ function App() {
         const [loading, setLoading] = useState(false);
 
     const items = [
-        getItem("Home", "/", <img src={home} />, null),
-        getItem("Residence", "residence", <img src={icon} />),
-        getItem("Reservation", "reservation", <img src={check} />),
-        getItem("Remboursement", "remboursement", <img src={check} />),
-        getItem("Newsletter", "newsletter", <img src={inbox} />),
-        getItem("Profil", "profil", <img src={user} />),
-        getItem("Deconnexion", "login", <img src={log} />),
+        {
+            label: "Home",
+            key: "/",
+            icon: <img src={home} />,
+        },
+        {
+            label: "Residence",
+            key: "residence",
+            icon: <img src={icon} />,
+        },
+        {
+            label: "Reservation",
+            key: "reservation",
+            icon: <img src={check} />,
+        },
+        {
+            label: "Remboursement",
+            key: "remboursement",
+            icon: <img src={check} />,
+        },
+        {
+            label: "Newsletter",
+            key: "newsletter",
+            icon: <img src={inbox} />,
+        },
+        {
+            label: "Profil",
+            key: "profil",
+            icon: <img src={user} />,
+        },
+        {
+            label: "Deconnexion",
+            key: "login",
+            icon: <img src={log} />,
+        },
     ];
     const onClick = (e) => {
+        if(e.key=="login"){
+            localStorage.clear()
+        }
         navigate(e.key);
     };
     return (

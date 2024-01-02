@@ -397,7 +397,7 @@ const Home = () => {
                             </select>
                         </div>
                         <div className="detail">
-                            <p>{formatAmount(stats.getCompanyMoneyMonth)}</p>
+                            <p>{formatAmount(stats?.getCompanyMoneyMonth || 0)}</p>
                             {/* <p className="gain">
                                 Gain<span> +2,45%</span>
                             </p> */}
@@ -419,7 +419,7 @@ const Home = () => {
                     <div className="midleChart">
                         <ChartHeader
                             subtitle={"Nombre de réservations"}
-                            title={stats?.getBooking}
+                            title={stats?.getBooking || 0}
                             // span={<Tag color="#22C55E">+20</Tag>}
                             children={
                                 <Tag
@@ -433,7 +433,7 @@ const Home = () => {
                     <div className="barChart">
                         <ChartHeader
                             subtitle={"Résumé du trafic"}
-                            title={stats?.getVisits}
+                            title={stats?.getVisits || 0}
                             span={"visiteur"}
                             // children={<Tag color="#22C55E">+2,45%</Tag>}
                         />
@@ -455,7 +455,6 @@ const Home = () => {
                     showDrawer={showDrawer}
                     selectItem={selectItem}
                     onClose={() => setOpen(false)}
-                    setImageModal={setImgModal}
                     open={open}
                     location={location}
                 />
@@ -523,6 +522,8 @@ const DrawerComponent = ({
                                     height: "160px",
                                     objectFit: "cover",
                                 }}
+                                className="carouselImg"
+
                             />
                             {selectItem.medias.map((item, index) => {
                                 return index == 0 ? null : (
@@ -562,7 +563,7 @@ const DrawerComponent = ({
                 >
                     <span>
                         <PictureOutlined /> +
-                        {selectItem && selectItem.medias.length} photos
+                        {selectItem && selectItem?.medias?.length} photos
                     </span>
                 </div>
             </div>
@@ -589,7 +590,7 @@ const DrawerComponent = ({
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem?.host?.payment_method || "--"}
+                        {selectItem && selectItem?.host?.payment_method.label || "--"}
                     </h4>
                     </div>
             <Divider />
@@ -665,6 +666,7 @@ const DrawerComponent = ({
                                             flexDirection: "column",
                                             marginLeft: "10px",
                                         }}
+                                        key={index}
                                     >
                                         
                                         <h4
@@ -672,9 +674,9 @@ const DrawerComponent = ({
                                                 color: "#1B2559",
                                             }}
                                         >
-                                            {item.title}
+                                            {item?.title}
                                         </h4>
-                                        <p>{item.text}</p>
+                                        <p>{item?.text}</p>
                                     </div>
                                     )
                                 })
@@ -755,9 +757,9 @@ const DrawerComponent = ({
                         <img src={Icon.check} alt="" />
                         <p>Type d’activités sociales</p>
                     </div>
-                    <span>Baptêmes</span>
-                    <span>Mariages</span>
-                    <span>Anniversaires</span>
+                    {selectItem?.activities?.map((item, index) => {
+                        return <span key={index}>{item?.activity?.name}</span>;
+                    })}
                 </div>
             </div>
             <Divider />

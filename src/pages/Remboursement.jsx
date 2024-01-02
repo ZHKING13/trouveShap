@@ -535,6 +535,12 @@ const Remboursement = () => {
                                         src={`${API_URL}/assets/uploads/residences/${selectItem?.booking?.residence?.medias[0]?.filename}`}
                                         alt=""
                                         width={352}
+                                        className="carouselImg"
+                                        style={{
+                                            height: "160px",
+                                            objectFit: "cover",
+                                        }}
+
                                     />
                                     {selectItem.booking?.residence?.medias.map(
                                         (item, index) => {
@@ -607,7 +613,7 @@ const Remboursement = () => {
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem.booking?.residence?.host?.payment_method || "--"}
+                        {selectItem && selectItem.booking?.residence?.host?.payment_method.label || "--"}
                     </h4>
                     </div>
                     <Divider />

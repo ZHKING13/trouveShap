@@ -130,10 +130,10 @@ const NewsLetter = () => {
                                     padding: "4px 8px",
                                 }}
                                 onClick={() => {
-                                    exportToCSV(
+                                    newsletter.length >0 ? exportToCSV(
                                         newsletter,
                                         `newsLetter_page${pagination.page}`
-                                    );
+                                    ):null
                                 }}
                             >
                                 Exporter

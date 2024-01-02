@@ -60,6 +60,9 @@ const items = [
 const TabsComponent = () => {
     const navigate = useNavigate();
     const onChange = (key) => {
+        if(e.key=="login"){
+            localStorage.clear()
+        }
         navigate(key);
     };
     const location = useLocation();

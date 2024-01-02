@@ -414,6 +414,13 @@ export const DrawerComponent = ({
                     {selectItem?.residence?.medias && (
                         <Image.PreviewGroup>
                             <Image
+                            style={{
+                                height: "160px",
+                                objectFit: "cover",
+                            }}
+                            width={352}
+                            className="carouselImg"
+
                                 src={`${API_URL}/assets/uploads/residences/${selectItem?.residence?.medias[0].filename}`}
                             />
                             {selectItem?.residence?.medias?.map((item, index) =>
@@ -425,15 +432,9 @@ export const DrawerComponent = ({
                                         key={item.filename}
                                     >
                                         <Image
-                                            style={{
-                                                height: "156px",
-                                                objectFit: "cover",
-                                                resizeMode: "cover",
-                                            }}
-                                            width={320}
+                                            
                                             src={`${API_URL}/assets/uploads/residences/${item.filename}`}
-                                            alt=""
-                                            className="carouselImg"
+                                            alt="rei"
                                         />
                                     </div>
                                 )
@@ -482,7 +483,7 @@ export const DrawerComponent = ({
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem.residence?.host?.payment_method || "--"}
+                        {selectItem && selectItem.residence?.host?.payment_method.label || "--"}
                     </h4>
                     </div>
             <Divider />
