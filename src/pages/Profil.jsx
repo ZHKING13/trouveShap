@@ -225,26 +225,7 @@ const Profil = () => {
                                             )}{" "}
                                         </div>
                                     </Space>
-                                    <div className="profilItem">
-                                        <div className="left">
-                                            <img src={phone} alt="" />
-                                            <div>
-                                                <p>Numéro de téléphone</p>
-                                                <h4>{logUser.contact} </h4>
-                                            </div>
-                                        </div>
-                                        <div></div>
-                                    </div>
-                                    <div className="profilItem">
-                                        <div className="left">
-                                            <img src={marker} alt="" />
-                                            <div>
-                                                <p>Lieu d’habitation</p>
-                                                <h4>{logUser.location}</h4>
-                                            </div>
-                                        </div>
-                                        <div></div>
-                                    </div>
+                                   
                                 </div>
                             </div>
                         </div>

@@ -157,9 +157,12 @@ const DataTable = ({
             title: "Prix / nuits",
             dataIndex: "price",
             key: "price",
-            render: (text) => <span>{
-                text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-            } <span></span> XOF </span>,
+            render: (text) => (
+                <span>
+                    {text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                    <span></span> XOF{" "}
+                </span>
+            ),
             responsive: ["md"],
         },
         {
@@ -179,10 +182,10 @@ const DataTable = ({
                             justifyContent: "flex-start",
                         }}
                         href={`${API_URL}/assets/uploads/docs/${record.host.identityDoc}`}
-                        download={`doc_${record?.host?.firstname}.png`}
+                        download={record?.host?.identityDoc}
                         target="_blank"
                     >
-                        <img src={Icon.doc} /> doc_{record?.host?.firstname}.png
+                        <img src={Icon.doc} /> {record?.host?.identityDoc}
                     </a>
                 ),
             responsive: ["md"],
@@ -244,16 +247,14 @@ const DataTable = ({
                                 }}
                                 src={Icon.valid}
                             />
-                             <img
-                                        onClick={() => {
-                                            setSelectItem(record);
+                            <img
+                                onClick={() => {
+                                    setSelectItem(record);
                                     onCancel(record);
                                 }}
                                 src={Icon.cancel}
                             />
                         </Space>
-                        
-                      
                     </Spin>
                 ) : null;
             },
