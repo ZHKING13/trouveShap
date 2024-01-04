@@ -492,9 +492,9 @@ export const DrawerComponent = ({
                     color: "#1B2559",
                 }}
             >
-                {selectItem && selectItem?.residence.name}
+                {selectItem && selectItem?.residence?.name}
             </h2>
-            <span>{selectItem && selectItem?.residence.address}</span>
+            <span>{selectItem && selectItem?.residence?.address}</span>
             <Divider />
             <div className="price">
                 <h2

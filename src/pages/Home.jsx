@@ -599,9 +599,9 @@ const DrawerComponent = ({
                     color: "#1B2559",
                 }}
             >
-                {selectItem && selectItem.name}
+                {selectItem && selectItem?.name}
             </h2>
-            <span>{selectItem && selectItem.address}</span>
+            <span>{selectItem && selectItem?.address}</span>
             <Divider />
             <div className="price">
                 <h2
@@ -643,8 +643,8 @@ const DrawerComponent = ({
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem.host.firstname}{" "}
-                        {selectItem && selectItem.host.lastname}
+                        {selectItem && selectItem?.host?.firstname}{" "}
+                        {selectItem && selectItem?.host?.lastname}
                     </h3>
                 </div>
             </div>
