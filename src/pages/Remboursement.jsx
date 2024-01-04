@@ -613,7 +613,7 @@ const Remboursement = () => {
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem.booking?.residence?.host?.payment_method.label || "--"}
+                        {selectItem && selectItem.booking?.residence?.host?.payment_method?.label || "--"}
                     </h4>
                     </div>
                     <Divider />

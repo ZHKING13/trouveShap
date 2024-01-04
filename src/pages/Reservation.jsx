@@ -483,7 +483,7 @@ export const DrawerComponent = ({
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem.residence?.host?.payment_method.label || "--"}
+                        {selectItem && selectItem.residence?.host?.payment_method?.label || "--"}
                     </h4>
                     </div>
             <Divider />
