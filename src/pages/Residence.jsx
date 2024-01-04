@@ -454,7 +454,7 @@ const Residence = () => {
                             color: "#1B2559",
                         }}
                     >
-                        {selectItem && selectItem.host?.payment_method.label || "--"}
+                        {selectItem && selectItem.host?.payment_method?.label || "--"}
                     </h4>
                     </div>
                     <Divider />
