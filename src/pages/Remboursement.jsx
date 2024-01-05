@@ -411,6 +411,11 @@ const Remboursement = () => {
         // setResidence(res.data.residences);
     };
     const filtResidence = async (data) => {
+         setDateRange({
+             ...dateRange,
+             fromDate: data[0],
+             toDate: data[1],
+         });
         params = {
             ...params,
             fromDate: data[0],

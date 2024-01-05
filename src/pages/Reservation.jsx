@@ -10,7 +10,7 @@ import {
     Image,
     Modal,
     Button,
-    Select
+    Select,
 } from "antd";
 import DataTable, { renderColor, renderIcon } from "../components/DataTable";
 import Header from "../components/Header";
@@ -19,7 +19,7 @@ import { PictureOutlined } from "@ant-design/icons";
 
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { API_URL, getReservation,PayHost } from "../feature/API";
+import { API_URL, getReservation, PayHost } from "../feature/API";
 import FilterBoxe from "../components/FilterBoxe";
 import Map from "../components/Map";
 import { Icon } from "../constant/Icon";
@@ -118,8 +118,8 @@ const Reservation = () => {
             render: (text, record) => (
                 <span>
                     {" "}
-                    {record.residence
-                        .price.toString()
+                    {record.residence.price
+                        .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
                     XOF
                 </span>
@@ -182,12 +182,8 @@ const Reservation = () => {
             title: "Action",
             key: "action",
             render: (_, record) => {
-               return record.status == "En Cours" ? (
-                <Spin
-                        spinning={
-                            selectItem?.id == record.id ? spin : null
-                        }
-                    >
+                return record.status == "En Cours" ? (
+                    <Spin spinning={selectItem?.id == record.id ? spin : null}>
                         <img
                             onClick={() => {
                                 setSelectItem(record);
@@ -197,7 +193,7 @@ const Reservation = () => {
                             alt="paye icon"
                         />
                     </Spin>
-               ):null
+                ) : null;
             },
             responsive: ["md"],
         },
@@ -207,7 +203,7 @@ const Reservation = () => {
     const [open, setOpen] = useState(false);
     const [imgModal, setImgModal] = useState(false);
     const [modalAray, setModalAray] = useState([]);
-    const [status,setStatus]=useState('')
+    const [status, setStatus] = useState("");
     const [pagination, setPagination] = useState({
         page: 1,
         total: 7,
@@ -253,25 +249,29 @@ const Reservation = () => {
         limit: 7,
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
-        status:status,
-        admin_search:filtertext
-
+        status: status,
+        admin_search: filtertext,
     };
     const filtreByDate = (data) => {
         console.log("value", data);
 
         // Stocker la nouvelle valeur dans une variable locale
+        setDateRange({
+            ...dateRange,
+            fromDate: data[0],
+            toDate: data[1],
+        });
         params = {
             ...params,
             fromDate: data[0],
             toDate: data[1],
         };
 
-        console.log("dateRange après la mise à jour", params);
+        console.log("dateRange après la mise à jour", dateRange);
         fetchReservation();
     };
-const sendHostMoney = async(id)=> {
-    setSpin(true)
+    const sendHostMoney = async (id) => {
+        setSpin(true);
         const header = {
             Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         };
@@ -286,7 +286,7 @@ const sendHostMoney = async(id)=> {
             if (res.status == 400) {
                 return;
             }
-            setSpin(false)
+            setSpin(false);
             localStorage.clear();
             setTimeout(() => {
                 navigate("/login");
@@ -301,15 +301,11 @@ const sendHostMoney = async(id)=> {
                 return item;
             });
         });
-       setSpin(false)
+        setSpin(false);
         console.log(res);
-        openNotificationWithIcon(
-            "success",
-            "SUCCES",
-             res.data.status
-        );
+        openNotificationWithIcon("success", "SUCCES", res.data.status);
     };
-     const fetchReservation = async () => {
+    const fetchReservation = async () => {
         setLoading(true);
         const filteredObject = filterNullUndefinedValues(params);
         console.log("params: ", filteredObject);
@@ -336,7 +332,7 @@ const sendHostMoney = async(id)=> {
     };
     useEffect(() => {
         fetchReservation();
-    }, [pagination.page,status,filtertext]);
+    }, [pagination.page, status, filtertext]);
     return (
         <main>
             <>
@@ -483,13 +479,12 @@ export const DrawerComponent = ({
                     {selectItem?.residence?.medias && (
                         <Image.PreviewGroup>
                             <Image
-                            style={{
-                                height: "160px",
-                                objectFit: "cover",
-                            }}
-                            width={352}
-                            className="carouselImg"
-
+                                style={{
+                                    height: "160px",
+                                    objectFit: "cover",
+                                }}
+                                width={352}
+                                className="carouselImg"
                                 src={`${API_URL}/assets/uploads/residences/${selectItem?.residence?.medias[0].filename}`}
                             />
                             {selectItem?.residence?.medias?.map((item, index) =>
@@ -501,7 +496,6 @@ export const DrawerComponent = ({
                                         key={item.filename}
                                     >
                                         <Image
-                                            
                                             src={`${API_URL}/assets/uploads/residences/${item.filename}`}
                                             alt="rei"
                                         />
@@ -530,31 +524,29 @@ export const DrawerComponent = ({
                 </div>
             </div>
             <Divider />
-            <div  style={spaceStyle}>
-            <h4>
-                            Numero de Serie
-                        </h4>
-                    <h4
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        {selectItem && selectItem.residence.serial_number}
-                    </h4>
-                    </div>
+            <div style={spaceStyle}>
+                <h4>Numero de Serie</h4>
+                <h4
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    {selectItem && selectItem.residence.serial_number}
+                </h4>
+            </div>
             <Divider />
-            <div  style={spaceStyle}>
-            <h4>
-                            Methode de versement hôte
-                        </h4>
-                    <h4
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        {selectItem && selectItem.residence?.host?.payment_method?.label || "--"}
-                    </h4>
-                    </div>
+            <div style={spaceStyle}>
+                <h4>Methode de versement hôte</h4>
+                <h4
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    {(selectItem &&
+                        selectItem.residence?.host?.payment_method?.label) ||
+                        "--"}
+                </h4>
+            </div>
             <Divider />
             <h2
                 style={{
@@ -572,8 +564,8 @@ export const DrawerComponent = ({
                     }}
                 >
                     {selectItem &&
-                        selectItem?.residence
-                            .price.toString()
+                        selectItem?.residence.price
+                            .toString()
                             .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
                     XOF / nuits
                 </h2>
