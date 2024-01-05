@@ -35,7 +35,8 @@ export function filterNullUndefinedValues(obj) {
         if (
             obj.hasOwnProperty(key) &&
             obj[key] !== null &&
-            obj[key] !== undefined
+            obj[key] !== undefined &&
+            obj[key] !== ""
         ) {
             filteredObject[key] = obj[key];
         }
@@ -43,6 +44,7 @@ export function filterNullUndefinedValues(obj) {
 
     return filteredObject;
 }
+
 const Reservation = () => {
     const [spin, setSpin] = useState(false);
     const [selectItem, setSelectItem] = useState(null);
@@ -384,7 +386,7 @@ const sendHostMoney = async(id)=> {
                             style={{ width: 180, marginRight: "13px" }}
                             allowClear
                             onChange={(value) => {
-                                setStatus(value)
+                                setStatus(value);
                                 console.log("ok", value);
                             }}
                             size="large"
@@ -401,10 +403,10 @@ const sendHostMoney = async(id)=> {
                                     value: "done",
                                     label: "Terminée",
                                 },
-                                // {
-                                //     value: "Hôte Payé",
-                                //     label: "Hôte Payé",
-                                // },
+                                {
+                                    value: "host_paid",
+                                    label: "Hôte Payé",
+                                },
                                 {
                                     value: "progressing",
                                     label: "En Cours",
