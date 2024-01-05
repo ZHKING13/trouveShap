@@ -12,6 +12,8 @@ export const renderIcon = (status) => {
     switch (status) {
         case "Validé":
             return <CheckCircleOutlined color="#fff" />;
+        case "Hôte Payé":
+            return <CheckCircleOutlined color="#fff" />;
         case "Acceptée":
             return <CheckCircleOutlined color="#fff" />;
         case "Activé":
@@ -46,6 +48,8 @@ import {API_URL} from "../feature/API"
 export const renderColor = (status) => {
     switch (status) {
         case "Validé":
+            return "#22C55E";
+        case "Hôte Payé":
             return "#22C55E";
         case "Activé":
             return "#22C55E";

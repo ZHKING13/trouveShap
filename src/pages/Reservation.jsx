@@ -19,7 +19,7 @@ import { PictureOutlined } from "@ant-design/icons";
 
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { API_URL, getReservation } from "../feature/API";
+import { API_URL, getReservation,PayHost } from "../feature/API";
 import FilterBoxe from "../components/FilterBoxe";
 import Map from "../components/Map";
 import { Icon } from "../constant/Icon";
@@ -44,6 +44,9 @@ export function filterNullUndefinedValues(obj) {
     return filteredObject;
 }
 const Reservation = () => {
+    const [spin, setSpin] = useState(false);
+    const [selectItem, setSelectItem] = useState(null);
+
     const columns = [
         {
             title: "Résidences",
@@ -70,7 +73,7 @@ const Reservation = () => {
                     <div>
                         <p> {record.residence.name}</p>
                         <p style={{ fontSize: 12, color: "#888" }}>
-                            {record.residence.address}
+                            {record.residence.address.substring(0, 18)}
                         </p>
                     </div>
                 </div>
@@ -84,7 +87,7 @@ const Reservation = () => {
                 <div>
                     <p>{record.residence.host.firstname}</p>
                     <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.residence.host.email}
+                        {record.residence.host.email.substring(0, 10)}...
                     </p>
                 </div>
             ),
@@ -100,7 +103,7 @@ const Reservation = () => {
                         {record.user.firstname} {record.user.lastname}
                     </p>
                     <p style={{ fontSize: 12, color: "#888" }}>
-                        {record.user.email}
+                        {record.user.email.substring(0, 10)}...
                     </p>
                 </div>
             ),
@@ -173,12 +176,34 @@ const Reservation = () => {
             ),
             responsive: ["md"],
         },
+        {
+            title: "Action",
+            key: "action",
+            render: (_, record) => {
+               return record.status == "En Cours" ? (
+                <Spin
+                        spinning={
+                            selectItem?.id == record.id ? spin : null
+                        }
+                    >
+                        <img
+                            onClick={() => {
+                                setSelectItem(record);
+                                sendHostMoney(record.id);
+                            }}
+                            src={Icon.bank}
+                            alt="paye icon"
+                        />
+                    </Spin>
+               ):null
+            },
+            responsive: ["md"],
+        },
     ];
     const [loading, setLoading] = useOutletContext();
     const [reservation, setReservation] = useState([]);
     const [open, setOpen] = useState(false);
     const [imgModal, setImgModal] = useState(false);
-    const [selectItem, setSelectItem] = useState(null);
     const [modalAray, setModalAray] = useState([]);
     const [status,setStatus]=useState('')
     const [pagination, setPagination] = useState({
@@ -243,8 +268,46 @@ const Reservation = () => {
         console.log("dateRange après la mise à jour", params);
         fetchReservation();
     };
-
-    const fetchReservation = async () => {
+const sendHostMoney = async(id)=> {
+    setSpin(true)
+        const header = {
+            Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+        };
+        const res = await PayHost(id, header);
+        console.log(res);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.data.message
+            );
+            if (res.status == 400) {
+                return;
+            }
+            setSpin(false)
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        setReservation((prev) => {
+            return prev.map((item) => {
+                if (item.id == id) {
+                    item.status = res.data.status;
+                }
+                return item;
+            });
+        });
+       setSpin(false)
+        console.log(res);
+        openNotificationWithIcon(
+            "success",
+            "SUCCES",
+             res.data.status
+        );
+    };
+     const fetchReservation = async () => {
         setLoading(true);
         const filteredObject = filterNullUndefinedValues(params);
         console.log("params: ", filteredObject);
@@ -338,6 +401,10 @@ const Reservation = () => {
                                     value: "done",
                                     label: "Terminée",
                                 },
+                                // {
+                                //     value: "Hôte Payé",
+                                //     label: "Hôte Payé",
+                                // },
                                 {
                                     value: "progressing",
                                     label: "En Cours",

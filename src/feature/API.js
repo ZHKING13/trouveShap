@@ -224,7 +224,8 @@ export const RejectReimbursment = async(id, data, headers) => {
         }
     }
     //post put refund /admin/refunds/pay/{id}
-export const PayReimbursment = async(id, headers) => {
+
+    export const PayReimbursment = async(id, headers) => {
         try {
             console.log(id, headers)
             const response = await privateService.put(`/admin/refunds/pay/${id}`, null, { headers })
@@ -239,8 +240,25 @@ export const PayReimbursment = async(id, headers) => {
             return { status: error.response.status, data: error.response.data };
         }
     }
+    // pay host /admin/bookings/pay_host/
+    export const PayHost = async(id, headers) => {
+        try {
+            console.log(id, headers)
+            const response = await privateService.put(`/admin/bookings/pay_host/${id}`, null, { headers })
+            const { status, data: responseData } = response;
+            return { status, data: responseData };
+        } catch (error) {
+            console.log(error);
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+                console.error('La requête a expiré en raison d\'un timeout.');
+                return { status: 408, data: { message: 'Request Timeout' } };
+            }
+            return { status: error.response.status, data: error.response.data };
+        }
+    }
     // get reservation /admin/bookings
-export const getReservation = async(params, headers) => {
+
+    export const getReservation = async(params, headers) => {
         try {
             const queryString = new URLSearchParams(params).toString();
 
