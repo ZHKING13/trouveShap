@@ -607,7 +607,7 @@ const Remboursement = () => {
                             }}
                         >
                             {selectItem &&
-                                selectItem.booking?.residence?.serial_number}
+                                selectItem?.serial_number}
                         </h4>
                     </div>
                     <Divider />
