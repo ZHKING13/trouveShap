@@ -431,7 +431,8 @@ const Residence = () => {
                     </div>
                     <Divider />
                     <div style={spaceStyle}>
-                        <h4>Numero de Serie</h4>
+                        <h4>Numéro de résidence
+</h4>
                         <h4
                             style={{
                                 color: "#1B2559",

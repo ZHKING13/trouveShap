@@ -523,7 +523,6 @@ const DrawerComponent = ({
                                     objectFit: "cover",
                                 }}
                                 className="carouselImg"
-
                             />
                             {selectItem.medias.map((item, index) => {
                                 return index == 0 ? null : (
@@ -568,31 +567,28 @@ const DrawerComponent = ({
                 </div>
             </div>
             <Divider />
-            <div  style={spaceStyle}>
-                    <h4>
-                            Numero de Serie
-                        </h4>
-                    <h4
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        {selectItem && selectItem.serial_number}
-                    </h4>
-                    </div>
+            <div style={spaceStyle}>
+                <h4>Numéro de résidence</h4>
+                <h4
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    {selectItem && selectItem.serial_number}
+                </h4>
+            </div>
             <Divider />
-            <div  style={spaceStyle}>
-                    <h4>
-                            Methode de versement hôte
-                        </h4>
-                    <h4
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        {selectItem && selectItem?.host?.payment_method?.label || "--"}
-                    </h4>
-                    </div>
+            <div style={spaceStyle}>
+                <h4>Methode de versement hôte</h4>
+                <h4
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    {(selectItem && selectItem?.host?.payment_method?.label) ||
+                        "--"}
+                </h4>
+            </div>
             <Divider />
             <h2
                 style={{
@@ -650,37 +646,34 @@ const DrawerComponent = ({
             </div>
             <Divider />
             <h3
+                style={{
+                    color: "#1B2559",
+                    margin: "10px 0",
+                }}
+            >
+                Description
+            </h3>
+            {selectItem?.description?.map((item, index) => {
+                return (
+                    <div
                         style={{
-                            color: "#1B2559",
-                            margin: "10px 0",
+                            display: "flex",
+                            flexDirection: "column",
+                            marginLeft: "10px",
                         }}
+                        key={index}
                     >
-                      Description
-                    </h3>
-                    {
-                                selectItem?.description?.map((item,index)=>{
-                                    return (
-                                        <div
-                                        style={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            marginLeft: "10px",
-                                        }}
-                                        key={index}
-                                    >
-                                        
-                                        <h4
-                                            style={{
-                                                color: "#1B2559",
-                                            }}
-                                        >
-                                            {item?.title}
-                                        </h4>
-                                        <p>{item?.text}</p>
-                                    </div>
-                                    )
-                                })
-                            }
+                        <h4
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            {item?.title}
+                        </h4>
+                        <p>{item?.text}</p>
+                    </div>
+                );
+            })}
             <Divider />
             <div orientation="vertical">
                 <h2>Comodités</h2>
