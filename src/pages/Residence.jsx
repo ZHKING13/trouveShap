@@ -208,8 +208,7 @@ const Residence = () => {
         numPeople: filterValue.numPeople,
         limit: 7,
         status: filterValue.status,
-        admin_search:filtertext
-
+        admin_search: filtertext,
     };
 
     const deletResidence = async (id) => {
@@ -327,7 +326,7 @@ const Residence = () => {
             page: pagination.current,
             status: filterValue.status,
         });
-    }, [pagination.current, filterValue.status,filtertext]);
+    }, [pagination.current, filterValue.status, filtertext]);
 
     return (
         <main>
@@ -387,7 +386,6 @@ const Residence = () => {
                                             objectFit: "cover",
                                         }}
                                         className="carouselImg"
-
                                     />
                                     {selectItem.medias.map((item, index) => {
                                         return index == 0 ? null : (
@@ -427,35 +425,33 @@ const Residence = () => {
                         >
                             <span>
                                 <PictureOutlined /> +
-                                {selectItem && selectItem.medias.length} photos
+                                {selectItem && selectItem?.medias.length} photos
                             </span>
                         </div>
                     </div>
                     <Divider />
-                    <div  style={spaceStyle}>
-                    <h4>
-                            Numero de Serie
+                    <div style={spaceStyle}>
+                        <h4>Numero de Serie</h4>
+                        <h4
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            {selectItem && selectItem?.serial_number}
                         </h4>
-                    <h4
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        {selectItem && selectItem?.serial_number}
-                    </h4>
                     </div>
                     <Divider />
-                    <div  style={spaceStyle}>
-                    <h4>
-                            Methode de versement hôte
+                    <div style={spaceStyle}>
+                        <h4>Methode de versement hôte</h4>
+                        <h4
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            {(selectItem &&
+                                selectItem.host?.payment_method?.label) ||
+                                "--"}
                         </h4>
-                    <h4
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        {selectItem && selectItem.host?.payment_method?.label || "--"}
-                    </h4>
                     </div>
                     <Divider />
                     <h2
@@ -528,33 +524,30 @@ const Residence = () => {
                             margin: "10px 0",
                         }}
                     >
-                      Description
+                        Description
                     </h3>
-                    {
-                                selectItem?.description?.map((item,index)=>{
-                                    return (
-                                        <div
-                                        style={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            marginLeft: "10px",
-                                        }}
-                                        key={index}
-                                    >
-                                        
-                                        <h4
-                                            style={{
-                                                color: "#1B2559",
-                                            }}
-                                        >
-                                            {item?.title}
-                                        </h4>
-                                        <p>{item?.text}</p>
-                                    </div>
-                                    )
-                                })
-                            }
-                    
+                    {selectItem?.description?.map((item, index) => {
+                        return (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    marginLeft: "10px",
+                                }}
+                                key={index}
+                            >
+                                <h4
+                                    style={{
+                                        color: "#1B2559",
+                                    }}
+                                >
+                                    {item?.title}
+                                </h4>
+                                <p>{item?.text}</p>
+                            </div>
+                        );
+                    })}
+
                     <Divider />
                     <div orientation="vertical">
                         <h2>Comodités</h2>
@@ -598,7 +591,7 @@ const Residence = () => {
                         style={{
                             display: "flex",
 
-                            gap: "5px",
+                            gap: "10px",
                             marginTop: "10px",
                             justifyContent: "space-between",
                         }}
@@ -608,6 +601,8 @@ const Residence = () => {
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: "5px",
+                                alignItems: "flex-start",
+                                paddingLeft:"5px"
                             }}
                             className="left"
                         >
@@ -615,8 +610,10 @@ const Residence = () => {
                                 <img src={Icon.check} alt="" />
                                 <p>Règlement interieur</p>
                             </div>
-                            { selectItem?.rules?.map((item) => {
-                                return <span>{item.rule?.title}</span>;
+                            {selectItem?.rules?.map((item,index) => {
+                                return (
+                                    <span key={index}>{item.rule?.title}</span>
+                                );
                             })}
                         </div>
                         <div
@@ -624,6 +621,7 @@ const Residence = () => {
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: "5px",
+                                alignItems: "flex-start",
                             }}
                             className="rigth"
                         >
@@ -631,9 +629,13 @@ const Residence = () => {
                                 <img src={Icon.check} alt="" />
                                 <p>Type d’activités sociales</p>
                             </div>
-                            <span>Baptêmes</span>
-                            <span>Mariages</span>
-                            <span>Anniversaires</span>
+                            {selectItem?.activities?.map((item,index) => {
+                                return (
+                                    <span key={index}>
+                                        {item.activity?.name}
+                                    </span>
+                                );
+                            })}
                         </div>
                     </div>
                     <Divider />

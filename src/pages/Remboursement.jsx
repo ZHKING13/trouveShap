@@ -84,7 +84,7 @@ const Remboursement = () => {
         minPrice: 20000,
         maxPrice: 55000,
         numPeople: "",
-        status:""
+        status: "",
     });
     const [imageModal, setImageModal] = useState(false);
     const [api, contextHolder] = notification.useNotification();
@@ -259,7 +259,10 @@ const Remboursement = () => {
                         <img
                             onClick={() => {
                                 setSelectItem(record);
-                                refund(record.id);
+                                setShowModal({
+                                    ...showModal,
+                                    rejectModal: true,
+                                });
                             }}
                             src={Icon.bank}
                             alt="paye icon"
@@ -346,8 +349,8 @@ const Remboursement = () => {
         fromDate: dateRange.fromDate,
         toDate: dateRange.toDate,
         limit: 7,
-        status:filterValue.status,
-        admin_search:filtertext
+        status: filterValue.status,
+        admin_search: filtertext,
     };
 
     const deletResidence = async (id) => {
@@ -411,11 +414,11 @@ const Remboursement = () => {
         // setResidence(res.data.residences);
     };
     const filtResidence = async (data) => {
-         setDateRange({
-             ...dateRange,
-             fromDate: data[0],
-             toDate: data[1],
-         });
+        setDateRange({
+            ...dateRange,
+            fromDate: data[0],
+            toDate: data[1],
+        });
         params = {
             ...params,
             fromDate: data[0],
@@ -425,6 +428,7 @@ const Remboursement = () => {
     };
     const refund = async (id) => {
         setShowModal({ ...showModal, spin: true });
+        setShowModal({ ...showModal, loading: true });
         const header = {
             Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         };
@@ -446,7 +450,7 @@ const Remboursement = () => {
             }, 1500);
             return;
         }
-        setShowModal({ ...showModal, spin: false });
+        setShowModal({ ...showModal, spin: false,loading:false,rejectModal:false });
         setResidence((prev) => {
             return prev.map((item) => {
                 if (item.id == id) {
@@ -495,7 +499,7 @@ const Remboursement = () => {
     };
     useEffect(() => {
         fetReimbursment();
-    }, [pagination.current,filterValue.status,filtertext]);
+    }, [pagination.current, filterValue.status, filtertext]);
 
     return (
         <main>
@@ -545,7 +549,6 @@ const Remboursement = () => {
                                             height: "160px",
                                             objectFit: "cover",
                                         }}
-
                                     />
                                     {selectItem.booking?.residence?.medias.map(
                                         (item, index) => {
@@ -596,30 +599,30 @@ const Remboursement = () => {
                         </div>
                     </div>
                     <Divider />
-                    <div  style={spaceStyle}>
-                        <h4>
-                            Numero de Serie
+                    <div style={spaceStyle}>
+                        <h4>Numero de Serie</h4>
+                        <h4
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            {selectItem &&
+                                selectItem.booking?.residence?.serial_number}
                         </h4>
-                    <h4
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        {selectItem && selectItem.booking?.residence?.serial_number}
-                    </h4>
                     </div>
                     <Divider />
-                    <div  style={spaceStyle}>
-                        <h4>
-                            Methode de versement hôte
+                    <div style={spaceStyle}>
+                        <h4>Methode de versement hôte</h4>
+                        <h4
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            {(selectItem &&
+                                selectItem.booking?.residence?.host
+                                    ?.payment_method?.label) ||
+                                "--"}
                         </h4>
-                    <h4
-                        style={{
-                            color: "#1B2559",
-                        }}
-                    >
-                        {selectItem && selectItem.booking?.residence?.host?.payment_method?.label || "--"}
-                    </h4>
                     </div>
                     <Divider />
                     <h2
@@ -834,11 +837,7 @@ const Remboursement = () => {
                     reason={reason}
                     setReason={setReason}
                     onConfirme={() => {
-                        updateResidences(
-                            selectItem.id,
-                            "rejected",
-                            reason.rejectReason
-                        );
+                        refund(selectItem.id);
                     }}
                 />
                 <DataTable
@@ -862,8 +861,8 @@ const Remboursement = () => {
                             onChange={(value) => {
                                 setFilterValue({
                                     ...filterValue,
-                                    status:value
-                                })
+                                    status: value,
+                                });
                                 console.log("ok", value);
                             }}
                             size="large"
@@ -1225,21 +1224,8 @@ export const RejectModal = ({
             open={showModal.rejectModal}
         >
             <div className="top">
-                <h3>Valider le refus</h3>
-                <span>
-                    Voulez vous vraiment refuser l’ajout de cette résidence ?
-                </span>
-                <Input.TextArea
-                    style={{
-                        marginTop: "10px",
-                    }}
-                    placeholder="Raison du refus"
-                    onChange={(e) => {
-                        console.log(e);
-                        setReason({ ...reason, rejectReason: e.target.value });
-                    }}
-                    value={reason.rejectReason}
-                />
+                <h4>voulez vous Valider la transaction ?</h4>
+                <span>cette action est irréversible</span>
             </div>
         </Modal>
     );

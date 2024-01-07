@@ -724,7 +724,7 @@ const DrawerComponent = ({
                 style={{
                     display: "flex",
 
-                    gap: "5px",
+                    gap: "10px",
                     marginTop: "10px",
                     justifyContent: "space-between",
                 }}

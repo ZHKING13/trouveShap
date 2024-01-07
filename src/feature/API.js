@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const API_URL = "https://preprodapi.trouvechap.com";
+export const API_URL = "https://api.trouvechap.com";
 const privateService = axios.create({
     baseURL: API_URL,
 });
@@ -225,7 +225,7 @@ export const RejectReimbursment = async(id, data, headers) => {
     }
     //post put refund /admin/refunds/pay/{id}
 
-    export const PayReimbursment = async(id, headers) => {
+export const PayReimbursment = async(id, headers) => {
         try {
             console.log(id, headers)
             const response = await privateService.put(`/admin/refunds/pay/${id}`, null, { headers })
@@ -241,7 +241,7 @@ export const RejectReimbursment = async(id, data, headers) => {
         }
     }
     // pay host /admin/bookings/pay_host/
-    export const PayHost = async(id, headers) => {
+export const PayHost = async(id, headers) => {
         try {
             console.log(id, headers)
             const response = await privateService.put(`/admin/bookings/pay_host/${id}`, null, { headers })
@@ -258,7 +258,7 @@ export const RejectReimbursment = async(id, data, headers) => {
     }
     // get reservation /admin/bookings
 
-    export const getReservation = async(params, headers) => {
+export const getReservation = async(params, headers) => {
         try {
             const queryString = new URLSearchParams(params).toString();
 

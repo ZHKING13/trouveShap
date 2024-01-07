@@ -32,6 +32,8 @@ export const renderIcon = (status) => {
             return <CloseCircleOutlined color="#fff" />;
         case "Annulée":
             return <CloseCircleOutlined color="#fff" />;
+        case "Supprimé":
+            return <CloseCircleOutlined color="#fff" />;
         case "Désactivé":
             return <CloseCircleOutlined color="#fff" />;
         case "En Cours":
@@ -66,6 +68,8 @@ export const renderColor = (status) => {
         case "Refusée":
             return "#EF4444";
         case "Annulée":
+            return "#EF4444";
+        case "Supprimé":
             return "#EF4444";
         case "Désactivé":
             return "#EF4444";

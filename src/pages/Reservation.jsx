@@ -48,6 +48,8 @@ export function filterNullUndefinedValues(obj) {
 const Reservation = () => {
     const [spin, setSpin] = useState(false);
     const [selectItem, setSelectItem] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [load, setLoad] = useState(false);
 
     const columns = [
         {
@@ -187,7 +189,7 @@ const Reservation = () => {
                         <img
                             onClick={() => {
                                 setSelectItem(record);
-                                sendHostMoney(record.id);
+                                setShowModal(true);
                             }}
                             src={Icon.bank}
                             alt="paye icon"
@@ -272,6 +274,7 @@ const Reservation = () => {
     };
     const sendHostMoney = async (id) => {
         setSpin(true);
+        setLoad(true);
         const header = {
             Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         };
@@ -302,6 +305,8 @@ const Reservation = () => {
             });
         });
         setSpin(false);
+        setLoad(false);
+        setShowModal(false);
         console.log(res);
         openNotificationWithIcon("success", "SUCCES", res.data.status);
     };
@@ -360,7 +365,12 @@ const Reservation = () => {
                     imgModal={imgModal}
                     location={location}
                 />
-
+                <RequestModal
+                    setShowModal={setShowModal}
+                    showModal={showModal}
+                    loading={load}
+                    onConfirme={() => sendHostMoney(selectItem.id)}
+                />
                 <DataTable
                     column={columns}
                     data={reservation}
@@ -432,6 +442,62 @@ const Reservation = () => {
     );
 };
 export default Reservation;
+export const RequestModal = ({
+    setShowModal,
+    showModal,
+    onConfirme,
+    loading,
+}) => {
+    return (
+        <Modal
+            width={300}
+            onCancel={() => {
+                setShowModal(false);
+                setReason("");
+            }}
+            centered
+            maskClosable={false}
+            footer={
+                <>
+                    <Divider />
+                    <div style={spaceStyle}>
+                        <Button
+                            onClick={() => {
+                                setShowModal(false);
+
+                                setReason("");
+                            }}
+                            style={{
+                                backgroundColor: "#FEF2F2 !important",
+                                color: "#EF4444",
+                                borderRadius: "25px",
+                            }}
+                            danger
+                        >
+                            Annuler
+                        </Button>
+                        <Button
+                            style={{
+                                borderRadius: "25px",
+                            }}
+                            onClick={onConfirme}
+                            type="primary"
+                            loading={loading}
+                        >
+                            Confirmer
+                        </Button>
+                    </div>
+                </>
+            }
+            open={showModal}
+        >
+            <div className="top">
+                <h4>voulez vous Valider la transaction ?</h4>
+                <span>cette action est irréversible</span>
+            </div>
+        </Modal>
+    );
+};
 const subtitleSryle = {
     display: "flex",
     alignItems: "center",
@@ -531,7 +597,7 @@ export const DrawerComponent = ({
                         color: "#1B2559",
                     }}
                 >
-                    {selectItem && selectItem.residence.serial_number}
+                    {selectItem && selectItem?.serial_number}
                 </h4>
             </div>
             <Divider />
