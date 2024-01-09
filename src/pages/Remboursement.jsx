@@ -841,7 +841,7 @@ const Remboursement = () => {
                 />
                 <DataTable
                     data={residence}
-                    size={12}
+                    size={7}
                     onChange={(page) => {
                         console.log(page);
                         setPagination({ ...pagination, current: page.current });
@@ -850,7 +850,6 @@ const Remboursement = () => {
                     pagination={{
                         total: pagination.total,
                         showSizeChanger: false,
-                        pageSize: 12,
                     }}
                     children={
                         <Select

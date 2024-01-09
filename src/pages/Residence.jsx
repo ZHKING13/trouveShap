@@ -751,7 +751,7 @@ const Residence = () => {
                 />
                 <DataTable
                     data={residence}
-                    size={12}
+                    size={7}
                     onChange={(page) => {
                         console.log(page);
                         setPagination({ ...pagination, current: page.current });
@@ -766,8 +766,6 @@ const Residence = () => {
                     showDrawer={showDrawer}
                     pagination={{
                         total: pagination.total,
-                        showSizeChanger: false,
-                        pageSize: 12,
                     }}
                     spin={spin}
                     children={

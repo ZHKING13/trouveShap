@@ -384,7 +384,7 @@ const Reservation = () => {
                     pagination={{
                         total: pagination.total,
                         showSizeChanger: false,
-                        pageSize: 12,
+                        
                     }}
                     children={
                         <Select
