@@ -11,7 +11,7 @@ const Stats = ({title,subtitle,children,icon }) => {
             <div className="statRight">
                 <p>{ title}</p>
                 <div className="statdetail">
-                    <h4>{ subtitle}</h4>
+                    <h5>{ subtitle}</h5>
                     {children && <span>{children}</span>}
                 </div>
             </div>
