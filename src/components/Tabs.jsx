@@ -57,8 +57,9 @@ const items = [
         children: "",
     },
 ];
-const TabsComponent = () => {
+const TabsComponent = (e) => {
     const navigate = useNavigate();
+    console.log("click")
     const onChange = (key) => {
         if(e.key=="login"){
             localStorage.clear()
