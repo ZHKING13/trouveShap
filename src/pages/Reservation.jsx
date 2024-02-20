@@ -550,6 +550,7 @@ export const DrawerComponent = ({
                                     objectFit: "cover",
                                 }}
                                 width={352}
+                                id="carouselImgs"
                                 className="carouselImg"
                                 src={`${API_URL}/assets/uploads/residences/${selectItem?.residence?.medias[0].filename}`}
                             />
@@ -580,6 +581,10 @@ export const DrawerComponent = ({
                         padding: "10px 18px ",
                         backgroundColor: "#fff",
                         borderRadius: "100px",
+                        cursor: "pointer",
+                    }}
+                    onClick={() => {
+                        document.getElementById("carouselImgs").click();
                     }}
                 >
                     <span>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DataTable, {
     FormatDate,
     renderColor,
@@ -374,7 +374,7 @@ const Residence = () => {
                         }}
                         className="top"
                     >
-                        <Carousel autoplay>
+                        <Carousel autoplay >
                             {selectItem && (
                                 <Image.PreviewGroup>
                                     <Image
@@ -386,6 +386,7 @@ const Residence = () => {
                                             objectFit: "cover",
                                         }}
                                         className="carouselImg"
+                                        id="carouselImgs"
                                     />
                                     {selectItem.medias.map((item, index) => {
                                         return index == 0 ? null : (
@@ -422,6 +423,9 @@ const Residence = () => {
                                 borderRadius: "100px",
                                 cursor: "pointer",
                             }}
+                            onClick={() => {
+                                document.getElementById("carouselImgs").click();
+                            }}
                         >
                             <span>
                                 <PictureOutlined /> +
@@ -431,8 +435,7 @@ const Residence = () => {
                     </div>
                     <Divider />
                     <div style={spaceStyle}>
-                        <h4>Numéro de résidence
-</h4>
+                        <h4>Numéro de résidence</h4>
                         <h4
                             style={{
                                 color: "#1B2559",
@@ -603,7 +606,7 @@ const Residence = () => {
                                 flexDirection: "column",
                                 gap: "5px",
                                 alignItems: "flex-start",
-                                paddingLeft:"5px"
+                                paddingLeft: "5px",
                             }}
                             className="left"
                         >
@@ -611,7 +614,7 @@ const Residence = () => {
                                 <img src={Icon.check} alt="" />
                                 <p>Règlement interieur</p>
                             </div>
-                            {selectItem?.rules?.map((item,index) => {
+                            {selectItem?.rules?.map((item, index) => {
                                 return (
                                     <span key={index}>{item.rule?.title}</span>
                                 );
@@ -630,7 +633,7 @@ const Residence = () => {
                                 <img src={Icon.check} alt="" />
                                 <p>Type d’activités sociales</p>
                             </div>
-                            {selectItem?.activities?.map((item,index) => {
+                            {selectItem?.activities?.map((item, index) => {
                                 return (
                                     <span key={index}>
                                         {item.activity?.name}

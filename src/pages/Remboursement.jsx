@@ -568,6 +568,7 @@ const Remboursement = () => {
                                                         src={`${API_URL}/assets/uploads/residences/${item.filename}`}
                                                         alt=""
                                                         width={352}
+                                                        id="carouselImgs"
                                                     />
                                                 </div>
                                             );
@@ -577,7 +578,9 @@ const Remboursement = () => {
                             )}
                         </Carousel>
                         <div
-                            onClick={() => setImageModal(true)}
+                            onClick={() => {
+                                document.getElementById("carouselImgs").click();
+                            }}
                             style={{
                                 position: "absolute",
                                 bottom: "20px",
