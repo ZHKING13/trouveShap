@@ -522,6 +522,7 @@ const DrawerComponent = ({
                                     height: "160px",
                                     objectFit: "cover",
                                 }}
+                                id="carouselImgs"
                                 className="carouselImg"
                             />
                             {selectItem.medias.map((item, index) => {
@@ -558,6 +559,9 @@ const DrawerComponent = ({
                         backgroundColor: "#fff",
                         borderRadius: "100px",
                         cursor: "pointer",
+                    }}
+                    onClick={() => {
+                        document.getElementById("carouselImgs").click();
                     }}
                 >
                     <span>
