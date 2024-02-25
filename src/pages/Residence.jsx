@@ -563,24 +563,25 @@ const Residence = () => {
                                 marginTop: "10px",
                             }}
                         >
-                            <Space className="comodite">
-                                <img src={Icon.clim} /> Climatisation
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.tv} /> Télévision
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.wash} /> Lave linge
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.wifi} /> Wifi
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.refri} /> Réfrigérateur
-                            </Space>
-                            <Space className="comodite">
-                                <img src={Icon.fan} /> Ventilateur
-                            </Space>
+                           
+                            {
+                                selectItem?.assets.map((item, index) => {
+                                    console.log(
+                                        `${API_URL}/assets/icons/assets/${item.icon}`,
+                                        item
+                                    );
+                                    return (
+                                        <Space className="comodite" key={index}>
+                                            <img
+                                                src={`${API_URL}/assets/icons/assets/${item.asset.icon}`}
+                                               
+                                            />
+                                            {item.asset.name}
+                                        </Space>
+                                    );
+                                })
+                            }
+                           
                         </div>
                     </div>
                     <Divider />
