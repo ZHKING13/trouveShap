@@ -15,7 +15,11 @@ import {
 import DataTable, { renderColor, renderIcon } from "../components/DataTable";
 import Header from "../components/Header";
 import TableComponent from "../components/Table";
-import { PictureOutlined } from "@ant-design/icons";
+import {
+    PictureOutlined,
+    InfoOutlined,
+    RightOutlined,
+} from "@ant-design/icons";
 
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -203,7 +207,7 @@ const Reservation = () => {
     const [loading, setLoading] = useOutletContext();
     const [reservation, setReservation] = useState([]);
     const [open, setOpen] = useState(false);
-    const [imgModal, setImgModal] = useState(false);
+    const [payementModal, setPayementModal] = useState(false);
     const [modalAray, setModalAray] = useState([]);
     const [status, setStatus] = useState("");
     const [pagination, setPagination] = useState({
@@ -360,10 +364,10 @@ const Reservation = () => {
                     selectItem={selectItem}
                     onClose={onClose}
                     open={open}
-                    setImgModal={setImgModal}
                     setModalAray={setModalAray}
-                    imgModal={imgModal}
                     location={location}
+                    payementModal={payementModal}
+                    setPayementModal={setPayementModal}
                 />
                 <RequestModal
                     setShowModal={setShowModal}
@@ -384,7 +388,6 @@ const Reservation = () => {
                     pagination={{
                         total: pagination.total,
                         showSizeChanger: false,
-                        
                     }}
                     children={
                         <Select
@@ -521,9 +524,10 @@ export const DrawerComponent = ({
     onClose,
     showDrawer,
     open,
-    setModalAray,
-    setImgModal,
+
     location,
+    setPayementModal,
+    payementModal,
 }) => {
     return (
         <Drawer
@@ -807,6 +811,56 @@ export const DrawerComponent = ({
                 <h3>{selectItem?.companyMoney}</h3>
             </div>
             <Divider />
+            <div
+                onClick={() => {
+                    setPayementModal(true);
+                }}
+                style={{
+                    cursor: "pointer",
+                    backgroundColor: "#ECE3FF",
+                    padding: "5px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    borderRadius: "8px",
+                }}
+            >
+                <h3
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    Méthode de versement
+                </h3>
+                <RightOutlined
+                    color="#A273FF"
+                    size={34}
+                    style={{
+                        backgroundColor: "#F6F1FF",
+                        fontSize: "20px",
+                        borderRadius: "50%",
+                        padding: "8px",
+                    }}
+                />
+            </div>
+            <PayementModal
+                open={payementModal}
+                versementInfos={selectItem?.versementInfos}
+                paymentMethode={selectItem?.versement_method}
+                setOpen={setPayementModal}
+                otherPayment={selectItem?.residence?.host?.hostPaymentMethods}
+                icon={
+                    <InfoOutlined
+                        color="#fff"
+                        style={{
+                            backgroundColor: "#F59F0B",
+                            padding: "5px",
+                            borderRadius: "50%",
+                            color: "#fff",
+                        }}
+                    />
+                }
+            />
+            <Divider />
             <div style={spaceStyle}>
                 <h2
                     style={{
@@ -956,6 +1010,165 @@ export const ImgModal = ({ tab, open, setOpen }) => {
                             }}
                             src={`${API_URL}/assets/uploads/residences/${item.filename}`}
                         />
+                    );
+                })}
+            </div>
+        </Modal>
+    );
+};
+const PayementModal = ({
+    open,
+    setOpen,
+    paymentMethode,
+    versementInfos,
+    icon,
+    otherPayment,
+}) => {
+    return (
+        <Modal
+            width={500}
+            onCancel={() => setOpen(false)}
+            footer={() => {
+                return (
+                    <Button type="primary" onClick={() => setOpen(false)}>
+                        fermer
+                    </Button>
+                );
+            }}
+            open={open}
+        >
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                }}
+            >
+                <h3>{paymentMethode?.label}</h3>
+                <div style={spaceStyle}>
+                    <p
+                        style={{
+                            color: "#6B7280",
+                        }}
+                    >
+                        client :
+                    </p>
+                    <h4 style={{ color: "#000" }}>
+                        {versementInfos?.fullname || "--"}
+                    </h4>
+                </div>
+                <div style={spaceStyle}>
+                    <p
+                        style={{
+                            color: "#6B7280",
+                        }}
+                    >
+                        {paymentMethode.code == "rib"
+                            ? "Banque :"
+                            : "numero de téléphone :"}
+                    </p>
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: "10px",
+                            alignItems: "center",
+                        }}
+                    >
+                        <img
+                            src={`${API_URL}/assets/icons/payment_methods/${paymentMethode?.icon}`}
+                            alt=""
+                        />
+                        <h4 style={{ color: "#000" }}>
+                            {versementInfos?.indicatif || "--"}{" "}
+                            {versementInfos?.contact || "--"}
+                        </h4>
+                    </div>
+                </div>
+                {paymentMethode.code == "rib" && (
+                    <div style={spaceStyle}>
+                        <p
+                            style={{
+                                color: "#6B7280",
+                            }}
+                        >
+                            RIB :
+                        </p>
+                        <h4 style={{ color: "#000" }}>
+                            {item?.infos?.rib || "--"}
+                        </h4>
+                    </div>
+                )}
+                <div
+                    style={{
+                        backgroundColor: "#FEF5E7",
+                        padding: "10px",
+                        borderRadius: "8px",
+                        display: "flex",
+                        gap: "10px",
+                        margin: "8px 0px 5px 0px",
+                    }}
+                >
+                    {icon} <p>Autres-moyent de payement</p>
+                </div>
+                {otherPayment?.map((item, index) => {
+                    return (
+                        <div key={index}>
+                            <h3>{item?.payment_method?.label}</h3>
+                            <div style={spaceStyle}>
+                                <p
+                                    style={{
+                                        color: "#6B7280",
+                                    }}
+                                >
+                                    client :
+                                </p>
+                                <h4 style={{ color: "#000" }}>
+                                    {item?.infos?.fullname || "--"}
+                                </h4>
+                            </div>
+                            <div style={spaceStyle}>
+                                <p
+                                    style={{
+                                        color: "#6B7280",
+                                    }}
+                                >
+                                    {item.payment_method.code == "rib"
+                                        ? "Banque :"
+                                        : "numero de téléphone :"}
+                                </p>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        gap: "10px",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <img
+                                        src={`${API_URL}/assets/icons/payment_methods/${item?.payment_method?.icon}`}
+                                        alt=""
+                                    />
+                                    <h4 style={{ color: "#000" }}>
+                                        {item?.infos?.indicatif ||
+                                            item?.infos?.bankname}{" "}
+                                        {item?.infos?.contact || ""}
+                                    </h4>
+                                </div>
+                            </div>
+                            {item.payment_method.code == "rib" && (
+                                <div style={spaceStyle}>
+                                    <p
+                                        style={{
+                                            color: "#6B7280",
+                                        }}
+                                    >
+                                        RIB :
+                                    </p>
+                                    <h4 style={{ color: "#000" }}>
+                                        {item?.infos?.rib || "--"}
+                                    </h4>
+                                </div>
+                            )}
+                        </div>
                     );
                 })}
             </div>

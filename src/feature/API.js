@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const API_URL = "https://api.trouvechap.com";
+export const API_URL = "https://preprodapi.trouvechap.com";
 const privateService = axios.create({
     baseURL: API_URL,
 });

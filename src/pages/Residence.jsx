@@ -374,7 +374,7 @@ const Residence = () => {
                         }}
                         className="top"
                     >
-                        <Carousel autoplay >
+                        <Carousel autoplay>
                             {selectItem && (
                                 <Image.PreviewGroup>
                                     <Image
@@ -563,25 +563,16 @@ const Residence = () => {
                                 marginTop: "10px",
                             }}
                         >
-                           
-                            {
-                                selectItem?.assets.map((item, index) => {
-                                    console.log(
-                                        `${API_URL}/assets/icons/assets/${item.icon}`,
-                                        item
-                                    );
-                                    return (
-                                        <Space className="comodite" key={index}>
-                                            <img
-                                                src={`${API_URL}/assets/icons/assets/${item.asset.icon}`}
-                                               
-                                            />
-                                            {item.asset.name}
-                                        </Space>
-                                    );
-                                })
-                            }
-                           
+                            {selectItem?.assets?.map((item, index) => {
+                                return (
+                                    <Space className="comodite" key={index}>
+                                        <img
+                                            src={`${API_URL}/assets/icons/assets/${item?.asset?.icon}`}
+                                        />
+                                        {item?.asset?.name}
+                                    </Space>
+                                );
+                            })}
                         </div>
                     </div>
                     <Divider />
