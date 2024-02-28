@@ -1147,7 +1147,7 @@ const PayementModal = ({
                         margin: "8px 0px 5px 0px",
                     }}
                 >
-                    {icon} <p>Autres-moyent de payement</p>
+                    {icon} <p>Autres moyens de payement</p>
                 </div>
                 {otherPayment?.map((item, index) => {
                     return (
