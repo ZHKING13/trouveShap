@@ -811,37 +811,39 @@ export const DrawerComponent = ({
                 <h3>{selectItem?.companyMoney}</h3>
             </div>
             <Divider />
-            <div
-                onClick={() => {
-                    setPayementModal(true);
-                }}
-                style={{
-                    cursor: "pointer",
-                    backgroundColor: "#ECE3FF",
-                    padding: "5px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    borderRadius: "8px",
-                }}
-            >
-                <h3
+            {selectItem?.versementInfos !== null && (
+                <div
+                    onClick={() => {
+                        setPayementModal(true);
+                    }}
                     style={{
-                        color: "#1B2559",
+                        cursor: "pointer",
+                        backgroundColor: "#ECE3FF",
+                        padding: "5px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        borderRadius: "8px",
                     }}
                 >
-                    Méthode de versement
-                </h3>
-                <RightOutlined
-                    color="#A273FF"
-                    size={34}
-                    style={{
-                        backgroundColor: "#F6F1FF",
-                        fontSize: "20px",
-                        borderRadius: "50%",
-                        padding: "8px",
-                    }}
-                />
-            </div>
+                    <h3
+                        style={{
+                            color: "#1B2559",
+                        }}
+                    >
+                        Méthode de versement
+                    </h3>
+                    <RightOutlined
+                        color="#A273FF"
+                        size={34}
+                        style={{
+                            backgroundColor: "#F6F1FF",
+                            fontSize: "20px",
+                            borderRadius: "50%",
+                            padding: "8px",
+                        }}
+                    />
+                </div>
+            )}
             <PayementModal
                 open={payementModal}
                 versementInfos={selectItem?.versementInfos}
@@ -1102,7 +1104,7 @@ const PayementModal = ({
                             color: "#6B7280",
                         }}
                     >
-                        {paymentMethode.code == "rib"
+                        {paymentMethode?.code == "rib"
                             ? "Banque :"
                             : "numero de téléphone :"}
                     </p>
@@ -1123,7 +1125,7 @@ const PayementModal = ({
                         </h4>
                     </div>
                 </div>
-                {paymentMethode.code == "rib" && (
+                {paymentMethode?.code == "rib" && (
                     <div style={spaceStyle}>
                         <p
                             style={{
@@ -1197,7 +1199,7 @@ const PayementModal = ({
                                         color: "#6B7280",
                                     }}
                                 >
-                                    {item.payment_method.code == "rib"
+                                    {item.payment_method?.code == "rib"
                                         ? "Banque :"
                                         : "numero de téléphone :"}
                                 </p>
@@ -1219,7 +1221,7 @@ const PayementModal = ({
                                     </h4>
                                 </div>
                             </div>
-                            {item.payment_method.code == "rib" && (
+                            {item.payment_method?.code == "rib" && (
                                 <div style={spaceStyle}>
                                     <p
                                         style={{
