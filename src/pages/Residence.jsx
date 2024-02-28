@@ -66,8 +66,8 @@ const Residence = () => {
         rejectModal: false,
     });
     const [filterValue, setFilterValue] = useState({
-        minPrice: 0,
-        maxPrice: 0,
+        minPrice: "",
+        maxPrice: "",
         numPeople: "",
         status: "",
     });
@@ -827,8 +827,8 @@ const FilterModal = ({
                             onClick={() => {
                                 setFilterValue({
                                     ...filterValue,
-                                    minPrice: 0,
-                                    maxPrice: 0,
+                                    minPrice: "",
+                                    maxPrice: "",
                                     numPeople: "",
                                 });
                                 console.log(filterValue);
@@ -866,14 +866,36 @@ const FilterModal = ({
                     min={10000}
                     max={500000}
                     range
-                    defaultValue={[min, max]}
+                    defaultValue={[0, 0]}
                     step={1000}
                     tooltip={false}
                 />
                 <Space style={spaceStyle}>
-                    <Input value={min + " " + "fcfa"} placeholder="min" />
+                    <Input
+                        type="text"
+                        value={min}
+                        suffix="F CFA"
+                        placeholder="min"
+                        onChange={(e) => {
+                            setFilterValue({
+                                ...filterValue,
+                                minPrice: parseInt(e.target.value, 10),
+                            });
+                        }}
+                    />
                     -
-                    <Input value={max + " " + "fcfa"} placeholder="max" />
+                    <Input
+                        type="text"
+                        value={max}
+                        suffix="F CFA"
+                        placeholder="max"
+                        onChange={(e) => {
+                            setFilterValue({
+                                ...filterValue,
+                                maxPrice: parseInt(e.target.value,10),
+                            });
+                        }}
+                    />
                 </Space>
                 <Divider />
                 <h3>Nombre de pièces</h3>
