@@ -1030,9 +1030,22 @@ const PayementModal = ({
             onCancel={() => setOpen(false)}
             footer={() => {
                 return (
-                    <Button type="primary" onClick={() => setOpen(false)}>
-                        fermer
-                    </Button>
+                    <div
+                        style={{
+                            width: "100%",
+                            borderRadius: "25px",
+                            paddingTop: "10px",
+                            paddingBottom: "10px",
+                            marginBottom: "10px",
+                            textAlign: "center",
+                            backgroundColor: "#A273FF",
+                            color: "#fff",
+                        }}
+                       
+                        onClick={() => setOpen(false)}
+                    >
+                        Fermer
+                    </div>
                 );
             }}
             open={open}
@@ -1044,7 +1057,33 @@ const PayementModal = ({
                     gap: "10px",
                 }}
             >
-                <h3>{paymentMethode?.label}</h3>
+                <div
+                    style={{
+                        display: "flex",
+                        gap: "15px",
+                    }}
+                >
+                    <h3>{paymentMethode?.label}</h3>
+                    {versementInfos?.tempVers == "true" && (
+                        <Tag color="#22C55E">Temporaire</Tag>
+                    )}
+                </div>
+                {versementInfos?.tempVers == "true" && (
+                    <div style={spaceStyle}>
+                        <p
+                            style={{
+                                color: "#6B7280",
+                            }}
+                        >
+                            Date d'ajout :
+                        </p>
+                        <h4 style={{ color: "#000" }}>
+                            {new Date(
+                                versementInfos?.tempVersDate
+                            ).toLocaleDateString("fr-FR")}
+                        </h4>
+                    </div>
+                )}
                 <div style={spaceStyle}>
                     <p
                         style={{
@@ -1113,7 +1152,33 @@ const PayementModal = ({
                 {otherPayment?.map((item, index) => {
                     return (
                         <div key={index}>
-                            <h3>{item?.payment_method?.label}</h3>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    gap: "15px",
+                                }}
+                            >
+                                <h3>{item?.payment_method?.label}</h3>
+                                {item?.infos?.tempVers == "true" && (
+                                    <Tag color="#22C55E">Temporaire</Tag>
+                                )}
+                            </div>
+                            {item?.infos?.tempVers == "true" && (
+                                <div style={spaceStyle}>
+                                    <p
+                                        style={{
+                                            color: "#6B7280",
+                                        }}
+                                    >
+                                        Date d'ajout :
+                                    </p>
+                                    <h4 style={{ color: "#000" }}>
+                                        {new Date(
+                                            versementInfos?.tempVersDate
+                                        ).toLocaleDateString("fr-FR")}
+                                    </h4>
+                                </div>
+                            )}
                             <div style={spaceStyle}>
                                 <p
                                     style={{
