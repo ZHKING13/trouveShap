@@ -1,5 +1,5 @@
-import React,{useState} from "react";
-import { Space, Table, Tag,Spin, Select } from "antd";
+import React, { useState } from "react";
+import { Space, Table, Tag, Spin, Select } from "antd";
 import { DATA2 } from "../data";
 import {
     CheckCircleOutlined,
@@ -44,13 +44,17 @@ export const renderIcon = (status) => {
             return null;
     }
 };
-import {API_URL} from "../feature/API"
-
+import { API_URL } from "../feature/API";
 
 export const renderColor = (status) => {
     switch (status) {
         case "Validé":
             return "#22C55E";
+        case "Client":
+            return "#ECE3FF";
+        case "Hote":
+            return "#FFFBEB";
+
         case "Hôte Payé":
             return "#22C55E";
         case "Activé":
@@ -91,7 +95,6 @@ export function FormatDate(dateStr) {
     return date.toLocaleDateString("fr-FR", options);
 }
 
-
 const DataTable = ({
     column,
     data,
@@ -106,7 +109,8 @@ const DataTable = ({
     spin,
     onDelet,
     showDrawer,
-    children
+    children,
+    header,
 }) => {
     const handleRowClick = (record) => {
         onclick && onclick(record);
@@ -270,7 +274,12 @@ const DataTable = ({
         },
     ];
     return (
-        <div>
+        <div
+            style={{
+                backgroundColor: "#fff",
+                borderRadius: "18px"
+            }}
+        >
             <div
                 style={{
                     display: "flex",
@@ -281,8 +290,20 @@ const DataTable = ({
                     paddingRight: "29px",
                 }}
             >
-               {children}
+                {children}
             </div>
+            {header && (
+                <div
+                    style={{
+                        display: "flex",
+                        alignItem: "center",
+                        margin: "7px",
+                        width: "100%",
+                    }}
+                >
+                    {header}
+                </div>
+            )}
 
             <Table
                 style={{

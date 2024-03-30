@@ -504,6 +504,10 @@ a:visited {
     .multipleTable .midleChart {
         margin-top: 10px;
     }
+    .table-header {
+        flex-direction: column;
+        padding: 8px;
+    }
 }
 
 @media (min-width: 1400px) {

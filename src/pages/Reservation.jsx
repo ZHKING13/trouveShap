@@ -27,7 +27,7 @@ import { API_URL, getReservation, PayHost } from "../feature/API";
 import FilterBoxe from "../components/FilterBoxe";
 import Map from "../components/Map";
 import { Icon } from "../constant/Icon";
-function FormatDate(dateStr) {
+export function FormatDate(dateStr) {
     const options = { year: "numeric", month: "short", day: "numeric" };
     const date = new Date(dateStr);
     return date.toLocaleDateString("fr-FR", options);

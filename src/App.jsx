@@ -14,6 +14,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import logo from "./assets/logo_sm.png";
 import icon from "./assets/build.png";
+import users from "./assets/Frame.png";
 import log from "./assets/log.png";
 import check from "./assets/checkfil.png";
 import user from "./assets/user.png";
@@ -43,6 +44,11 @@ function App() {
             label: "Home",
             key: "/",
             icon: <img src={home} />,
+        },
+        {
+            label: "Utilisateur",
+            key: "users",
+            icon: <img src={users} />,
         },
         {
             label: "Residence",

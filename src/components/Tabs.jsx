@@ -9,6 +9,7 @@ import icon from "../assets/build.png";
 import log from "../assets/log.png";
 import check from "../assets/checkfil.png";
 import user from "../assets/user.png";
+import users from "../assets/Frame.png";
 import inbox from "../assets/inbox.png";
 import home from "../assets/home.png";
 
@@ -24,6 +25,12 @@ const items = [
         key: "residence",
 
         icon: <img src={icon} />,
+        children: "",
+    },
+    {
+        key: "users",
+
+        icon: <img src={users} />,
         children: "",
     },
     {
@@ -50,12 +57,7 @@ const items = [
         icon: <img src={user} />,
         children: "",
     },
-    {
-        key: "login",
-
-        icon: <img src={log} />,
-        children: "",
-    },
+    
 ];
 const TabsComponent = (e) => {
     const navigate = useNavigate();
