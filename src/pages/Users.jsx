@@ -115,7 +115,7 @@ export default function Users() {
                             color: record.enableHost ? "#F59E0B" : "#A273FF",
                         }}
                     >
-                        {!record.enableHost ? "Visiteur" : "Hôte"}
+                        {!record.enableHost ? "Voyageur" : "Hôte"}
                     </p>
                 </Tag>
             ),
@@ -192,7 +192,6 @@ export default function Users() {
             travelers: res?.data?.travelers,
             weekEvolutionPercent: res?.data?.weekEvolutionPercent,
             monthEvolutionPercent: res?.data?.monthEvolutionPercent,
-        
         });
     };
     useEffect(() => {
@@ -247,6 +246,7 @@ export default function Users() {
                             setStatus={setStatus}
                             filtertext={filtertext}
                             setFilterText={setFilterText}
+                            setLoading={setLoading}
                         />
                     }
                     header={() => {
@@ -261,8 +261,42 @@ export default function Users() {
         </main>
     );
 }
-const TableHeader = ({ data, page, setStatus, filtertext, setFilterText }) => {
-    const exportData = (data, fileName) => {
+const TableHeader = ({ data, page, setStatus, filtertext, setFilterText,setLoading }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+        "refresh-token": localStorage.getItem("refreshToken"),
+    };
+    const fetchUsers = async () => {
+        setLoading(true);
+
+        const res = await getUsers({}, headers);
+        console.log(res);
+        if (res.status === 500) {
+            openNotificationWithIcon(
+                "error",
+                res.data?.message || "Erreur serveur",
+                "merci de reessayer plus tard"
+            );
+            setLoading(false);
+            return;
+        }
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Session expiré",
+                "merci de vous reconnecter"
+            );
+            setLoading(false);
+            return;
+        }
+        console.log(res.data?.users);
+
+        setLoading(false);
+        return res.data?.users;
+    };
+    const exportData = async () => {
+        const data = await fetchUsers();
         const formattedData = data.map((user) => ({
             "Nom d'utilisateur": `${user.firstname} ${user.lastname}`,
             "Adresse Email": user.email,

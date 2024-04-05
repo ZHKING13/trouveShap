@@ -41,42 +41,42 @@ function App() {
 
     const items = [
         {
-            label: "Home",
+            label: <a>Home</a>,
             key: "/",
             icon: <img src={home} />,
         },
         {
-            label: "Utilisateur",
+            label: <a>Utilisateur</a>,
             key: "users",
             icon: <img src={users} />,
         },
         {
-            label: "Residence",
+            label: <a>Residence</a>,
             key: "residence",
             icon: <img src={icon} />,
         },
         {
-            label: "Reservation",
+            label: <a>Reservation</a>,
             key: "reservation",
             icon: <img src={check} />,
         },
         {
-            label: "Remboursement",
+            label: <a href="#">Remboursement</a>,
             key: "remboursement",
             icon: <img src={check} />,
         },
         {
-            label: "Newsletter",
+            label: <a href="#">Newsletter</a>,
             key: "newsletter",
             icon: <img src={inbox} />,
         },
         {
-            label: "Profil",
+            label: <a href="#">Profil</a>,
             key: "profil",
             icon: <img src={user} />,
         },
         {
-            label: "Deconnexion",
+            label: <a href="#">Deconnexion</a>,
             key: "login",
             icon: <img src={log} />,
         },
