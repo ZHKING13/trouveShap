@@ -34,7 +34,30 @@ const NewsLetter = () => {
     };
 
     const exportToCSV = (data, fileName) => {
-        exportFromJSON({ data, fileName, exportType: "csv" });
+        const formattedData = data.map((user) => ({
+            "Adresse Email": user.email,
+            "Membre Depuis": new Date(user.createdAt).toLocaleDateString(),
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(formattedData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Newsletter");
+
+        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const dataBlob = new Blob([excelBuffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+        });
+
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(dataBlob);
+        link.href = url;
+        link.download = fileName + ".xlsx";
+
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     };
     const columns = [
         {
@@ -80,6 +103,27 @@ const NewsLetter = () => {
             toDate: data[1],
         };
         fetchNewsletter();
+    };
+    const getNewsletters = async () => {
+        setLoading(true);
+        const res = await getNewsletter({}, headers);
+        console.log(res);
+
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Session expiré",
+                "merci de vous reconnecter"
+            );
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+      
+        setLoading(false);
+        return res.data;
     };
     const fetchNewsletter = async () => {
         setLoading(true);
@@ -129,11 +173,11 @@ const NewsLetter = () => {
                                     borderRadius: "100px",
                                     padding: "4px 8px",
                                 }}
-                                onClick={() => {
-                                    newsletter.length >0 ? exportToCSV(
-                                        newsletter,
-                                        `newsLetter_page${pagination.page}`
-                                    ):null
+                                onClick={async() => {
+                                    const data = await getNewsletters();
+                                    const fileName = "newsletter";
+                                    if (!data || data.length <0 ) return;
+                                    exportToCSV(data, fileName);
                                 }}
                             >
                                 Exporter

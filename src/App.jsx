@@ -37,53 +37,53 @@ function App() {
             type,
         };
     }
-        const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const items = [
         {
-            label: <a>Home</a>,
+            label: <a href="/">Home</a>,
             key: "/",
             icon: <img src={home} />,
         },
         {
-            label: <a>Utilisateur</a>,
+            label: <a href="/users">Utilisateur</a>,
             key: "users",
             icon: <img src={users} />,
         },
         {
-            label: <a>Residence</a>,
+            label: <a href="/residence">Residence</a>,
             key: "residence",
             icon: <img src={icon} />,
         },
         {
-            label: <a>Reservation</a>,
+            label: <a href="/reservation">Reservation</a>,
             key: "reservation",
             icon: <img src={check} />,
         },
         {
-            label: <a href="#">Remboursement</a>,
+            label: <a href="/remboursement">Remboursement</a>,
             key: "remboursement",
             icon: <img src={check} />,
         },
         {
-            label: <a href="#">Newsletter</a>,
+            label: <a href="/newsletter">Newsletter</a>,
             key: "newsletter",
             icon: <img src={inbox} />,
         },
         {
-            label: <a href="#">Profil</a>,
+            label: <a href="/profil">Profil</a>,
             key: "profil",
             icon: <img src={user} />,
         },
         {
-            label: <a href="#">Deconnexion</a>,
+            label: <a href="/login">Deconnexion</a>,
             key: "login",
             icon: <img src={log} />,
         },
     ];
     const onClick = (e) => {
-        if(e.key=="login"){
-            localStorage.clear()
+        if (e.key == "login") {
+            localStorage.clear();
         }
         navigate(e.key);
     };
