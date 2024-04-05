@@ -4,29 +4,40 @@ import FilterBoxe from "../components/FilterBoxe";
 import DataTable, { renderColor, renderIcon } from "../components/DataTable";
 import { Select, notification, Tag, Button } from "antd";
 import { filterNullUndefinedValues, FormatDate } from "./Reservation";
-import { API_URL, getUsers } from "../feature/API";
+import { API_URL, getUsers, getUsersStats } from "../feature/API";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+    DownloadOutlined,
+    UploadOutlined,
+    LineChartOutlined,
+} from "@ant-design/icons";
 import * as XLSX from "xlsx";
+import Stats from "../components/Stats";
+import { Icon } from "../constant/Icon";
 
 export default function Users() {
     const [filtertext, setFilterText] = useState("");
     const [reservation, setReservation] = useState([]);
     const [spin, setSpin] = useState(false);
     const [loading, setLoading] = useOutletContext();
-
+    const [usersStats, setUsersStats] = useState({
+        hosts: 0,
+        travelers: 0,
+        weekEvolutionPercent: 0,
+        monthEvolutionPercent: 0,
+    });
     const [status, setStatus] = useState("");
     const [pagination, setPagination] = useState({
         page: 1,
         total: 7,
     });
     const [api, contextHolder] = notification.useNotification();
-      const openNotificationWithIcon = (type, title, message) => {
-          api[type]({
-              message: title,
-              description: message,
-          });
-      };
+    const openNotificationWithIcon = (type, title, message) => {
+        api[type]({
+            message: title,
+            description: message,
+        });
+    };
     const columns = [
         {
             title: "Nom d’utilisateur",
@@ -155,7 +166,37 @@ export default function Users() {
         });
         setLoading(false);
     };
+
+    const fetchStats = async () => {
+        const res = await getUsersStats(headers);
+        console.log(res);
+        if (res.status === 500) {
+            openNotificationWithIcon(
+                "error",
+                res.data?.message || "Erreur serveur",
+                "merci de reessayer plus tard"
+            );
+            return;
+        }
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Session expiré",
+                "merci de vous reconnecter"
+            );
+            return;
+        }
+        console.log(res?.data);
+        setUsersStats({
+            hosts: res?.data?.hosts,
+            travelers: res?.data?.travelers,
+            weekEvolutionPercent: res?.data?.weekEvolutionPercent,
+            monthEvolutionPercent: res?.data?.monthEvolutionPercent,
+        
+        });
+    };
     useEffect(() => {
+        fetchStats();
         fetchUsers();
     }, [pagination.page, status, filtertext]);
     return (
@@ -163,7 +204,28 @@ export default function Users() {
             <>
                 {contextHolder}
                 <Header title={"Utilisateurs"} path={"Utilisateurs"} />
-
+                <div className="stats">
+                    <Stats
+                        title="Nombre de voyageurs"
+                        subtitle={usersStats.travelers}
+                        icon={Icon.users}
+                    />
+                    <Stats
+                        title="Nombre d'hôtes"
+                        icon={Icon.user2}
+                        subtitle={usersStats.hosts}
+                    />
+                    <Stats
+                        title="Taux d'évolution de la semaine"
+                        subtitle={usersStats.weekEvolutionPercent + "%"}
+                        icon={Icon.user2}
+                    />
+                    <Stats
+                        title="Taux d'évolution du mois"
+                        subtitle={usersStats.monthEvolutionPercent + "%"}
+                        icon={Icon.user2}
+                    />
+                </div>
                 <DataTable
                     column={columns}
                     data={reservation}
@@ -206,6 +268,7 @@ const TableHeader = ({ data, page, setStatus, filtertext, setFilterText }) => {
             "Adresse Email": user.email,
             "Numéro de Téléphone": user.contact,
             "Membre Depuis": new Date(user.createdAt).toLocaleDateString(),
+            "Type de compte": user.enableHost ? "Hôte" : "Voyageur",
         }));
 
         const ws = XLSX.utils.json_to_sheet(formattedData);
@@ -296,9 +359,11 @@ const TableHeader = ({ data, page, setStatus, filtertext, setFilterText }) => {
                 </div>
             </>
 
-            <div style={{
-                marginTop: "10px",
-            }}>
+            <div
+                style={{
+                    marginTop: "10px",
+                }}
+            >
                 <Button
                     type="primary"
                     icon={<UploadOutlined />}

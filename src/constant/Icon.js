@@ -13,6 +13,8 @@ import doc from "../assets/doc.svg";
 import eye from "../assets/eye.svg";
 import bank from "../assets/bank.svg";
 import eyeOf from "../assets/eye-off.svg";
+import user2 from "../assets/users-02.png";
+import users from "../assets/users.png";
 
 export const Icon = {
     wifi,
@@ -29,5 +31,7 @@ export const Icon = {
     eye,
     eyeOf,
     doc,
-    bank
+    bank,
+    user2,
+    users
 }

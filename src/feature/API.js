@@ -117,14 +117,32 @@ export const getResidence = async(params, headers) => {
     }
 }
 export const getUsers = async(params, headers) => {
+        try {
+            const queryString = new URLSearchParams(params).toString();
+
+            const response = await privateService.get("/admin/users?" + queryString, {
+
+                headers,
+            })
+            console.log(response);
+            const { status, data: responseData } = response;
+            return { status, data: responseData };
+        } catch (error) {
+            console.log(error);
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+                console.error('La requête a expiré en raison d\'un timeout.');
+                return { status: 408, data: { message: 'Request Timeout' } };
+            }
+
+
+            return { status: error.response.status, data: error.response.data };
+
+        }
+    }
+    // GET /admin/users-stats
+export const getUsersStats = async(headers) => {
     try {
-        const queryString = new URLSearchParams(params).toString();
-
-        const response = await privateService.get("/admin/users?" + queryString, {
-
-            headers,
-        })
-        console.log(response);
+        const response = await privateService.get("/admin/users-stats", { headers })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
@@ -133,11 +151,9 @@ export const getUsers = async(params, headers) => {
             console.error('La requête a expiré en raison d\'un timeout.');
             return { status: 408, data: { message: 'Request Timeout' } };
         }
-
-
         return { status: error.response.status, data: error.response.data };
-
     }
+
 }
 export const getResidenceById = async(id, headers) => {
     try {
