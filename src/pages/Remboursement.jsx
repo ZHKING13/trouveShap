@@ -192,7 +192,7 @@ const Remboursement = () => {
             responsive: ["lg"],
         },
         {
-            title: "Status",
+            title: "Statut",
             key: "status",
             render: (_, record) => (
                 <Tag
@@ -206,7 +206,7 @@ const Remboursement = () => {
             responsive: ["md"],
         },
         {
-            title: "Action",
+            title: "Actions",
             key: "action",
             render: (_, record) => {
                 return record.status == "En Attente" ? (

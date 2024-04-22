@@ -11,6 +11,7 @@ import { filterNullUndefinedValues } from "./Reservation";
 import exportFromJSON from "export-from-json";
 const { RangePicker } = DatePicker;
 import * as XLSX from "xlsx";
+import { all } from "axios";
 
 const NewsLetter = () => {
     const [loading, setLoading] = useOutletContext();
@@ -106,7 +107,13 @@ const NewsLetter = () => {
     };
     const getNewsletters = async () => {
         setLoading(true);
-        const res = await getNewsletter({}, headers);
+        let params = {
+            all: true,
+            admin_search:filtertext,
+        };
+        const filteredObject = filterNullUndefinedValues(params);
+        const res = await getNewsletter(filteredObject, headers);
+        console.log("newletter params",params);
         console.log(res);
 
         if (res.status !== 200) {

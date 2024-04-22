@@ -185,7 +185,7 @@ const Reservation = () => {
             responsive: ["md"],
         },
         {
-            title: "Action",
+            title: "Actions",
             key: "action",
             render: (_, record) => {
                 return record.status == "En Cours" ? (

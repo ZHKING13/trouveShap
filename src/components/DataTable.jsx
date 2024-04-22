@@ -166,7 +166,7 @@ const DataTable = ({
             responsive: ["md"],
         },
         {
-            title: "Prix / nuits",
+            title: "Prix / nuit",
             dataIndex: "price",
             key: "price",
             render: (text) => (
@@ -178,7 +178,7 @@ const DataTable = ({
             responsive: ["md"],
         },
         {
-            title: "Document hotes",
+            title: "Document Hôte",
             key: "docs",
             dataIndex: "docs",
             render: (text, record) =>
@@ -210,7 +210,7 @@ const DataTable = ({
             responsive: ["lg"],
         },
         {
-            title: "Status",
+            title: "Statut",
             key: "status",
             render: (_, record) => (
                 <Tag
@@ -224,7 +224,7 @@ const DataTable = ({
             responsive: ["md"],
         },
         {
-            title: "Action",
+            title: "Actions",
             key: "action",
             render: (_, record) => {
                 return record.status == "Désactivé" ? (

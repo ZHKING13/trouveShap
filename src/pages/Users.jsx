@@ -14,6 +14,7 @@ import {
 import * as XLSX from "xlsx";
 import Stats from "../components/Stats";
 import { Icon } from "../constant/Icon";
+import { all } from "axios";
 
 export default function Users() {
     const [filtertext, setFilterText] = useState("");
@@ -25,6 +26,7 @@ export default function Users() {
         travelers: 0,
         weekEvolutionPercent: 0,
         monthEvolutionPercent: 0,
+        yearEvolutionPercent: 0,
     });
     const [status, setStatus] = useState("");
     const [pagination, setPagination] = useState({
@@ -40,7 +42,7 @@ export default function Users() {
     };
     const columns = [
         {
-            title: "Nom d’utilisateur",
+            title: "Nom d'utilisateur",
             dataIndex: "name",
             key: "name",
             render: (text, record) => (
@@ -89,6 +91,31 @@ export default function Users() {
                     <p>{record.contact}</p>
                 </div>
             ),
+            responsive: ["md"],
+        },
+        {
+            title: "Document",
+            key: "docs",
+            dataIndex: "docs",
+            render: (text, record) =>
+                record?.avatar == null ? (
+                    <span>non fournis</span>
+                ) : (
+                    <a
+                        style={{
+                            color: "#64748B",
+                            textDecoration: "none",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                        }}
+                        href={`${API_URL}/assets/uploads/avatars/${record.avatar}`}
+                        download={record?.avatar}
+                        target="_blank"
+                    >
+                        <img src={Icon.doc} /> {record?.avatar}
+                    </a>
+                ),
             responsive: ["md"],
         },
         {
@@ -192,6 +219,7 @@ export default function Users() {
             travelers: res?.data?.travelers,
             weekEvolutionPercent: res?.data?.weekEvolutionPercent,
             monthEvolutionPercent: res?.data?.monthEvolutionPercent,
+            yearEvolutionPercent: res?.data?.yearEvolutionPercent,
         });
     };
     useEffect(() => {
@@ -224,6 +252,10 @@ export default function Users() {
                         subtitle={usersStats.monthEvolutionPercent + "%"}
                         icon={Icon.user2}
                     />
+                    <Stats
+                        title="Taux d'évolution de l'année"
+                        subtitle={usersStats.yearEvolutionPercent + "%"}
+                        icon={Icon.user2} />
                 </div>
                 <DataTable
                     column={columns}
@@ -247,6 +279,7 @@ export default function Users() {
                             filtertext={filtertext}
                             setFilterText={setFilterText}
                             setLoading={setLoading}
+                            status={status}
                         />
                     }
                     header={() => {
@@ -261,16 +294,31 @@ export default function Users() {
         </main>
     );
 }
-const TableHeader = ({ data, page, setStatus, filtertext, setFilterText,setLoading }) => {
+const TableHeader = ({
+    data,
+    page,
+    setStatus,
+    filtertext,
+    setFilterText,
+    setLoading,
+    status,
+   
+}) => {
     const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         "refresh-token": localStorage.getItem("refreshToken"),
     };
+    let params = {
+        type: status,
+        admin_search: filtertext,
+        all : true
+    };
     const fetchUsers = async () => {
         setLoading(true);
-
-        const res = await getUsers({}, headers);
+        const filteredObject = filterNullUndefinedValues(params);
+        console.log("params export: ", filteredObject)
+        const res = await getUsers(filteredObject, headers);
         console.log(res);
         if (res.status === 500) {
             openNotificationWithIcon(
@@ -302,7 +350,7 @@ const TableHeader = ({ data, page, setStatus, filtertext, setFilterText,setLoadi
             "Adresse Email": user.email,
             "Numéro de Téléphone": user.contact,
             "Membre Depuis": new Date(user.createdAt).toLocaleDateString(),
-            "Type de compte": user.enableHost ? "Hôte" : "Voyageur",
+            "Type de compte": !user.enableHost ? "Voyageur" : "Hôte",
         }));
 
         const ws = XLSX.utils.json_to_sheet(formattedData);
