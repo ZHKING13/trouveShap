@@ -15,6 +15,7 @@ import * as XLSX from "xlsx";
 import Stats from "../components/Stats";
 import { Icon } from "../constant/Icon";
 import { all } from "axios";
+import userAvatarNotFound from "../assets/user_avatar_not_found.png";
 
 export default function Users() {
     const [filtertext, setFilterText] = useState("");
@@ -53,15 +54,28 @@ export default function Users() {
                         gap: "10px",
                     }}
                 >
-                    <img
-                        style={{
-                            width: "50px",
-                            height: "50px",
-                            borderRadius: "50%",
-                        }}
-                        src={`${API_URL}/assets/uploads/avatars/${record?.avatar}`}
-                        alt="user image"
-                    />
+                    {record.avatar != null ? (
+                        <img
+                            style={{
+                                width: "50px",
+                                height: "50px",
+                                borderRadius: "50%",
+                            }}
+                            src={`${API_URL}/assets/uploads/avatars/${record?.avatar}`}
+                            alt="user avatar"
+                        />
+                    ) : (
+                        <img
+                            style={{
+                                width: "50px",
+                                height: "50px",
+                                borderRadius: "50%",
+                            }}
+                            src={userAvatarNotFound}
+                            alt="user avatar"
+                        />
+                    )}
+
                     <div>
                         <p>
                             {" "}
