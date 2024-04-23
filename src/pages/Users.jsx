@@ -123,11 +123,11 @@ export default function Users() {
                             alignItems: "center",
                             justifyContent: "flex-start",
                         }}
-                        href={`${API_URL}/assets/uploads/avatars/${record.avatar}`}
-                        download={record?.avatar}
+                        href={`${API_URL}/assets/uploads/docs/${record.identityDoc}`}
+                        download={record?.identityDoc}
                         target="_blank"
                     >
-                        <img src={Icon.doc} /> {record?.avatar}
+                        <img src={Icon.doc} /> {record?.identityDoc}
                     </a>
                 ),
             responsive: ["md"],
