@@ -112,7 +112,7 @@ export default function Users() {
             key: "docs",
             dataIndex: "docs",
             render: (text, record) =>
-                record?.avatar == null ? (
+                record?.identityDoc == null ? (
                     <span>non fournis</span>
                 ) : (
                     <a
