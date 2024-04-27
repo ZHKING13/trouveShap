@@ -7,7 +7,7 @@ const GuestRoute = ({element}) => {
     const isAuthenticated = localStorage.getItem("isLog");
     const logUser = JSON.parse(localStorage.getItem("user"));
 
-     if (isAuthenticated && logUser.profile === "Admin") {
+     if (isAuthenticated && logUser.profile !== "Client") {
         return element;
     } else {
         return <Navigate to="/login"/>
