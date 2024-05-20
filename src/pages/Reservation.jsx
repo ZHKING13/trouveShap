@@ -188,7 +188,7 @@ const Reservation = () => {
             title: "Actions",
             key: "action",
             render: (_, record) => {
-                return record.status == "En Cours" ? (
+                return (record.status == "En Cours" || record.status == "Terminée") && !record.hostPaidAt ? (
                     <Spin spinning={selectItem?.id == record.id ? spin : null}>
                         <img
                             onClick={() => {
