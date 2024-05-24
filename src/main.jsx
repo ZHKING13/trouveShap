@@ -22,6 +22,7 @@ import Otp from "./pages/Otp.jsx";
 import GuestRoute from "./feature/Guards/GuestRoute.jsx";
 import Remboursement from "./pages/Remboursement.jsx";
 import Users from "./pages/Users.jsx";
+import { Carte } from "./pages/Carte.jsx";
 library.add(fab, fas, far);
 const router = createBrowserRouter([
     {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
                 element: <Residence />,
             },
             {
+                path: "carte",
+                element: <Carte />,
+            },
+            {
                 path: "newsletter",
                 element: <NewsLetter />,
             },
@@ -73,6 +78,10 @@ const router = createBrowserRouter([
     {
         path: "/otp",
         element: <Otp />,
+    },
+    {
+        path: "/cartes",
+        element: <Carte />,
     },
 ]);
 const theme = {

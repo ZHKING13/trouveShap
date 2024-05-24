@@ -12,6 +12,7 @@ import filter from "../assets/filter.svg";
 import doc from "../assets/doc.svg";
 import eye from "../assets/eye.svg";
 import bank from "../assets/bank.svg";
+import map from "../assets/maps.svg";
 import eyeOf from "../assets/eye-off.svg";
 import user2 from "../assets/users-02.png";
 import users from "../assets/users.png";
@@ -30,6 +31,7 @@ export const Icon = {
     filter,
     eye,
     eyeOf,
+    map,
     doc,
     bank,
     user2,

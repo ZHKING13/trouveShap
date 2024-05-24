@@ -10,7 +10,7 @@ import {
     UserOutlined,
     DashOutlined,
 } from "@ant-design/icons";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import logo from "./assets/logo_sm.png";
 import icon from "./assets/build.png";
@@ -21,6 +21,7 @@ import user from "./assets/user.png";
 import inbox from "./assets/inbox.png";
 import home from "./assets/home.png";
 import TabsComponent from "./components/Tabs";
+import { Icon } from "./constant/Icon";
 function App() {
     const [count, setCount] = useState(0);
     const location = useLocation();
@@ -41,42 +42,47 @@ function App() {
 
     const items = [
         {
-            label: <a href="/">Home</a>,
+            label: <Link href="/">Home</Link>,
             key: "/",
             icon: <img src={home} />,
         },
         {
-            label: <a href="/users">Utilisateur</a>,
+            label: <Link to="/users">Utilisateur</Link>,
             key: "users",
             icon: <img src={users} />,
         },
         {
-            label: <a href="/residence">Residence</a>,
+            label: <Link to="/residence">Residence</Link>,
             key: "residence",
             icon: <img src={icon} />,
         },
         {
-            label: <a href="/reservation">Reservation</a>,
+            label: <Link to="/reservation">Reservation</Link>,
             key: "reservation",
             icon: <img src={check} />,
         },
         {
-            label: <a href="/remboursement">Remboursement</a>,
+            label: <Link to="/remboursement">Remboursement</Link>,
             key: "remboursement",
             icon: <img src={check} />,
         },
         {
-            label: <a href="/newsletter">Newsletter</a>,
+            label: <Link to="/newsletter">Newsletter</Link>,
             key: "newsletter",
             icon: <img src={inbox} />,
         },
         {
-            label: <a href="/profil">Profil</a>,
+            label: <Link to="/carte">Afficher la carte</Link>,
+            key: "carte",
+            icon: <img src={Icon.map} />,
+        },
+        {
+            label: <Link to="/profil">Profil</Link>,
             key: "profil",
             icon: <img src={user} />,
         },
         {
-            label: <a href="/login">Deconnexion</a>,
+            label: <Link to="/login">Deconnexion</Link>,
             key: "login",
             icon: <img src={log} />,
         },

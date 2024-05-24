@@ -803,7 +803,7 @@ const Residence = () => {
     );
 };
 export default Residence;
-const FilterModal = ({
+export const FilterModal = ({
     min,
     max,
     setFilterValue,
