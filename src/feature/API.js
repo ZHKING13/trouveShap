@@ -116,6 +116,29 @@ export const getResidence = async(params, headers) => {
 
     }
 }
+export const getMapResidence = async(params, headers) => {
+    try {
+        const queryString = new URLSearchParams(params).toString();
+
+        const response = await privateService.get("/residences/map?" + queryString, {
+
+            headers,
+        })
+        console.log(response);
+        const { status, data: responseData } = response;
+        return { status, data: responseData };
+    } catch (error) {
+        console.log(error);
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+            console.error('La requête a expiré en raison d\'un timeout.');
+            return { status: 408, data: { message: 'Request Timeout' } };
+        }
+
+
+        return { status: error.response.status, data: error.response.data };
+
+    }
+}
 export const getUsers = async(params, headers) => {
         try {
             const queryString = new URLSearchParams(params).toString();

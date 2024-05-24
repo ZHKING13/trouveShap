@@ -8,11 +8,21 @@ import {
     AdvancedMarker,
     Pin,
 } from "@vis.gl/react-google-maps";
+import {
+   
+    notification,
+   
+} from "antd";
 import { Icon } from "../constant/Icon";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import FilterBoxe from "../components/FilterBoxe";
 import { Header } from "rsuite";
 import { FilterModal } from "./Residence";
+import GoogleMapReact from "google-map-react";
+import { getMapResidence } from "../feature/API";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import logo from "../assets/logo_sm.png";
+
 const residenceLocationArray = [
     { lat: 5.35, lng: -3.967696 },
     { lat: 5.395045275554687, lng: -3.967696 },
@@ -65,7 +75,12 @@ const CustomizedMarker = ({ position }) => (
 
 const position = { lat: 5.35, lng: -3.967696 };
 export const Carte = () => {
-        const [filtertext, setFilterText] = useState("");
+    const [filtertext, setFilterText] = useState("");
+    const [residence, setResidence] = useState([]);
+    
+    
+    const [loading, setLoading] = useOutletContext();
+
  const [showModal, setShowModal] = useState({
      deletModal: false,
      filterModal: false,
@@ -79,17 +94,87 @@ export const Carte = () => {
         numPeople: "",
         status: "",
     });
+    const navigate = useNavigate();
+        const [api, contextHolder] = notification.useNotification();
+
+    const openNotificationWithIcon = (type, title, message) => {
+        api[type]({
+            message: title,
+            description: message,
+        });
+    };
     const filtResidence = () => {
-        console.log("filterValue", filterValue);
+          setShowModal({
+            ...showModal,
+            filterModal: false,
+        });
+        const filteredObject = Object.fromEntries(
+            Object.entries(params).filter(
+                ([key, value]) =>
+                    value !== null &&
+                    value !== undefined &&
+                    value !== "" &&
+                    value !== 0
+            )
+        );
+        console.log(filteredObject);
+        fetchResidence();
+    };
+      const headers = {
+        Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+        "refresh-token": localStorage.getItem("refreshToken"),
+    };
+    const params = {
+        
+        limit: 7,
+        status: filterValue.status,
+        admin_search: filtertext,
+    };
+     const fetchResidence = async () => {
+        const filteredObject = Object.fromEntries(
+            Object.entries(params).filter(
+                ([key, value]) =>
+                    value !== null &&
+                    value !== undefined &&
+                    value !== "" &&
+                    value !== 0
+            )
+        );
+        const res = await getMapResidence(filteredObject, headers);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Session expiré",
+                "merci de vous reconnecter"
+            );
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        setLoading(false);
+        setResidence(res.data.residences);
+        console.log(residence);
     };
     return (
-        <APIProvider apiKey={"AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw"}>
-            <div style={{ width: "100%", height: "70vh" }} className="">
+        < >
+            <div style={{ width: "100%", height: "100%" }} className="">
                 <Header
                     title={"RESIDENCES"}
                     path={"Résidences"}
                     children={
-                        <FilterBoxe
+                        <div style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems:"center",
+                            paddingRight: 20,
+                            paddingLeft: 20,
+                        }}>
+                            <div >
+                        <img src={logo} alt="" />
+                    </div>
+                             <FilterBoxe
                             handleSearch={setFilterText}
                             filtertext={filtertext}
                             onClick={() => {
@@ -112,6 +197,8 @@ export const Carte = () => {
                                 />
                             }
                         />
+                        </div>
+                            
                     }
                 />
                 <FilterModal
@@ -125,45 +212,59 @@ export const Carte = () => {
                     onConfirme={filtResidence}
                     filtResidence={filtResidence}
                 />
-                <Map
-                    width="100%"
-                    height="50%"
-                    defaultCenter={{ lat: 5.35, lng: -3.967696 }}
-                    defaultZoom={12}
-                    mapId={"3e9230c5a4bf47b4"}
-                >
-                    <MapControl
-                        position={ControlPosition.LEFT_TOP}
-                        style={{ margin: 10 }}
-                        options={{ style: "SMALL" }}
-                    >
-                        <div
-                            style={{
-                                backgroundColor: "#fff",
-                                padding: 10,
-                                borderRadius: 5,
-                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                marginLeft: 10,
-                                cursor: "pointer",
-                            }}
-                        >
-                            <h4>Retourner a l’accueil</h4>
-                        </div>
-                    </MapControl>
-                    {residenceLocationArray.map((location, index) => (
-                        <CustomizedMarker
-                            key={index}
-                            position={location}
-                            offsetTop={-20}
-                            offsetLeft={-10}
-                        />
-                    ))}
-                </Map>
+             <GoogleMapReact
+                bootstrapURLKeys={{
+                    key:"AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw"
+                }}
+                options={{
+                    zoomControl: true,
+                    draggable: false,
+
+
+                }}
+                defaultCenter={position}
+                defaultZoom={14}
+            >
+                    {
+                        residence && residence.map((item) => {
+                            return <CustomMarker lat={parseFloat(item.lat)} lng={parseFloat(item.lng)} />
+                        })
+                }
+            </GoogleMapReact>
             </div>
-        </APIProvider>
+        </>
     );
 };
+
+const CustomMarker = () => {
+        return (
+            <div
+                style={{
+                    backgroundColor: "#C7ABFF ",
+                    borderRadius: "50%",
+                    padding: "10px",
+                    width: "40px",
+                    height: "40px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <div
+                    style={{
+                        backgroundColor: "#A273FF ",
+                        borderRadius: "50%",
+                        padding: "10px",
+                        width: "25px",
+                        height: "25px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                    className="maps-statLeft"
+                >
+                    <img src={Icon.tv} alt="icon" />
+                </div>
+            </div>
+        );
+    };

@@ -53,7 +53,7 @@ const Map = ({ location }) => {
             <h2>Localisation du logement</h2>
             <GoogleMapReact
                 bootstrapURLKeys={{
-                    key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+                    key:"AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw"
                 }}
                 options={{
                     zoomControl: true,
