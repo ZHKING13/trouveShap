@@ -9,6 +9,33 @@ input[id="remember"]:checked {
     accent-color: #a273ff;
 }
 
+.marker:hover {
+    transform: scale(1.2);
+}
+
+.slick-arrow {
+    font-size: 20px !important;
+    display: flex !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    color: #a273ff !important;
+    background-color: #ffff !important;
+    align-items: center !important;
+    position: relative;
+    text-align: center;
+    padding: 25px;
+}
+
+.slick-arrow:hover {
+    background-color: #a273ff !important;
+    color: #fff !important;
+}
+
+.slick-next {
+    display: flex !important;
+    justify-content: center !important;
+}
+
 
 /* HEADER START */
 
@@ -518,4 +545,11 @@ a:visited {
         width: 450px !important;
         height: 200px !important;
     }
+}
+
+
+}
+
+}
+
 }

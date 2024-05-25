@@ -1,0 +1,12 @@
+{
+    "maxZoom": 20,
+    "minZoom": 3,
+    "mapTypeId": "roadmap",
+    "mapTypeControl": false,
+    "scaleControl": false,
+    "streetViewControl": false,
+    "rotateControl": false,
+    "fullscreenControl": false,
+    "zoomControl": false
+
+}

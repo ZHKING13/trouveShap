@@ -12,6 +12,7 @@ import user from "../assets/user.png";
 import users from "../assets/Frame.png";
 import inbox from "../assets/inbox.png";
 import home from "../assets/home.png";
+import map from "../assets/maps.svg";
 
 
 const items = [
@@ -52,12 +53,16 @@ const items = [
         children: "",
     },
     {
+        key: "carte",
+        icon: <img src={map} />,
+        children: "",
+    },
+    {
         key: "profil",
 
         icon: <img src={user} />,
         children: "",
     },
-    
 ];
 const TabsComponent = (e) => {
     const navigate = useNavigate();
