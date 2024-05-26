@@ -8,7 +8,7 @@ import {
     AdvancedMarker,
     Pin,
 } from "@vis.gl/react-google-maps";
-import { Spin, notification } from "antd";
+import { Select, Spin, notification } from "antd";
 import { Icon } from "../constant/Icon";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import FilterBoxe from "../components/FilterBoxe";
@@ -87,8 +87,18 @@ export const Carte = () => {
     const [filterValue, setFilterValue] = useState({
         minPrice: "",
         maxPrice: "",
-        numPeople: 5,
+        numPeople: 0,
         status: "",
+        roomIds: [
+            {
+                roomId: 1,
+                quantity: 0,
+            },
+            {
+                roomId: 5,
+                quantity: 0,
+            },
+        ],
     });
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
@@ -145,32 +155,52 @@ export const Carte = () => {
         },
         minPrice: filterValue.minPrice,
         maxPrice: filterValue.maxPrice,
+        numPeople: filterValue.numPeople,
+        roomIds: [
+            {
+                roomId: filterValue.roomIds[0].roomId,
+                quantity: filterValue.roomIds[0].quantity,
+            },
+            {
+                roomId: filterValue.roomIds[1].roomId,
+                quantity: filterValue.roomIds[1].quantity,
+            },
+        ],
     };
-    const createQueryString = (data) => {
-        const buildQuery = (obj, prefix) => {
-            return Object.keys(obj)
-                .filter((key) => {
-                    const value = obj[key];
-                    return (
-                        value !== null && value !== undefined && value !== ""
-                    );
-                })
-                .map((key) => {
-                    const value = obj[key];
-                    const queryKey = prefix ? `${prefix}[${key}]` : key;
+  const createQueryString = (data) => {
+      const buildQuery = (obj, prefix) => {
+          return Object.keys(obj)
+              .filter((key) => {
+                  const value = obj[key];
+                  return value !== null && value !== undefined && value !== "";
+              })
+              .map((key) => {
+                  const value = obj[key];
+                  const queryKey = prefix ? `${prefix}[${key}]` : key;
 
-                    if (typeof value === "object" && !Array.isArray(value)) {
-                        return buildQuery(value, queryKey);
-                    }
+                  if (Array.isArray(value)) {
+                      return value
+                          .map((item, index) =>
+                              buildQuery(item, `${queryKey}[${index}]`)
+                          )
+                          .join("&");
+                  }
 
-                    return `${queryKey}=${encodeURIComponent(value)}`;
-                })
-                .filter(Boolean) // Filter out any undefined or null values that might be returned
-                .join("&");
-        };
+                  if (typeof value === "object" && !Array.isArray(value)) {
+                      return buildQuery(value, queryKey);
+                  }
 
-        return buildQuery(data);
-    };
+                  return `${queryKey}=${encodeURIComponent(value)}`;
+              })
+              .filter(Boolean) // Filter out any undefined or null values that might be returned
+              .join("&");
+      };
+
+      return buildQuery(data);
+  };
+
+
+
 
     const fetchResidence = async () => {
         const filteredObject = createQueryString(params);
@@ -198,13 +228,14 @@ export const Carte = () => {
     useEffect(() => {
         setLoading(true);
         fetchResidence();
-        console.log("fetching data")
+        console.log("fetching data");
     }, [
         filtertext,
-        filterValue,
+
         showModal.filterModal,
         mapBounds,
         mapPosition,
+        filterValue.status,
     ]);
     return (
         <>
@@ -235,37 +266,78 @@ export const Carte = () => {
                                     justifyContent: "space-between",
                                     alignItems: "center",
                                     padding: 20,
-                                    
-                                    
                                 }}
                             >
                                 <div>
                                     {" "}
                                     <img src={logo} alt="" />
                                 </div>
-                                <FilterBoxe
-                                    handleSearch={setFilterText}
-                                    filtertext={filtertext}
-                                    onClick={() => {
-                                        setShowModal({
-                                            ...showModal,
-                                            filterModal: true,
-                                        });
-                                    }}
-                                    placeHolder={"Rechercher une résidence"}
-                                    children={
-                                        <img
-                                            onClick={() => {
-                                                setShowModal({
-                                                    ...showModal,
-                                                    filterModal: true,
-                                                });
-                                            }}
-                                            src={Icon.filter}
-                                            alt="filter icon"
-                                        />
-                                    }
-                                />
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                   
+                                
+                                }} >
+                                    <Select
+                                        placeholder="Filtrer par status"
+                                        style={{
+                                            width: 180,
+                                            marginRight: "13px",
+                                        }}
+                                        allowClear
+                                        onChange={(value) => {
+                                            setFilterValue({
+                                                ...filterValue,
+                                                status: value,
+                                            });
+                                            console.log("ok", value);
+                                            console.log("filter", filterValue);
+                                        }}
+                                        size="large"
+                                        options={[
+                                            {
+                                                value: "waiting",
+                                                label: "En Attente",
+                                            },
+                                            {
+                                                value: "active",
+                                                label: "Activé",
+                                            },
+                                            {
+                                                value: "rejected",
+                                                label: "Rejeté",
+                                            },
+                                            {
+                                                value: "deleted",
+                                                label: "Désactivé",
+                                            },
+                                        ]}
+                                    />
+                                    <FilterBoxe
+                                        handleSearch={setFilterText}
+                                        filtertext={filtertext}
+                                        onClick={() => {
+                                            setShowModal({
+                                                ...showModal,
+                                                filterModal: true,
+                                            });
+                                        }}
+                                        placeHolder={"Rechercher une résidence"}
+                                        children={
+                                            <img
+                                                onClick={() => {
+                                                    setShowModal({
+                                                        ...showModal,
+                                                        filterModal: true,
+                                                    });
+                                                }}
+                                                src={Icon.filter}
+                                                alt="filter icon"
+                                            />
+                                        }
+                                    />
+                                </div>
                             </div>
                         }
                     />

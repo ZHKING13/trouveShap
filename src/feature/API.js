@@ -93,10 +93,41 @@ export const ResetPassword = async(data) => {
 
     }
 }
+const createQueryString = (data) => {
+    const buildQuery = (obj, prefix) => {
+        return Object.keys(obj)
+            .filter((key) => {
+                const value = obj[key];
+                return value !== null && value !== undefined && value !== "";
+            })
+            .map((key) => {
+                const value = obj[key];
+                const queryKey = prefix ? `${prefix}[${key}]` : key;
+
+                if (Array.isArray(value)) {
+                    return value
+                        .map((item, index) =>
+                            buildQuery(item, `${queryKey}[${index}]`)
+                        )
+                        .join("&");
+                }
+
+                if (typeof value === "object" && !Array.isArray(value)) {
+                    return buildQuery(value, queryKey);
+                }
+
+                return `${queryKey}=${encodeURIComponent(value)}`;
+            })
+            .filter(Boolean) // Filter out any undefined or null values that might be returned
+            .join("&");
+    };
+
+    return buildQuery(data);
+};
 export const getResidence = async(params, headers) => {
     try {
-        const queryString = new URLSearchParams(params).toString();
-
+        const queryString = createQueryString(params)
+        console.log(queryString)
         const response = await privateService.get("/admin/store?" + queryString, {
 
             headers,

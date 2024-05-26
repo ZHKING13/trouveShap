@@ -70,6 +70,16 @@ const Residence = () => {
         maxPrice: "",
         numPeople: "",
         status: "",
+        roomIds: [
+            {
+                roomId: 1,
+                quantity: 0,
+            },
+            {
+                roomId: 5,
+                quantity: 0,
+            },
+        ],
     });
     const [open, setOpen] = useState(false);
     const [modalAray, setModalAray] = useState([]);
@@ -209,6 +219,10 @@ const Residence = () => {
         limit: 7,
         status: filterValue.status,
         admin_search: filtertext,
+        "roomIds[0][roomId]": filterValue.roomIds[0].roomId,
+        "roomIds[0][quantity]": filterValue.roomIds[0].quantity,
+        "roomIds[1][roomId]": filterValue.roomIds[1].roomId,
+        "roomIds[1][quantity]": filterValue.roomIds[1].quantity,
     };
 
     const deletResidence = async (id) => {
@@ -279,30 +293,15 @@ const Residence = () => {
             ...showModal,
             filterModal: false,
         });
-        const filteredObject = Object.fromEntries(
-            Object.entries(params).filter(
-                ([key, value]) =>
-                    value !== null &&
-                    value !== undefined &&
-                    value !== "" &&
-                    value !== 0
-            )
-        );
-        console.log(filteredObject);
+       
+       
         fetchResidence();
     };
     const fetchResidence = async () => {
-        const filteredObject = Object.fromEntries(
-            Object.entries(params).filter(
-                ([key, value]) =>
-                    value !== null &&
-                    value !== undefined &&
-                    value !== "" &&
-                    value !== 0
-            )
-        );
+        
         setLoading(true);
-        const res = await getResidence(filteredObject, headers);
+        console.log(params)
+        const res = await getResidence(params, headers);
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
@@ -892,7 +891,7 @@ export const FilterModal = ({
                         onChange={(e) => {
                             setFilterValue({
                                 ...filterValue,
-                                maxPrice: parseInt(e.target.value,10),
+                                maxPrice: parseInt(e.target.value, 10),
                             });
                         }}
                     />
@@ -903,11 +902,27 @@ export const FilterModal = ({
                     <span>chambre</span>
                     <InputNumber
                         min={1}
-                        max={7}
+                        max={15}
                         placeholder="00"
                         style={{
                             textAlign: "center",
                             width: "125px",
+                        }}
+                        onChange={(e) => {
+                            setFilterValue({
+                                ...filterValue,
+                                roomIds: [
+                                    {
+                                        roomId: 1,
+                                        quantity: e,
+                                    },
+                                    {
+                                        roomId: 5,
+                                        quantity:
+                                            filterValue.roomIds[1].quantity,
+                                    },
+                                ],
+                            });
                         }}
                     />
                 </Space>
@@ -922,6 +937,22 @@ export const FilterModal = ({
                         style={{
                             textAlign: "center",
                             width: "125px",
+                        }}
+                        onChange={(e) => {
+                            setFilterValue({
+                                ...filterValue,
+                                roomIds: [
+                                    {
+                                        roomId: 1,
+                                        quantity:
+                                            filterValue.roomIds[0].quantity,
+                                    },
+                                    {
+                                        roomId: 5,
+                                        quantity: e,
+                                    },
+                                ],
+                            });
                         }}
                     />
                 </Space>
