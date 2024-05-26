@@ -105,7 +105,7 @@ export const Carte = () => {
     const [mapPosition, setMapPosition] = useState({
         lat: 5.35,
         lng: -3.967696,
-        zoom: 10,
+        zoom: 13,
     });
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
@@ -143,6 +143,8 @@ export const Carte = () => {
                 lng: mapBounds.southwest?.lng,
             },
         },
+        minPrice: filterValue.minPrice,
+        maxPrice: filterValue.maxPrice,
     };
     const createQueryString = (data) => {
         const buildQuery = (obj, prefix) => {
@@ -189,14 +191,21 @@ export const Carte = () => {
             }, 1500);
             return;
         }
-        setLoading(false);
         setResidence(res.data);
-        console.log(residence);
+                setLoading(false);
+
     };
     useEffect(() => {
         setLoading(true);
         fetchResidence();
-    }, [filtertext, filterValue, showModal.filterModal, mapBounds,mapPosition]);
+        console.log("fetching data")
+    }, [
+        filtertext,
+        filterValue,
+        showModal.filterModal,
+        mapBounds,
+        mapPosition,
+    ]);
     return (
         <>
             <Spin
@@ -204,7 +213,7 @@ export const Carte = () => {
                     height: "100%",
                     width: "100%",
                 }}
-                spinning={loading}
+                spinning={false}
                 tip="Chargement des données..."
             >
                 <div
@@ -225,8 +234,9 @@ export const Carte = () => {
                                     display: "flex",
                                     justifyContent: "space-between",
                                     alignItems: "center",
-                                    paddingRight: 20,
-                                    paddingLeft: 20,
+                                    padding: 20,
+                                    
+                                    
                                 }}
                             >
                                 <div>
@@ -275,6 +285,7 @@ export const Carte = () => {
                             lat: mapPosition.lat,
                             lng: mapPosition.lng,
                         }}
+                        loading={loading}
                         showModal={showModal}
                         setShowModal={setShowModal}
                         arrayMap={residence}

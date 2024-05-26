@@ -73,7 +73,7 @@ function App() {
         },
         {
             label: <Link to="/carte">Afficher la carte</Link>,
-            key: "carte",
+            key: "/cartes",
             icon: <img src={Icon.map} />,
         },
         {

@@ -58,10 +58,13 @@ const Marker = ({
                     // borderRight: "5px solid transparent",
                     // borderTop: "10px solid #A273FF",
                     position: "absolute",
-                    bottom: "-5px",
+                    bottom: "-10px",
                 }}
             >
-                <CaretDownOutlined  />
+                <CaretDownOutlined style={{
+                    color:"#A273FF",
+                    fontSize:"16px"
+                }}  />
             </div>
         </div>
     );
