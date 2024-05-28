@@ -5,7 +5,23 @@ import GoogleMap from "google-maps-react-markers";
 import Marker from "./Marker";
 import mapOption from "./mapOption.json";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Carousel, Image } from "antd";
+import {
+    Avatar,
+    Button,
+    Carousel,
+    Divider,
+    Drawer,
+    Space,
+    Tag,
+    notification,
+    Spin,
+    Modal,
+    Slider,
+    Input,
+    InputNumber,
+    Image,
+    Select,
+} from "antd";
 import {
     LeftOutlined,
     MinusOutlined,
@@ -13,10 +29,13 @@ import {
     SendOutlined,
     StarOutlined,
     LoadingOutlined,
+    PictureOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { API_URL } from "../feature/API";
+import Map from "./Map";
+import { Icon } from "../constant/Icon";
 
 const Maps = ({
     location,
@@ -33,9 +52,14 @@ const Maps = ({
     const [showMarkers, setShowMarkers] = useState(true);
     const [showDetail, setShowDetail] = useState(false);
     const mapRef = useRef(null);
+        const [open, setOpen] = useState(false);
+
     const [mapReady, setMapReady] = useState(false);
     const [mapInstance, setMapInstance] = useState(null);
     const [mapsInstance, setMapsInstance] = useState(null);
+        const [locations, setLocation] = useState(null);
+    const [modalAray, setModalAray] = useState([]);
+
     const onGoogleApiLoaded = ({ map, maps }) => {
         setMapInstance(map);
         setMapsInstance(maps);
@@ -61,7 +85,23 @@ const Maps = ({
             });
         }
     };
+ const showDrawer = async (data) => {
+     setModalAray(data.medias);
+    //  setSelectItem(data);
 
+     let loc = {
+         address: data.address,
+         lat: parseFloat(data.lat),
+         lng: parseFloat(data.lng),
+     };
+     setLocation(loc);
+    
+     console.log(locations);
+     setOpen(true);
+ };
+ const onClose = () => {
+     setOpen(false);
+ };
     const getUserPosition = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -324,7 +364,9 @@ const Maps = ({
                             ? "translateY(0)"
                             : "translateY(100%)",
                         transition: "opacity  transform 0.5s ease 0.1s",
+                        cursor: "pointer",
                     }}
+                    onClick={() => showDrawer(selectResidence)}
                 >
                     <div
                         style={{
@@ -536,8 +578,379 @@ const Maps = ({
                     </div>
                 </div>
             )}
+            <Drawer
+                placement="right"
+                onClose={onClose}
+                destroyOnClose={true}
+                open={open}
+                extra={
+                    <a
+                        href={`https://trouvechap.com/residence/${selectResidence?.slug}`}
+                        style={{
+                            backgroundColor: "#A273FF",
+                            color: "#fff",
+                            padding: "5px 10px",
+                            borderRadius: "10px",
+                        }}
+                    >
+                        Visiter
+                    </a>
+                }
+            >
+                <div
+                    style={{
+                        position: "relative",
+                    }}
+                    className="top"
+                >
+                    <Carousel autoplay>
+                        {selectResidence && (
+                            <Image.PreviewGroup>
+                                <Image
+                                    src={`${API_URL}/assets/uploads/residences/${selectResidence?.medias[0]?.filename}`}
+                                    alt=""
+                                    width={352}
+                                    style={{
+                                        height: "160px",
+                                        objectFit: "cover",
+                                    }}
+                                    className="carouselImg"
+                                    id="carouselImgs"
+                                />
+                                {selectResidence.medias.map((item, index) => {
+                                    return index == 0 ? null : (
+                                        <div
+                                            style={{
+                                                display: "none",
+                                            }}
+                                            key={index}
+                                        >
+                                            <Image
+                                                style={{
+                                                    height: "160px",
+                                                    objectFit: "cover",
+                                                    display: "none",
+                                                }}
+                                                src={`${API_URL}/assets/uploads/residences/${item.filename}`}
+                                                alt=""
+                                                width={352}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </Image.PreviewGroup>
+                        )}
+                    </Carousel>
+                    <div
+                        style={{
+                            position: "absolute",
+                            bottom: "20px",
+                            right: "20px",
+                            color: "#000",
+                            padding: "10px 18px ",
+                            backgroundColor: "#fff",
+                            borderRadius: "100px",
+                            cursor: "pointer",
+                        }}
+                        onClick={() => {
+                            document.getElementById("carouselImgs").click();
+                        }}
+                    >
+                        <span>
+                            <PictureOutlined /> +
+                            {selectResidence && selectResidence?.medias.length}{" "}
+                            photos
+                        </span>
+                    </div>
+                </div>
+                <Divider />
+                <div style={spaceStyle}>
+                    <h4>Numéro de résidence</h4>
+                    <h4
+                        style={{
+                            color: "#1B2559",
+                        }}
+                    >
+                        {selectResidence && selectResidence?.serial_number}
+                    </h4>
+                </div>
+                <Divider />
+                <div style={spaceStyle}>
+                    <h4>Methode de versement hôte</h4>
+                    <h4
+                        style={{
+                            color: "#1B2559",
+                        }}
+                    >
+                        {(selectResidence &&
+                            selectResidence.host?.payment_method?.label) ||
+                            "--"}
+                    </h4>
+                </div>
+                <Divider />
+                <h2
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    {selectResidence && selectResidence?.name}
+                </h2>
+                <span>{selectResidence && selectResidence?.address}</span>
+                <Divider />
+                <div className="price">
+                    <h2
+                        style={{
+                            color: "#1B2559",
+                        }}
+                    >
+                        {selectResidence &&
+                            selectResidence.price
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
+                        XOF / nuits
+                    </h2>
+                    <p>Prix</p>
+                </div>
+                <Divider />
+                <h3
+                    style={{
+                        color: "#1B2559",
+                        margin: "10px 0",
+                    }}
+                >
+                    Info Hôte
+                </h3>
+                <div
+                    style={{
+                        display: "flex",
+
+                        alignItems: "center",
+                    }}
+                    className="user"
+                >
+                    <Avatar
+                        src={`${API_URL}/assets/uploads/avatars/${selectResidence?.host?.avatar}`}
+                        size={64}
+                    />
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginLeft: "10px",
+                        }}
+                    >
+                        <h3
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            {selectResidence && selectResidence.host?.firstname}{" "}
+                            {selectResidence && selectResidence.host?.lastname}
+                        </h3>
+                        <p>{selectResidence && selectResidence?.host?.email}</p>
+                        <p>
+                            {selectResidence && selectResidence?.host?.contact}
+                        </p>
+                    </div>
+                </div>
+                <Divider />
+                <h3
+                    style={{
+                        color: "#1B2559",
+                        margin: "10px 0",
+                    }}
+                >
+                    Description
+                </h3>
+                {selectResidence?.description?.map((item, index) => {
+                    return (
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                marginLeft: "10px",
+                            }}
+                            key={index}
+                        >
+                            <h4
+                                style={{
+                                    color: "#1B2559",
+                                }}
+                            >
+                                {item?.title}
+                            </h4>
+                            <p>{item?.text}</p>
+                        </div>
+                    );
+                })}
+
+                <Divider />
+                <div orientation="vertical">
+                    <h2>Comodités</h2>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "5px",
+                            marginTop: "10px",
+                        }}
+                    >
+                        {selectResidence?.assets?.map((item, index) => {
+                            return (
+                                <Space className="comodite" key={index}>
+                                    <img
+                                        src={`${API_URL}/assets/icons/assets/${item?.asset?.icon}`}
+                                    />
+                                    {item?.asset?.name}
+                                </Space>
+                            );
+                        })}
+                    </div>
+                </div>
+                <Divider />
+                <h2
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    Aperçu
+                </h2>
+                <div
+                    style={{
+                        display: "flex",
+
+                        gap: "10px",
+                        marginTop: "10px",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "5px",
+                            alignItems: "flex-start",
+                            paddingLeft: "5px",
+                        }}
+                        className="left"
+                    >
+                        <div style={subtitleSryle} className="subti">
+                            <img src={Icon.check} alt="" />
+                            <p>Règlement interieur</p>
+                        </div>
+                        {selectResidence?.rules?.map((item, index) => {
+                            return <span key={index}>{item.rule?.title}</span>;
+                        })}
+                    </div>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "5px",
+                            alignItems: "flex-start",
+                        }}
+                        className="rigth"
+                    >
+                        <div style={subtitleSryle} className="subti">
+                            <img src={Icon.check} alt="" />
+                            <p>Type d’activités sociales</p>
+                        </div>
+                        {selectResidence?.activities?.map((item, index) => {
+                            return (
+                                <span key={index}>{item.activity?.name}</span>
+                            );
+                        })}
+                    </div>
+                </div>
+                <Divider />
+                <h2
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    Grille de remboursement
+                </h2>
+                <div>
+                    <ul>
+                        <div style={spaceStyle}>
+                            <li style={listStyle}>
+                                Entre 1 et 3 mois avant le jour J
+                            </li>
+                            <span>
+                                {selectResidence?.refundGrid[
+                                    "Entre 1 mois et 3 mois avant le jour J"
+                                ] + "%"}
+                            </span>
+                        </div>
+                        <div style={spaceStyle}>
+                            <li style={listStyle}>
+                                Entre 1 semaine et 1 mois avant le jour J
+                            </li>
+                            <span>
+                                {" "}
+                                {selectResidence?.refundGrid[
+                                    "Entre 1 semaine et 1 mois avant le jour J"
+                                ] + "%"}
+                            </span>
+                        </div>
+                        <div style={spaceStyle}>
+                            <li style={listStyle}>
+                                Entre 48h et 1 semaine avant le jour J
+                            </li>
+                            <span>
+                                {" "}
+                                {selectResidence?.refundGrid[
+                                    "Entre 48h et 1 semaine avant le jour J"
+                                ] + "%"}
+                            </span>
+                        </div>
+                        <div style={spaceStyle}>
+                            <li style={listStyle}>
+                                Moins de 48 heures avant le jour J
+                            </li>
+                            <span>
+                                {" "}
+                                {selectResidence?.refundGrid[
+                                    "Moins de 48 heures avant le jour J"
+                                ] + "%"}
+                            </span>
+                        </div>
+                        <div style={spaceStyle}>
+                            <li style={listStyle}>
+                                Plus de 3 mois avant le jour J
+                            </li>
+                            <span>
+                                {" "}
+                                {selectResidence?.refundGrid[
+                                    "Plus de 3 mois avant le jour J"
+                                ] + "%"}
+                            </span>
+                        </div>
+                    </ul>
+                </div>
+                <Divider />
+                <Map location={locations} />
+            </Drawer>
         </div>
     );
 };
 
 export default Maps;
+
+const spaceStyle = {
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+};
+const subtitleSryle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "3px",
+    justifyContent: "space-around",
+    fontSize: "12px",
+    color: "#1B2559",
+    fontWeight: "bold",
+};
+const listStyle = {
+    fontWeight: "bold",
+};
