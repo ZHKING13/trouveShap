@@ -997,7 +997,7 @@ const NextIcon =({currentSlide, slideCount, ...props})=>{
                                                     top: "50%",
                                                     right: "0",
                                                     transform: "translateY(-50%)",
-                                                    color: "#A273FF",
+                                                    color: "#fff",
                                                     backgroundColor: "#fff3",
                                                     
                                                     borderRadius: "50%",
