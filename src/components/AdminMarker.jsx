@@ -1,6 +1,7 @@
 import React from 'react'
 import { Icon } from '../constant/Icon'
 import { CaretDownOutlined } from '@ant-design/icons'
+import home from "../assets/loca.svg";
 
 export default function AdminMarker({ lat,
     lng,
@@ -32,7 +33,7 @@ export default function AdminMarker({ lat,
             height={35}
            
         >
-             ADMIN
+             <img src={home} alt="" />
             <div
                 style={{
                     // backgroundColor: "#A273FF",

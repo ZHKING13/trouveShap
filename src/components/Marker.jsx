@@ -64,7 +64,7 @@ const Marker = ({
                 }}
             >
                 <CaretDownOutlined style={{
-                    color:clickedMarkerIndex == index ? "#34176E" : "#A273FF",
+                    color:clickedMarkerIndex == resiDetails.id ? "#34176E" : "#A273FF",
                     fontSize:"16px"
                 }}  />
             </div>

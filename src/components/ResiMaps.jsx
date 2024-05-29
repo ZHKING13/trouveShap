@@ -144,7 +144,7 @@ setUserPosition({
         setShowDetail(false);
         console.log("This is ->", markerId);
         console.log("This is index->", index);
-        setClickedMarkerIndex(index);
+        setClickedMarkerIndex(resiDetails.id);
         console.log("clickedMarkerIndex",clickedMarkerIndex)
         
         // mapInstance.setCenter({
@@ -202,7 +202,7 @@ setUserPosition({
                 {arrayMap.map((items, index) => (
                     <Marker
                         style={{
-                            backgroundColor: clickedMarkerIndex == index ? "#34176E" : "#A273FF",
+                            backgroundColor: clickedMarkerIndex == items.id ? "#34176E" : "#A273FF",
                             borderRadius: "8px",
                             display: "flex",
                             justifyContent: "center",
