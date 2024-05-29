@@ -30,12 +30,16 @@ import {
     StarOutlined,
     LoadingOutlined,
     PictureOutlined,
+    CaretDownOutlined,
+    RightOutlined,
+    LeftCircleOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { API_URL } from "../feature/API";
 import Map from "./Map";
 import { Icon } from "../constant/Icon";
+import AdminMarker from "./AdminMarker";
 
 const Maps = ({
     location,
@@ -50,6 +54,7 @@ const Maps = ({
     const [rerenderTrigger, setRerenderTrigger] = useState(0);
     const [selectResidence, setSelectResidence] = useState(null);
     const [showMarkers, setShowMarkers] = useState(true);
+    const [userPosition, setUserPosition] = useState(null);
     const [showDetail, setShowDetail] = useState(false);
     const mapRef = useRef(null);
         const [open, setOpen] = useState(false);
@@ -59,7 +64,7 @@ const Maps = ({
     const [mapsInstance, setMapsInstance] = useState(null);
         const [locations, setLocation] = useState(null);
     const [modalAray, setModalAray] = useState([]);
-
+const [clickedMarkerIndex, setClickedMarkerIndex] = useState(null);
     const onGoogleApiLoaded = ({ map, maps }) => {
         setMapInstance(map);
         setMapsInstance(maps);
@@ -69,7 +74,7 @@ const Maps = ({
 
     const updateBounds = (map) => {
         const bounds = map.getBounds();
-        console.log("bounds", bounds);
+        console.log("get bounds", bounds);
         if (bounds) {
             const northEast = bounds.getNorthEast();
             const southWest = bounds.getSouthWest();
@@ -106,15 +111,26 @@ const Maps = ({
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
+                                            mapInstance.setZoom(15);
+
                     if (mapInstance) {
+                       
                         mapInstance.setCenter({
                             lat: position.coords.latitude,
                             lng: position.coords.longitude,
+                            zoom: 15,
+                        });
+                        
+setUserPosition({
+    lat: position.coords.latitude,
+    lng: position.coords.longitude,
+});
+                        console.log(mapInstance);
+                         setMapPosition({
+                            
+                            zoom: 15,
                         });
 
-                        console.log(mapInstance);
-
-                        // mapInstance.setZoom(15);
                     }
                 },
                 (error) => {
@@ -124,11 +140,13 @@ const Maps = ({
         }
     };
 
-    const onMarkerClick = (e, { markerId, lat, lng, resiDetails }) => {
+    const onMarkerClick = (e, { markerId, lat, lng, resiDetails,index }) => {
         setShowDetail(false);
         console.log("This is ->", markerId);
-        console.log("This is ->", resiDetails);
-
+        console.log("This is index->", index);
+        setClickedMarkerIndex(index);
+        console.log("clickedMarkerIndex",clickedMarkerIndex)
+        
         // mapInstance.setCenter({
         //     lat: parseFloat(lat),
         //     lng: parseFloat(lng),
@@ -154,7 +172,7 @@ const Maps = ({
                 mapsInstance.event.removeListener(listener);
             };
         }
-    }, [mapsInstance]);
+    }, [mapsInstance,mapPosition]);
     return (
         <div
             style={{
@@ -170,32 +188,21 @@ const Maps = ({
                 options={{ ...mapOption }}
                 mapMinHeight="100%"
                 onGoogleApiLoaded={onGoogleApiLoaded}
-                onChange={(map) => {
+                onChange={async(map) => {
                     console.log("Map moved", map);
-                    setMapBounds({
-                        northeat: {
-                            lat: map.bounds.Wh.hi,
-                            lng: map.bounds.Gh.lo,
-                        },
-                        southwest: {
-                            lat: map.bounds.Wh.lo,
-                            lng: map.bounds.Gh.hi,
-                        },
+                    setMapPosition({
+                        lat: map.center[0],
+                        lng: map.center[1],
+                        zoom: map.zoom,
                     });
-                    console.log("mapppppBoundsss", mapBounds, map.zoom);
+                                        console.log("mapppppBoundsss", mapBounds, map.zoom);
 
-                    // setMapPosition({
-                    //     lat: map.center[0],
-                    //     lng: map.center[1],
-                    //     zoom: map.zoom,
-                    // });
-                    const bounds = map.bounds;
                 }}
             >
                 {arrayMap.map((items, index) => (
                     <Marker
                         style={{
-                            backgroundColor: "#A273FF ",
+                            backgroundColor: clickedMarkerIndex == index ? "#34176E" : "#A273FF",
                             borderRadius: "8px",
                             display: "flex",
                             justifyContent: "center",
@@ -215,7 +222,9 @@ const Maps = ({
                         lat={items.lat}
                         lng={items.lng}
                         markerId={items.name}
+                        index={index}
                         resiDetails={items}
+                        clickedMarkerIndex={clickedMarkerIndex}
                         price={items.price}
                         onClick={onMarkerClick} // you need to manage this prop on your Marker component!
                         // draggable={true}
@@ -224,6 +233,11 @@ const Maps = ({
                         // onDragEnd={(e, { latLng }) => {}}
                     />
                 ))}
+                {
+                    userPosition && (
+                     <AdminMarker lat={userPosition.lat} lng={userPosition.lng} />
+                    )   
+                }
             </GoogleMap>
             <div
                 style={{
@@ -291,6 +305,10 @@ const Maps = ({
                         borderRadius: "25px",
                         cursor: "pointer",
                         boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.1)",
+                        display:"flex",
+                        alignItems:"center",
+                        justifyContent:"center",
+                        
                     }}
                     onClick={() => {
                         const prevZoom = mapPosition.zoom;
@@ -314,6 +332,10 @@ const Maps = ({
                         borderRadius: "25px",
                         cursor: "pointer",
                         boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.1)",
+                        display:"flex",
+                        alignItems:"center",
+                        justifyContent:"center",
+                        
                     }}
                     onClick={() => {
                         const prevZoom = mapPosition.zoom;
@@ -337,6 +359,10 @@ const Maps = ({
                         borderRadius: "25px",
                         cursor: "pointer",
                         boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.1)",
+                        display:"flex",
+                        alignItems:"center",
+                        justifyContent:"center",
+                        
                     }}
                     onClick={getUserPosition}
                 >
@@ -366,7 +392,7 @@ const Maps = ({
                         transition: "opacity  transform 0.5s ease 0.1s",
                         cursor: "pointer",
                     }}
-                    onClick={() => showDrawer(selectResidence)}
+                    
                 >
                     <div
                         style={{
@@ -400,11 +426,11 @@ const Maps = ({
                                 height: "150px",
                             }}
                         >
-                            <Carousel arrows={true} fade infinite={false}>
+                            <Carousel prevArrow={<PrevIcon  />} nextArrow={<NextIcon />} arrows={true} fade infinite={false}>
                                 {selectResidence?.medias &&
                                     selectResidence?.medias.map(
                                         (item, index) => (
-                                            <div key={index}>
+                                            <div key={index} onClick={() => showDrawer(selectResidence)}>
                                                 <img
                                                     style={{
                                                         width: "100%",
@@ -415,6 +441,10 @@ const Maps = ({
                                                     src={`${API_URL}/assets/uploads/residences/${item?.filename}`}
                                                     alt={item?.filename}
                                                 />
+                                                {/* go next icon */}
+                                                
+                                                {/* prev icon */}
+                                                
                                             </div>
                                         )
                                     )}
@@ -432,6 +462,7 @@ const Maps = ({
                             }}
                         >
                             <div
+                                onClick={() => showDrawer(selectResidence)}
                                 style={{
                                     display: "flex",
                                     flexDirection: "column",
@@ -786,7 +817,7 @@ const Maps = ({
 
                 <Divider />
                 <div orientation="vertical">
-                    <h2>Comodités</h2>
+                    <h2>Commodités</h2>
                     <div
                         style={{
                             display: "flex",
@@ -936,7 +967,51 @@ const Maps = ({
 };
 
 export default Maps;
-
+const PrevIcon = ({currentSlide, slideCount, ...props}) => {
+    return (
+        <div className="prevIcon" onClick={props.onClick} style={{
+                                                   
+                                                   position: "absolute",
+                                                    top: "50%",
+                                                    left: "2",
+                                                    transform: "translateY(-50%)",
+                                                    color: "#fff",
+                                                    backgroundColor: "#fff3",
+                                                    borderRadius: "50%",
+                                                    cursor: "pointer",
+                                                    width: "20px",
+                                                    height: "20px",
+                                                    display: currentSlide === 0 ? "none" : "flex",
+                                                    justifyContent: "center",
+            alignItems: "center",
+                                                   zIndex: "100",
+                                                }}>
+                                                    <LeftOutlined />
+                                                </div>
+   )
+}
+const NextIcon =({currentSlide, slideCount, ...props})=>{
+    return (
+    <div className="prevIcon" onClick={props.onClick} style={{
+                                                    position: "absolute",
+                                                    top: "50%",
+                                                    right: "0",
+                                                    transform: "translateY(-50%)",
+                                                    color: "#A273FF",
+                                                    backgroundColor: "#fff3",
+                                                    
+                                                    borderRadius: "50%",
+                                                    cursor: "pointer",
+                                                    width: "20px",
+                                                    height: "20px",
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                }}>
+                                                    <RightOutlined />
+                                                </div>
+)
+}
 const spaceStyle = {
     width: "100%",
     display: "flex",

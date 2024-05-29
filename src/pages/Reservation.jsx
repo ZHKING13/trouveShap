@@ -784,15 +784,18 @@ export const DrawerComponent = ({
             </h2>
             <div style={spaceStyle}>
                 <span>Sous Total:</span>
-                <h3>{selectItem?.subtotal}</h3>
+                <h3>{selectItem?.subtotal.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
             <div style={spaceStyle}>
                 <span>Frais:</span>
-                <h3>{selectItem?.fee}</h3>
+                <h3>{selectItem?.fee.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
             <div style={spaceStyle}>
                 <span>Total:</span>
-                <h3>{selectItem?.total}</h3>
+                <h3>{selectItem?.total.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
             <Divider />
             <h2
@@ -804,11 +807,13 @@ export const DrawerComponent = ({
             </h2>
             <div style={spaceStyle}>
                 <span>Part de l’hôte :</span>
-                <h3>{selectItem?.hostMoney}</h3>
+                <h3>{selectItem?.hostMoney.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
             <div style={spaceStyle}>
                 <span>Part de Trouvechap :</span>
-                <h3>{selectItem?.companyMoney}</h3>
+                <h3>{selectItem?.companyMoney.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
             <Divider />
             {selectItem?.versementInfos !== null && (
@@ -1149,7 +1154,7 @@ const PayementModal = ({
                         margin: "8px 0px 5px 0px",
                     }}
                 >
-                    {icon} <p>Autres moyens de payement</p>
+                    {icon} <p>Autres moyens de paiement</p>
                 </div>
                 {otherPayment?.map((item, index) => {
                     return (

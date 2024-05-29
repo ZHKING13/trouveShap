@@ -14,6 +14,8 @@ const Marker = ({
     onDragStart,
     price,
     resiDetails,
+    index,
+    clickedMarkerIndex,
     ...props
 }) => {
     if (!lat || !lng) return null;
@@ -35,7 +37,7 @@ const Marker = ({
             className={className}
             src={Icon.map}
             onClick={(e) =>
-                onClick && onClick(e, { markerId, lat, lng, resiDetails })
+                onClick && onClick(e, { markerId, lat, lng, resiDetails,index })
             }
             onDragStart={handleDragStart}
             onDrag={handleDrag}
@@ -62,7 +64,7 @@ const Marker = ({
                 }}
             >
                 <CaretDownOutlined style={{
-                    color:"#A273FF",
+                    color:clickedMarkerIndex == index ? "#34176E" : "#A273FF",
                     fontSize:"16px"
                 }}  />
             </div>

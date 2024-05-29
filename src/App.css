@@ -24,16 +24,17 @@ input[id="remember"]:checked {
     position: relative;
     text-align: center;
     padding: 25px;
+    display: none;
 }
 
-.slick-arrow:hover {
+.prevIcon:hover {
     background-color: #a273ff !important;
     color: #fff !important;
 }
 
-.slick-next {
-    display: flex !important;
-    justify-content: center !important;
+.slick-next,
+.slick-prevs {
+    display: none;
 }
 
 
