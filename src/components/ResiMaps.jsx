@@ -4,6 +4,9 @@ import { Children, useEffect, useRef, useState } from "react";
 import GoogleMap from "google-maps-react-markers";
 import Marker from "./Marker";
 import mapOption from "./mapOption.json";
+import { CiLocationArrow1 } from "react-icons/ci";
+import { RxDividerVertical } from "react-icons/rx";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
     Avatar,
@@ -35,12 +38,13 @@ import {
     LeftCircleOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-
+import { FaLocationArrow } from "react-icons/fa6";
 import { API_URL } from "../feature/API";
 import Map from "./Map";
 import { Icon } from "../constant/Icon";
 import AdminMarker from "./AdminMarker";
-
+import { GoDotFill } from "react-icons/go";
+import { FaStar } from "react-icons/fa";
 const Maps = ({
     location,
     Children,
@@ -126,12 +130,13 @@ setUserPosition({
     lng: position.coords.longitude,
 });
                         console.log(mapInstance);
-                         setMapPosition({
+                        
+
+                    }
+                     setMapPosition({
                             
                             zoom: 15,
                         });
-
-                    }
                 },
                 (error) => {
                     console.error("Error getting user's position: ", error);
@@ -144,6 +149,11 @@ setUserPosition({
         setShowDetail(false);
         console.log("This is ->", markerId);
         console.log("This is index->", index);
+        if (clickedMarkerIndex == resiDetails.id) {
+            setShowDetail(false)
+            setClickedMarkerIndex(null)
+            return
+        }
         setClickedMarkerIndex(resiDetails.id);
         console.log("clickedMarkerIndex",clickedMarkerIndex)
         
@@ -367,14 +377,14 @@ setUserPosition({
                     onClick={getUserPosition}
                 >
                     <p>
-                        <SendOutlined rotate={310} />
+                        <FaLocationArrow color="#000" />
                     </p>
                 </div>
             </div>
             {showDetail && (
                 <div
                     style={{
-                        width: "550px",
+                        width: "580px",
                         height: "150px",
                         position: "absolute",
                         bottom: "20px",
@@ -406,15 +416,18 @@ setUserPosition({
                     >
                         <div
                             style={{
-                                width: "20px",
-                                height: "20px",
+                                width: "30px",
+                                height: "30px",
                                 position: "absolute",
                                 top: 3,
                                 right: 2,
                                 color: "#A273FF",
                                 cursor: "pointer",
+                               
+                                textAlign:"center"
                             }}
                             onClick={() => {
+                                setClickedMarkerIndex(null)
                                 setShowDetail(false);
                             }}
                         >
@@ -430,7 +443,7 @@ setUserPosition({
                                 {selectResidence?.medias &&
                                     selectResidence?.medias.map(
                                         (item, index) => (
-                                            <div key={index} onClick={() => showDrawer(selectResidence)}>
+                                            <div key={index} >
                                                 <img
                                                     style={{
                                                         width: "100%",
@@ -505,11 +518,19 @@ setUserPosition({
                                           ) + "..."
                                         : selectResidence?.name}
                                 </p>
-                                <p
+                                <div style={{
+                                     display: "flex",
+                                        gap: "5px",
+                                    alignItems: "center",
+                                        
+                                }}>
+                                    <p
                                     style={{
                                         display: "flex",
-                                        gap: "5px",
+                                        gap: "8px",
                                         alignItems: "center",
+                                        color: "#4B5563",
+                                        fontSize:"16px"
                                     }}
                                 >
                                     {selectResidence?.price
@@ -519,20 +540,31 @@ setUserPosition({
                                             " "
                                         )}{" "}
                                     FCFA Par Nuits{" "}
+                                    </p>
+                                    <div style={{
+                                        height: "12px",
+                                        width:".1px",
+                                        background: " #4B5563",
+                                        marginTop: "4px",
+                                        marginLeft: "5px",
+                                        marginRight:"5px"
+                                    }}></div>
                                     <span
                                         style={{
                                             fontSize: "14px",
                                             fontWeight: "bold",
                                         }}
                                     >
+                                        
                                         {selectResidence?.qualityNote || "N/A"}{" "}
-                                        <StarOutlined
+                                        <FaStar
                                             style={{
                                                 color: "#FACC15",
                                             }}
                                         />
                                     </span>
-                                </p>
+                                </div>
+                               
                             </div>
                             <div style={{}}>
                                 <p
@@ -541,6 +573,7 @@ setUserPosition({
                                         display: "flex",
                                         marginBottom: "10px",
                                         gap: "5px",
+                                        alignItems:"center"
                                     }}
                                 >
                                     {selectResidence?.rooms.map(
@@ -548,57 +581,40 @@ setUserPosition({
                                             if (item?.room.id === 1) {
                                                 return item?.count + " Chambre";
                                             }
+                                           
+                                        }
+                                    )}
+                                     <GoDotFill size={10} style={{
+                                         marginTop:"4px"
+                                     }} />
+                                    {selectResidence?.rooms.map(
+                                        (item, index) => {
+                                            if (item?.room.id === 2) {
+                                                return (
+                                                    <p>
+                                                            {item?.count} Salon
+                                                            {item?.count > 1
+                                                                ? "s"
+                                                                : ""}
+                                                        </p>
+                                                );
+                                            }
+                                        }
+                                    )}
+                                    <GoDotFill size={10} style={{
+                                         marginTop:"4px"
+                                     }} />
+                                    {selectResidence?.rooms.map(
+                                        (item, index) => {
                                             if (item?.room.id === 5) {
                                                 return (
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                        }}
-                                                    >
-                                                        <p
-                                                            style={{
-                                                                fontWeight:
-                                                                    "bold",
-                                                            }}
-                                                        >
-                                                            .
-                                                        </p>
-                                                        <p>
+                                                    <p>
                                                             {item?.count} Salle
                                                             de Bain
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""}
                                                         </p>
-                                                    </div>
-                                                );
-                                            }
-                                        }
-                                    )}
-                                    {selectResidence?.rooms.map(
-                                        (item, index) => {
-                                            if (item?.room.id === 2) {
-                                                return (
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                        }}
-                                                    >
-                                                        <p
-                                                            style={{
-                                                                fontWeight:
-                                                                    "bold",
-                                                            }}
-                                                        >
-                                                            .
-                                                        </p>
-                                                        <p>
-                                                            {item?.count} Salon
-                                                            {item?.count > 1
-                                                                ? "s"
-                                                                : ""}
-                                                        </p>
-                                                    </div>
                                                 );
                                             }
                                         }

@@ -60,12 +60,12 @@ const Marker = ({
                     // borderRight: "5px solid transparent",
                     // borderTop: "10px solid #A273FF",
                     position: "absolute",
-                    bottom: "-10px",
+                    bottom: "-15px",
                 }}
             >
                 <CaretDownOutlined style={{
                     color:clickedMarkerIndex == resiDetails.id ? "#34176E" : "#A273FF",
-                    fontSize:"16px"
+                    fontSize:"24px"
                 }}  />
             </div>
         </div>

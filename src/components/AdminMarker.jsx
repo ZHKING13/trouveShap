@@ -13,7 +13,7 @@ export default function AdminMarker({ lat,
             src={Icon.user2}
            
            style={{
-                            backgroundColor: "#A273FF ",
+                            backgroundColor: "#010101 ",
                             borderRadius: "8px",
                             display: "flex",
                             justifyContent: "center",
@@ -37,19 +37,19 @@ export default function AdminMarker({ lat,
             <div
                 style={{
                     // backgroundColor: "#A273FF",
-                    color:"#A273FF",
+                    color:"#010101",
                     // width: "0",
                     // height: "0",
                     // borderLeft: "5px solid transparent",
                     // borderRight: "5px solid transparent",
                     // borderTop: "10px solid #A273FF",
                     position: "absolute",
-                    bottom: "-10px",
+                    bottom: "-15px",
                 }}
             >
                 <CaretDownOutlined style={{
-                    color:"#A273FF",
-                    fontSize:"16px"
+                    color:"#010101",
+                    fontSize:"24px"
                 }}  />
             </div>
         </div>
