@@ -21,6 +21,9 @@ import {
     InputNumber,
     Image,
     Select,
+    Radio,
+    DatePicker
+    
 } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,12 +35,13 @@ import {
     getResidence,
     updateResidence,
 } from "../feature/API";
-
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import FilterBoxe from "../components/FilterBoxe";
 import { Icon } from "../constant/Icon";
 import { ImgModal } from "./Reservation";
-
+const { RangePicker } = DatePicker;
 const contentStyle = {
     height: "160px",
     color: "#fff",
@@ -45,8 +49,17 @@ const contentStyle = {
     textAlign: "center",
     background: "#364d79",
 };
+function convertToISO(dateString) {
+    const dateObject = new Date(dateString);
+    const ISOString = dateObject.toISOString();
+    return ISOString;
+}
 const Residence = () => {
+    const [selectResi, setSelecteResi] = useState(null);
+    const [selectSpace, setSPaceIndex] = useState(null);
     const [loading, setLoading] = useOutletContext();
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const [filtertext, setFilterText] = useState("");
     const [residence, setResidence] = useState([]);
     const [location, setLocation] = useState(null);
@@ -65,6 +78,35 @@ const Residence = () => {
         loading: false,
         rejectModal: false,
     });
+    const handleResiClick = (index) => {
+    setSelecteResi(index);
+    };
+    const handleSpaceClick = (index) => {
+    setSPaceIndex(index);
+    };
+     const rangPicker = (value) => {
+        console.log(value);
+
+        const [start, end] = value;
+        setStartDate(start);
+        setEndDate(end);
+        if (start == null) {
+            selectRange([null, null]);
+            return;
+        }
+        if (end == null) {
+            return;
+        }
+        
+                console.log(end);
+
+        const startISO = convertToISO(start);
+        const endISO = convertToISO(end);
+        
+                console.log(dateRange);
+
+        selectRange([startISO, endISO]);
+    };
     const [filterValue, setFilterValue] = useState({
         minPrice: "",
         maxPrice: "",
@@ -79,7 +121,14 @@ const Residence = () => {
                 roomId: 5,
                 quantity: 0,
             },
+            {
+                roomId: 2,
+                quantity: 0,
+            },
         ],
+        socialActivity: "",
+        occupation: "",
+        typeResi:""
     });
     const [open, setOpen] = useState(false);
     const [modalAray, setModalAray] = useState([]);
@@ -223,6 +272,8 @@ const Residence = () => {
         "roomIds[0][quantity]": filterValue.roomIds[0].quantity,
         "roomIds[1][roomId]": filterValue.roomIds[1].roomId,
         "roomIds[1][quantity]": filterValue.roomIds[1].quantity,
+        "roomIds[2][roomId]": filterValue.roomIds[2].roomId,
+        "roomIds[2][quantity]": filterValue.roomIds[2].quantity,
     };
 
     const deletResidence = async (id) => {
@@ -702,7 +753,11 @@ const Residence = () => {
                     <Divider />
                     <Map location={location} />
                 </Drawer>
-                <FilterModal
+                <div style={{
+                    width: "100%",
+                    height:"100%"
+                }}>
+                    <FilterModal
                     showModal={showModal}
                     setShowModal={setShowModal}
                     setFilterValue={setFilterValue}
@@ -711,8 +766,12 @@ const Residence = () => {
                     numPeople={filterValue.numPeople}
                     filterValue={filterValue}
                     onConfirme={filtResidence}
-                    filtResidence={filtResidence}
+                        filtResidence={filtResidence}
+                        rangPicker={rangPicker}
+                        startDate={startDate}
+                        endDate={endDate}
                 />
+                </div>
                 <DeletModal
                     showModal={showModal}
                     setShowModal={setShowModal}
@@ -812,10 +871,16 @@ export const FilterModal = ({
     filterValue,
     filtResidence,
     numPeople,
+    rangPicker,
+    startDate,
+    endDate
 }) => {
     return (
-        <Modal
-            onCancel={() => {
+        <Drawer
+            // onCancel={() => {
+            //     setShowModal({ ...showModal, filterModal: false });
+            // }}
+            onClose={() => {
                 setShowModal({ ...showModal, filterModal: false });
             }}
             footer={
@@ -829,6 +894,23 @@ export const FilterModal = ({
                                     minPrice: "",
                                     maxPrice: "",
                                     numPeople: "",
+                                    roomIds: [
+                                        {
+                                            roomId: 1,
+                                            quantity: 0,
+                                        },
+                                        {
+                                            roomId: 2,
+                                            quantity: 0,
+                                        },
+                                        {
+                                            roomId: 5,
+                                            quantity: 0,
+                                        },
+                                    ],
+                                    typeResi: "",
+                                    occupation: "",
+                                    socialActivity: "",
                                 });
                                 console.log(filterValue);
                                 setShowModal({
@@ -850,8 +932,14 @@ export const FilterModal = ({
                 </>
             }
             open={showModal.filterModal}
+            style={{
+                top: "20px",
+                right:"10px"
+            }}
         >
             <div className="top">
+               
+
                 <h3>Fourchette de prix</h3>
                 <Slider
                     onChange={(value) => {
@@ -921,18 +1009,58 @@ export const FilterModal = ({
                                         quantity:
                                             filterValue.roomIds[1].quantity,
                                     },
+                                    {
+                                        roomId: 2,
+                                        quantity:
+                                            filterValue.roomIds[2].quantity,
+                                    },
                                 ],
                             });
                         }}
                     />
                 </Space>
-                <Divider />
 
                 <Space style={spaceStyle}>
                     <span>Salles de bain</span>
                     <InputNumber
                         min={1}
                         max={7}
+                        placeholder="00"
+                        style={{
+                            textAlign: "center",
+                            width: "125px",
+                            marginTop: "3px",
+                            marginBottom:"3px"
+                        }}
+                        onChange={(e) => {
+                            setFilterValue({
+                                ...filterValue,
+                                roomIds: [
+                                    {
+                                        roomId: 1,
+                                        quantity:
+                                            filterValue.roomIds[0].quantity,
+                                    },
+                                    {
+                                        roomId: 2,
+                                        quantity:
+                                            filterValue.roomIds[2].quantity,
+                                    },
+                                    {
+                                        roomId: 5,
+                                        quantity: e,
+                                    },
+                                ],
+                            });
+                        }}
+                    />
+                </Space>
+                
+                <Space style={spaceStyle}>
+                    <span>Salon</span>
+                    <InputNumber
+                        min={1}
+                        max={10}
                         placeholder="00"
                         style={{
                             textAlign: "center",
@@ -949,6 +1077,11 @@ export const FilterModal = ({
                                     },
                                     {
                                         roomId: 5,
+                                        quantity:
+                                            filterValue.roomIds[1].quantity,
+                                    },
+                                    {
+                                        roomId: 2,
                                         quantity: e,
                                     },
                                 ],
@@ -978,8 +1111,139 @@ export const FilterModal = ({
                         }}
                     />
                 </Space>
+                <Divider />
+                <div style={{
+                    width: "auto",
+                    display:"flex",
+                    flexDirection:"column",
+                    gap:"10px"
+                }}>
+                    <h3>Date de création</h3>
+                    <RangePicker />
+                </div>
+                <Divider/>
+                    <h3>Type de residence</h3>
+                <div  style={{
+                    display:"flex",
+                    gap: "10px",
+                    cursor:"pointer",
+                }}>
+                    <div onClick={() => {
+                    setFilterValue({
+                        ...filterValue,
+                        typeResi: "house"
+                    })
+                }} style={{...typeResi, backgroundColor: filterValue.typeResi === "house" ? "#DAC7FF" : "transparent"}}>
+                        <img style={resiImg} src="/maison.png" alt="" />
+                        <p>Maison</p>
+                    </div>
+                    <div onClick={() => {
+                    setFilterValue({
+                        ...filterValue,
+                        typeResi: "apartment"
+                    })
+                }} style={{...typeResi, backgroundColor: filterValue.typeResi === "apartment" ? "#DAC7FF" : "transparent"}}>
+                        <img style={resiImg} src="/building.png" alt="" />
+                        <p>Appartement</p>
+                    </div>
+                    <div onClick={() => {
+                    setFilterValue({
+                        ...filterValue,
+                        typeResi: "chalet"
+                    })
+                }} style={{...typeResi, backgroundColor: filterValue.typeResi === "chalet" ? "#DAC7FF" : "transparent"}}>
+                        <img style={resiImg} src="/chalet.png" alt="" />
+                        <p>Chalet</p>
+                    </div>
+                   
+                </div>
+                <Divider />
+                <h3 style={{marginBottom:"10px"}}>Activités Social</h3>
+                <Radio.Group  onChange={(e) => setFilterValue({
+                                ...filterValue,
+                                socialActivity: e.target.value,
+                            })} value={filterValue.socialActivity}>
+      <Space direction="vertical">
+        <Radio value={1}>Événements Festifs en Journée</Radio>
+        <Radio value={2}>Événements Festifs en Soirée</Radio>
+        <Radio value={3}>Apprentissage et Éducation</Radio>
+        <Radio value={4}>Activités Artistiques et Créatives</Radio>
+        
+      </Space>
+    </Radio.Group>
             </div>
-        </Modal>
+            <Divider/>
+            <h3>Espaces accessibles</h3>
+            <div style={{
+                display:"flex",
+                gap:"10px",
+                alignItems: "center",
+                justifyContent: "space-between",
+                border:"1px solid #DAC7FF",
+                padding: "6px",
+                borderRadius: "5px",
+                marginTop: "10px",
+                marginBottom: "6px",
+                cursor: "pointer",
+                backgroundColor: filterValue.occupation === "full" ? "#DAC7FF" : "transparent"
+            }}>
+                <div onClick={() => {
+                    setFilterValue({
+                        ...filterValue,
+                        occupation: "full"
+                    })
+                }} style={{
+                    display:"flex",
+                    flexDirection:"column",
+                    gap: "1px",
+                    width:"80%"
+                }}>
+                    <h4>
+                        Une Chambre
+                    </h4>
+                    <span style={{
+                        fontSize:"10px"
+                    }}>
+                        Les clients ont droit à leur propre chambre dans la résidence et ont accès  à des espaces partagé
+                    </span>
+                </div>
+                <img src="/chambre1.png" alt="" />
+            </div>
+            <div style={{
+                display:"flex",
+                gap:"10px",
+                alignItems: "center",
+                justifyContent: "space-between",
+                border:"1px solid #DAC7FF",
+                padding: "6px",
+                borderRadius: "5px",
+                cursor: "pointer",
+                backgroundColor: filterValue.occupation === "partial" ? "#DAC7FF" : "transparent"
+
+            }}>
+                <div onClick={() => {
+                    setFilterValue({
+                        ...filterValue,
+                        occupation: "partial"
+                    })
+                }} style={{
+                    display:"flex",
+                    flexDirection:"column",
+                    gap: "1px",
+                    width:"80%"
+                }}>
+                    <h4>
+                        Résidence entière
+                    </h4>
+                    <span style={{
+                        fontSize:"10px"
+                    }}>
+                        Les clients disposent de la résidence dans son integralité
+                    </span>
+                </div>
+                <img src="/maison.png" alt="" />
+            </div>
+        </Drawer>
     );
 };
 export const DeletModal = ({
@@ -1236,3 +1500,18 @@ const subtitleSryle = {
 const listStyle = {
     fontWeight: "bold",
 };
+const resiImg={
+              width:"30px",
+              height:"30px"
+                        }
+const typeResi = {
+       display:"flex",
+                     
+      gap: "5px",
+     padding: "10px",
+   border:"1px solid #DAC7FF",
+     borderRadius: "5px",
+    width: "30%",
+    flexDirection: "column",
+       height:"60px"
+  }

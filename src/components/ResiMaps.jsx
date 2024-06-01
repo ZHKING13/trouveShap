@@ -632,6 +632,7 @@ setUserPosition({
                 open={open}
                 extra={
                     <a
+                        target="_blank"
                         href={`https://trouvechap.com/residence/${selectResidence?.slug}`}
                         style={{
                             backgroundColor: "#A273FF",

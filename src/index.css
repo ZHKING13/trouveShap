@@ -78,11 +78,12 @@ body {
     text-align: center;
 }
 
-.ant-picker-input,
+
+/* .ant-picker-input,
 .ant-picker-input-active,
 .ant-picker-range-separator {
     display: none !important;
-}
+} */
 
 .ant-slider-track {
     background-color: #A273FF !important;
