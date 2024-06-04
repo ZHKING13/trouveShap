@@ -371,13 +371,18 @@ setUserPosition({
                         boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.1)",
                         display:"flex",
                         alignItems:"center",
-                        justifyContent:"center",
+                        justifyContent: "center",
+                        
                         
                     }}
                     onClick={getUserPosition}
                 >
                     <p>
-                        <FaLocationArrow color="#000" />
+                        <FaLocationArrow style={{
+                            padding: "0",
+                            marginTop: "8px",
+                            marginRight:"3px"
+                        }} color="#000" />
                     </p>
                 </div>
             </div>
@@ -585,7 +590,7 @@ setUserPosition({
                                         }
                                     )}
                                      <GoDotFill size={10} style={{
-                                         marginTop:"4px"
+                                         marginTop:"1px"
                                      }} />
                                     {selectResidence?.rooms.map(
                                         (item, index) => {
@@ -602,7 +607,7 @@ setUserPosition({
                                         }
                                     )}
                                     <GoDotFill size={10} style={{
-                                         marginTop:"4px"
+                                         marginTop:"1px"
                                      }} />
                                     {selectResidence?.rooms.map(
                                         (item, index) => {
@@ -911,6 +916,84 @@ setUserPosition({
                     </div>
                 </div>
                 <Divider />
+                 
+                <Space style={info} direction="vertical">
+<Space>
+                    <img style={{
+                        width:"20px", height:"20px"
+                    }} src={selectResidence?.occupation == "Full" ? "/maison.png": "/chambre1.png"} alt="" />
+                   <h4> {
+                        selectResidence?.occupation == "Full" ? "Residence complète": "Residence Partiel"
+                    }</h4>
+                 </Space>
+                <Space style={info}>
+                    <img style={{
+                        width:"20px", height:"20px"
+                    }} src={Icon.users} alt="" />
+                    <h4>Personne max: { selectResidence?.maxPeople}</h4>
+                 </Space>
+                    <Space style={info}>
+                        <img style={{
+                        width:"20px", height:"20px"
+                    }} src="/chambre1.png" alt="" />
+                     {selectResidence?.rooms.map(
+                                        (item, index) => {
+                                            if (item?.room.id === 1) {
+                                                return (
+
+                                                    <h4>
+                                                            Chambre
+                                                            {item?.count > 1
+                                                                ? "s"
+                                                                : ""} : {item?.count} 
+                                                        </h4>
+                                                );
+                                            }
+                                        }
+                        )}
+                        <div></div>
+                        <img style={{
+                        width:"20px", height:"20px"
+                    }} src="/chambre1.png" alt="" />
+                        {selectResidence?.rooms.map(
+                                        (item, index) => {
+                                            if (item?.room.id === 2) {
+                                                return (
+
+                                                    <h4>
+                                                            Salon
+                                                            {item?.count > 1
+                                                                ? "s"
+                                                                : ""} : {item?.count} 
+                                                        </h4>
+                                                );
+                                            }
+                                        }
+                                    )}
+                 </Space>
+                    <Space style={info}>
+                        <img style={{
+                        width:"20px", height:"20px"
+                    }} src="/chambre1.png" alt="" />
+                     {selectResidence?.rooms.map(
+                                        (item, index) => {
+                                            if (item?.room.id === 5) {
+                                                return (
+
+                                                    <h4>
+                                                            Salle
+                                                            de Bain
+                                                            {item?.count > 1
+                                                                ? "s"
+                                                                : ""} : {item?.count} 
+                                                        </h4>
+                                                );
+                                            }
+                                        }
+                                    )}
+                 </Space>
+                <Divider />
+                </Space>
                 <h2
                     style={{
                         color: "#1B2559",
@@ -959,7 +1042,7 @@ setUserPosition({
                             <span>
                                 {" "}
                                 {selectResidence?.refundGrid[
-                                    "Moins de 48 heures avant le jour J"
+                                    "Moins de 48h avant le jour J"
                                 ] + "%"}
                             </span>
                         </div>
@@ -984,6 +1067,11 @@ setUserPosition({
 };
 
 export default Maps;
+const info={
+                    display: "flex",
+                    alignItems: "start",
+                    justifyContent:"center"
+                }
 const PrevIcon = ({currentSlide, slideCount, ...props}) => {
     return (
         <div className="prevIcon" onClick={props.onClick} style={{

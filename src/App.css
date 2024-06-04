@@ -401,8 +401,32 @@ a:visited {
     margin-left: 256px;
 }
 
+.ant-collapse-header {
+    padding: 0 !important;
+}
+
+.ant-collapse-content {
+    border: none !important;
+}
+
+.ant-collapse-content-box {
+    padding: 5px 0!important;
+}
+
+.ant-collapse,
+.ant-collapse-header-text {
+    border: none !important;
+    background-color: transparent;
+    color: #a273ff
+}
+
+.ant-collapse-expand-icon {
+    display: none !important;
+}
+
 @media (max-width: 768px) {
-    .logo {
+    .logo,
+    .cartNave {
         display: none;
     }
     .homRigContainer {
@@ -546,11 +570,4 @@ a:visited {
         width: 450px !important;
         height: 200px !important;
     }
-}
-
-
-}
-
-}
-
 }

@@ -22,7 +22,10 @@ import {
     Image,
     Select,
     Radio,
-    DatePicker
+    DatePicker,
+    Checkbox,
+    Collapse,
+    
     
 } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
@@ -126,9 +129,11 @@ const Residence = () => {
                 quantity: 0,
             },
         ],
-        socialActivity: "",
         occupation: "",
-        typeResi:""
+        typeResi: [],
+        activitiesIds: [],
+        fromDate: "",
+        toDate: ""
     });
     const [open, setOpen] = useState(false);
     const [modalAray, setModalAray] = useState([]);
@@ -141,7 +146,33 @@ const Residence = () => {
             description: message,
         });
     };
-
+ const toggleTypeResi = (type) => {
+    setFilterValue((prevState) => {
+      const newTypeResi = prevState.typeResi.includes(type)
+        ? prevState.typeResi.filter((item) => item !== type)
+        : [...prevState.typeResi, type];
+      return { ...prevState, typeResi: newTypeResi };
+    });
+    };
+    const togleDate =(dates) => {
+                        console.log("result", dates)
+                         if (dates && dates.length === 2) {
+      const [start, end] = dates;
+      setFilterValue({
+        ...filterValue,
+        fromDate: start.toISOString(),
+        toDate: end.toISOString()
+    });
+    } else {
+      console.log("No dates selected");
+    }
+                    }
+ const toggleActivitiesIds = (checkedValues) => {
+    setFilterValue({
+      ...filterValue,
+      activitiesIds: checkedValues
+    });
+  };
     const onCancel = (data) => {
         setSelectItem(data);
         setShowModal({
@@ -274,6 +305,12 @@ const Residence = () => {
         "roomIds[1][quantity]": filterValue.roomIds[1].quantity,
         "roomIds[2][roomId]": filterValue.roomIds[2].roomId,
         "roomIds[2][quantity]": filterValue.roomIds[2].quantity,
+        occupation: filterValue.occupation,
+        typeIds: filterValue.typeResi,
+        activitiesIds: filterValue.activitiesIds,
+        fromDate: filterValue.fromDate,
+        toDate:filterValue.toDate
+        
     };
 
     const deletResidence = async (id) => {
@@ -527,7 +564,7 @@ const Residence = () => {
                                 selectItem.price
                                     .toString()
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                            XOF / nuits
+                            XOF / Nuits
                         </h2>
                         <p>Prix</p>
                     </div>
@@ -684,7 +721,86 @@ const Residence = () => {
                             })}
                         </div>
                     </div>
+                   
+
                     <Divider />
+                     <Space style={info} direction="vertical">
+<Space>
+                    <img style={{
+                        width:"20px", height:"20px"
+                    }} src={selectItem?.occupation == "Full" ? "/maison.png": "/chambre1.png"} alt="" />
+                   <h4> {
+                        selectItem?.occupation == "Full" ? "Residence complète": "Residence Partiel"
+                    }</h4>
+                 </Space>
+                <Space style={info}>
+                    <img style={{
+                        width:"20px", height:"20px"
+                    }} src={Icon.users} alt="" />
+                    <h4>Personne max: { selectItem?.maxPeople}</h4>
+                 </Space>
+                    <Space style={info}>
+                        <img style={{
+                        width:"20px", height:"20px"
+                    }} src="/chambre1.png" alt="" />
+                     {selectItem?.rooms.map(
+                                        (item, index) => {
+                                            if (item?.room.id === 1) {
+                                                return (
+
+                                                    <h4>
+                                                            Chambre
+                                                            {item?.count > 1
+                                                                ? "s"
+                                                                : ""} : {item?.count} 
+                                                        </h4>
+                                                );
+                                            }
+                                        }
+                        )}
+                        <div></div>
+                        <img style={{
+                        width:"20px", height:"20px"
+                    }} src="/chambre1.png" alt="" />
+                        {selectItem?.rooms.map(
+                                        (item, index) => {
+                                            if (item?.room.id === 2) {
+                                                return (
+
+                                                    <h4>
+                                                            Salon
+                                                            {item?.count > 1
+                                                                ? "s"
+                                                                : ""} : {item?.count} 
+                                                        </h4>
+                                                );
+                                            }
+                                        }
+                                    )}
+                 </Space>
+                    <Space style={info}>
+                        <img style={{
+                        width:"20px", height:"20px"
+                    }} src="/chambre1.png" alt="" />
+                     {selectItem?.rooms.map(
+                                        (item, index) => {
+                                            if (item?.room.id === 5) {
+                                                return (
+
+                                                    <h4>
+                                                            Salle
+                                                            de Bain
+                                                            {item?.count > 1
+                                                                ? "s"
+                                                                : ""} : {item?.count} 
+                                                        </h4>
+                                                );
+                                            }
+                                        }
+                                    )}
+                 </Space>
+                <Divider />
+                </Space>
                     <h2
                         style={{
                             color: "#1B2559",
@@ -733,7 +849,7 @@ const Residence = () => {
                                 <span>
                                     {" "}
                                     {selectItem?.refundGrid[
-                                        "Moins de 48 heures avant le jour J"
+                                        "Moins de 48h avant le jour J"
                                     ] + "%"}
                                 </span>
                             </div>
@@ -770,6 +886,9 @@ const Residence = () => {
                         rangPicker={rangPicker}
                         startDate={startDate}
                         endDate={endDate}
+                        toggleTypeResi={toggleTypeResi}
+                        toggleActivitiesIds={toggleActivitiesIds}
+                        togleDate={togleDate}
                 />
                 </div>
                 <DeletModal
@@ -860,6 +979,11 @@ const Residence = () => {
         </main>
     );
 };
+const info={
+                    display: "flex",
+                    alignItems: "start",
+                    justifyContent:"center"
+                }
 export default Residence;
 export const FilterModal = ({
     min,
@@ -873,7 +997,10 @@ export const FilterModal = ({
     numPeople,
     rangPicker,
     startDate,
-    endDate
+    endDate,
+    toggleTypeResi,
+    toggleActivitiesIds,
+    togleDate
 }) => {
     return (
         <Drawer
@@ -889,6 +1016,7 @@ export const FilterModal = ({
                     <div style={spaceStyle}>
                         <Button
                             onClick={() => {
+                                onConfirme();
                                 setFilterValue({
                                     ...filterValue,
                                     minPrice: "",
@@ -908,17 +1036,19 @@ export const FilterModal = ({
                                             quantity: 0,
                                         },
                                     ],
-                                    typeResi: "",
+                                    typeResi: [],
                                     occupation: "",
-                                    socialActivity: "",
+                                    activitiesIds: [],
+                                    status:""
                                 });
+                                
                                 console.log(filterValue);
                                 setShowModal({
                                     ...showModal,
                                     filterModal: false,
                                 });
 
-                                filtResidence();
+                                
                             }}
                             danger
                             type="text"
@@ -1119,7 +1249,7 @@ export const FilterModal = ({
                     gap:"10px"
                 }}>
                     <h3>Date de création</h3>
-                    <RangePicker />
+                    <RangePicker onChange={togleDate} />
                 </div>
                 <Divider/>
                     <h3>Type de residence</h3>
@@ -1129,29 +1259,20 @@ export const FilterModal = ({
                     cursor:"pointer",
                 }}>
                     <div onClick={() => {
-                    setFilterValue({
-                        ...filterValue,
-                        typeResi: "house"
-                    })
-                }} style={{...typeResi, backgroundColor: filterValue.typeResi === "house" ? "#DAC7FF" : "transparent"}}>
+                   toggleTypeResi(1)
+                }} style={{...typeResi, backgroundColor: filterValue.typeResi.includes(1)? "#DAC7FF" : "transparent"}}>
                         <img style={resiImg} src="/maison.png" alt="" />
                         <p>Maison</p>
                     </div>
                     <div onClick={() => {
-                    setFilterValue({
-                        ...filterValue,
-                        typeResi: "apartment"
-                    })
-                }} style={{...typeResi, backgroundColor: filterValue.typeResi === "apartment" ? "#DAC7FF" : "transparent"}}>
+                   toggleTypeResi(2)
+                }} style={{...typeResi, backgroundColor: filterValue.typeResi.includes(2) ? "#DAC7FF" : "transparent"}}>
                         <img style={resiImg} src="/building.png" alt="" />
                         <p>Appartement</p>
                     </div>
                     <div onClick={() => {
-                    setFilterValue({
-                        ...filterValue,
-                        typeResi: "chalet"
-                    })
-                }} style={{...typeResi, backgroundColor: filterValue.typeResi === "chalet" ? "#DAC7FF" : "transparent"}}>
+                    toggleTypeResi(3)
+                }} style={{...typeResi, backgroundColor: filterValue.typeResi.includes(3) ? "#DAC7FF" : "transparent"}}>
                         <img style={resiImg} src="/chalet.png" alt="" />
                         <p>Chalet</p>
                     </div>
@@ -1159,18 +1280,30 @@ export const FilterModal = ({
                 </div>
                 <Divider />
                 <h3 style={{marginBottom:"10px"}}>Activités Social</h3>
-                <Radio.Group  onChange={(e) => setFilterValue({
-                                ...filterValue,
-                                socialActivity: e.target.value,
-                            })} value={filterValue.socialActivity}>
+                <Checkbox.Group  onChange={toggleActivitiesIds}
+      value={filterValue.activitiesIds}>
       <Space direction="vertical">
-        <Radio value={1}>Événements Festifs en Journée</Radio>
-        <Radio value={2}>Événements Festifs en Soirée</Radio>
-        <Radio value={3}>Apprentissage et Éducation</Radio>
-        <Radio value={4}>Activités Artistiques et Créatives</Radio>
+        <Checkbox value={1}>Baptêmes</Checkbox>
+        <Checkbox value={4}>Fêtes avec alcool </Checkbox>
+        <Checkbox value={5}>Enterrement de vie de jeunes</Checkbox>
+         <Checkbox value={6}>Séminaires</Checkbox>
+         <Collapse  >
+        <Collapse.Panel header="Afficher  plus">
+             <Space direction="vertical">
+               <Checkbox value={2}>Mariages </Checkbox>
+        <Checkbox value={3}>Aniversaires</Checkbox>
+        <Checkbox value={7}>Conférences</Checkbox>
+        <Checkbox value={11}>Ateliers de peinture et de dessin</Checkbox>
+        <Checkbox value={12}>Dance</Checkbox>
+        <Checkbox value={13}>Sessions de création artistique</Checkbox>
+        <Checkbox value={14}>Fabrication d'artisanat local</Checkbox>
+         </Space>
+        </Collapse.Panel>
+                            
+        </Collapse>
         
       </Space>
-    </Radio.Group>
+    </Checkbox.Group>
             </div>
             <Divider/>
             <h3>Espaces accessibles</h3>
@@ -1185,13 +1318,13 @@ export const FilterModal = ({
                 marginTop: "10px",
                 marginBottom: "6px",
                 cursor: "pointer",
-                backgroundColor: filterValue.occupation === "full" ? "#DAC7FF" : "transparent"
+                backgroundColor: filterValue.occupation === "Full" ? "#DAC7FF" : "transparent"
             }}>
                 <div onClick={() => {
-                    setFilterValue({
-                        ...filterValue,
-                        occupation: "full"
-                    })
+                     setFilterValue({
+        ...filterValue,
+        occupation: filterValue.occupation === "Full" ? "" : "Full"
+    });
                 }} style={{
                     display:"flex",
                     flexDirection:"column",
@@ -1218,14 +1351,14 @@ export const FilterModal = ({
                 padding: "6px",
                 borderRadius: "5px",
                 cursor: "pointer",
-                backgroundColor: filterValue.occupation === "partial" ? "#DAC7FF" : "transparent"
+                backgroundColor: filterValue.occupation === "Partial" ? "#DAC7FF" : "transparent"
 
             }}>
                 <div onClick={() => {
                     setFilterValue({
-                        ...filterValue,
-                        occupation: "partial"
-                    })
+        ...filterValue,
+        occupation: filterValue.occupation === "Partial" ? "" : "Partial"
+    });
                 }} style={{
                     display:"flex",
                     flexDirection:"column",

@@ -105,9 +105,12 @@ const createQueryString = (data) => {
                 const queryKey = prefix ? `${prefix}[${key}]` : key;
 
                 if (Array.isArray(value)) {
+                    // Generate query string for arrays with explicit indices
                     return value
                         .map((item, index) =>
-                            buildQuery(item, `${queryKey}[${index}]`)
+                            Array.isArray(item) || typeof item === 'object' ?
+                            buildQuery(item, `${queryKey}[${index}]`) :
+                            `${queryKey}[${index}]=${encodeURIComponent(item)}`
                         )
                         .join("&");
                 }
@@ -127,7 +130,7 @@ const createQueryString = (data) => {
 export const getResidence = async(params, headers) => {
     try {
         const queryString = createQueryString(params)
-        console.log(queryString)
+        console.log("querystringgg", queryString)
         const response = await privateService.get("/admin/store?" + queryString, {
 
             headers,
@@ -372,6 +375,7 @@ export const getReservation = async(params, headers) => {
 export const getNewsletter = async(params, headers) => {
     try {
         const queryString = new URLSearchParams(params).toString();
+        console.log(queryString)
         const response = await privateService.get("/admin/newletters?" + queryString, { headers })
         const { status, data: responseData } = response;
         return { status, data: responseData };

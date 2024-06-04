@@ -99,7 +99,39 @@ export const Carte = () => {
                 quantity: 0,
             },
         ],
+        occupation: "",
+        typeResi: [],
+        activitiesIds: [],
+         fromDate: "",
+        toDate: ""
     });
+    const toggleTypeResi = (type) => {
+    setFilterValue((prevState) => {
+      const newTypeResi = prevState.typeResi.includes(type)
+        ? prevState.typeResi.filter((item) => item !== type)
+        : [...prevState.typeResi, type];
+      return { ...prevState, typeResi: newTypeResi };
+    });
+    };
+    const togleDate =(dates) => {
+                        console.log("result", dates)
+                         if (dates && dates.length === 2) {
+      const [start, end] = dates;
+      setFilterValue({
+        ...filterValue,
+        fromDate: start.toISOString(),
+        toDate: end.toISOString()
+    });
+    } else {
+      console.log("No dates selected");
+    }
+                    }
+ const toggleActivitiesIds = (checkedValues) => {
+    setFilterValue({
+      ...filterValue,
+      activitiesIds: checkedValues
+    });
+  };
     const navigate = useNavigate();
     const [api, contextHolder] = notification.useNotification();
     const [mapBounds, setMapBounds] = useState({
@@ -166,43 +198,52 @@ export const Carte = () => {
                 quantity: filterValue.roomIds[1].quantity,
             },
         ],
+         occupation: filterValue.occupation,
+        typeIds: filterValue.typeResi,
+        activitiesIds: filterValue.activitiesIds,
+        fromDate: filterValue.fromDate,
+        toDate:filterValue.toDate
     };
-  const createQueryString = (data) => {
-      const buildQuery = (obj, prefix) => {
-          return Object.keys(obj)
-              .filter((key) => {
-                  const value = obj[key];
-                  return value !== null && value !== undefined && value !== "";
-              })
-              .map((key) => {
-                  const value = obj[key];
-                  const queryKey = prefix ? `${prefix}[${key}]` : key;
+ const createQueryString = (data) => {
+    const buildQuery = (obj, prefix) => {
+        return Object.keys(obj)
+            .filter((key) => {
+                const value = obj[key];
+                return value !== null && value !== undefined && value !== "";
+            })
+            .map((key) => {
+                const value = obj[key];
+                const queryKey = prefix ? `${prefix}[${key}]` : key;
 
-                  if (Array.isArray(value)) {
-                      return value
-                          .map((item, index) =>
-                              buildQuery(item, `${queryKey}[${index}]`)
-                          )
-                          .join("&");
-                  }
+                if (Array.isArray(value)) {
+                    return value
+                        .map((item, index) => {
+                            if (typeof item === "object") {
+                                return buildQuery(item, `${queryKey}[${index}]`);
+                            }
+                            return `${queryKey}[${index}]=${encodeURIComponent(item)}`;
+                        })
+                        .join("&");
+                }
 
-                  if (typeof value === "object" && !Array.isArray(value)) {
-                      return buildQuery(value, queryKey);
-                  }
+                if (typeof value === "object" && !Array.isArray(value)) {
+                    return buildQuery(value, queryKey);
+                }
 
-                  return `${queryKey}=${encodeURIComponent(value)}`;
-              })
-              .filter(Boolean) // Filter out any undefined or null values that might be returned
-              .join("&");
-      };
+                return `${queryKey}=${encodeURIComponent(value)}`;
+            })
+            .filter(Boolean) // Filter out any undefined or null values that might be returned
+            .join("&");
+    };
 
-      return buildQuery(data);
-  };
+    return buildQuery(data);
+};
 
 
 
 
     const fetchResidence = async () => {
+        console.log(params)
         const filteredObject = createQueryString(params);
 
         console.log(filteredObject);
@@ -268,7 +309,7 @@ export const Carte = () => {
                                     padding: 20,
                                 }}
                             >
-                                <div>
+                                <div className="cartNave">
                                     {" "}
                                     <img src={logo} alt="" />
                                 </div>
@@ -351,6 +392,9 @@ export const Carte = () => {
                         filterValue={filterValue}
                         onConfirme={filtResidence}
                         filtResidence={filtResidence}
+                        toggleActivitiesIds={toggleActivitiesIds}
+                        toggleTypeResi={toggleTypeResi}
+                        togleDate={togleDate}
                     />
                     <Maps
                         location={{
@@ -372,123 +416,4 @@ export const Carte = () => {
     );
 };
 
-// const CustomMarker = () => {
-//     return (
-//         <Spin spinning={loading} tip="Chargement des données...">
-//             <APIProvider apiKey="AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw">
-//                 <div style={{ width: "100%", height: "100%" }} className="">
-//                     <Header
-//                         title={"RESIDENCES"}
-//                         path={"Résidences"}
-//                         children={
-//                             <div
-//                                 style={{
-//                                     display: "flex",
-//                                     justifyContent: "space-between",
-//                                     alignItems: "center",
-//                                     paddingRight: 20,
-//                                     paddingLeft: 20,
-//                                 }}
-//                             >
-//                                 <div>
-//                                     <img src={logo} alt="" />
-//                                 </div>
-//                                 <FilterBoxe
-//                                     handleSearch={setFilterText}
-//                                     filtertext={filtertext}
-//                                     onClick={() => {
-//                                         setShowModal({
-//                                             ...showModal,
-//                                             filterModal: true,
-//                                         });
-//                                     }}
-//                                     placeHolder={"Rechercher une résidence"}
-//                                     children={
-//                                         <img
-//                                             onClick={() => {
-//                                                 setShowModal({
-//                                                     ...showModal,
-//                                                     filterModal: true,
-//                                                 });
-//                                             }}
-//                                             src={Icon.filter}
-//                                             alt="filter icon"
-//                                         />
-//                                     }
-//                                 />
-//                             </div>
-//                         }
-//                     />
-//                     <FilterModal
-//                         showModal={showModal}
-//                         setShowModal={setShowModal}
-//                         setFilterValue={setFilterValue}
-//                         min={filterValue.minPrice}
-//                         max={filterValue.maxPrice}
-//                         numPeople={filterValue.numPeople}
-//                         filterValue={filterValue}
-//                         onConfirme={filtResidence}
-//                         filtResidence={filtResidence}
-//                     />
-//                     <Map
-//                         defaultCenter={position}
-//                         mapId={"teststst"}
-//                         defaultZoom={12}
-//                     >
-//                         <MapControl position={ControlPosition.TOP_LEFT}>
-//                             <div
-//                                 style={{
-//                                     backgroundColor: "#fff",
-//                                     padding: "10px",
-//                                     borderRadius: "5px",
-//                                     boxShadow: "0px 0px 5px rgba(0,0,0,0.1)",
-//                                     display: "flex",
-//                                     flexDirection: "column",
-//                                     alignItems: "center",
-//                                 }}
-//                             >
-//                                 <div
-//                                     style={{
-//                                         backgroundColor: "#fff",
-//                                         padding: "10px",
-//                                         borderRadius: "5px",
-//                                         boxShadow:
-//                                             "0px 0px 5px rgba(0,0,0,0.1)",
-//                                         display: "flex",
-//                                         flexDirection: "column",
-//                                         alignItems: "center",
-//                                     }}
-//                                 >
-//                                     <div
-//                                         style={{
-//                                             backgroundColor: "#fff",
-//                                             padding: "10px",
-//                                             borderRadius: "5px",
-//                                             boxShadow:
-//                                                 "0px 0px 5px rgba(0,0,0,0.1)",
-//                                             display: "flex",
-//                                             flexDirection: "column",
-//                                             alignItems: "center",
-//                                         }}
-//                                     ></div>
-//                                 </div>
-//                             </div>
-//                         </MapControl>
-//                         {residence &&
-//                             residence.map((residence) => {
-//                                 return (
-//                                     <CustomizedMarker
-//                                         key={residence.id}
-//                                         position={{
-//                                             lat: parseFloat(residence.lat),
-//                                             lng: parseFloat(residence.lng),
-//                                         }}
-//                                     />
-//                                 );
-//                             })}
-//                     </Map>
-//                 </div>
-//             </APIProvider>
-//         </Spin>
-//     );
-// }
+
