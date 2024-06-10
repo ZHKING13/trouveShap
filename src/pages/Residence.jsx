@@ -36,6 +36,7 @@ import {
     API_URL,
     deleteResidence,
     getResidence,
+    getResidencePriceRange,
     updateResidence,
 } from "../feature/API";
 // import DatePicker from "react-datepicker";
@@ -67,6 +68,7 @@ const Residence = () => {
     const [residence, setResidence] = useState([]);
     const [location, setLocation] = useState(null);
     const [selectItem, setSelectItem] = useState(null);
+    const [priceRange, setPriceRange] = useState({ min: 5000, max: 500000 });
     const [spin, setSpin] = useState(false);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 7 });
     const [reason, setReason] = useState({
@@ -312,7 +314,23 @@ const Residence = () => {
         toDate:filterValue.toDate
     
     };
-
+    const getPriceRange = async() => {
+        const res = await getResidencePriceRange(headers);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Session expiré",
+                "merci de vous reconnecter"
+            );
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        console.log(res.data);
+        setPriceRange(res.data);
+}
     const deletResidence = async (id) => {
         setShowModal({ ...showModal, loading: true });
         const header = {
@@ -413,6 +431,7 @@ const Residence = () => {
             page: pagination.current,
             status: filterValue.status,
         });
+        getPriceRange()
     }, [pagination.current, filterValue.status, filtertext]);
 
     return (
@@ -889,6 +908,7 @@ const Residence = () => {
                         toggleTypeResi={toggleTypeResi}
                         toggleActivitiesIds={toggleActivitiesIds}
                         togleDate={togleDate}
+                        priceRange={priceRange}
                 />
                 </div>
                 <DeletModal
@@ -1000,7 +1020,8 @@ export const FilterModal = ({
     endDate,
     toggleTypeResi,
     toggleActivitiesIds,
-    togleDate
+    togleDate,
+    priceRange
 }) => {
     return (
         <Drawer
@@ -1080,8 +1101,8 @@ export const FilterModal = ({
                             maxPrice: value[1],
                         });
                     }}
-                    min={10000}
-                    max={500000}
+                    min={priceRange.min}
+                    max={priceRange.max}
                     range
                     defaultValue={[0, 0]}
                     step={1000}
@@ -1090,7 +1111,8 @@ export const FilterModal = ({
                 <Space style={spaceStyle}>
                     <Input
                         type="text"
-                        value={min}
+                        value={min.toString()
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
                         suffix="F CFA"
                         placeholder="min"
                         onChange={(e) => {
@@ -1103,7 +1125,8 @@ export const FilterModal = ({
                     -
                     <Input
                         type="text"
-                        value={max}
+                        value={max.toString()
+                                    .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
                         suffix="F CFA"
                         placeholder="max"
                         onChange={(e) => {

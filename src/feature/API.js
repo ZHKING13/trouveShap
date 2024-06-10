@@ -128,14 +128,32 @@ const createQueryString = (data) => {
     return buildQuery(data);
 };
 export const getResidence = async(params, headers) => {
-    try {
-        const queryString = createQueryString(params)
-        console.log("querystringgg", queryString)
-        const response = await privateService.get("/admin/store?" + queryString, {
+        try {
+            const queryString = createQueryString(params)
+            console.log("querystringgg", queryString)
+            const response = await privateService.get("/admin/store?" + queryString, {
 
-            headers,
-        })
-        console.log(response);
+                headers,
+            })
+            console.log(response);
+            const { status, data: responseData } = response;
+            return { status, data: responseData };
+        } catch (error) {
+            console.log(error);
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+                console.error('La requête a expiré en raison d\'un timeout.');
+                return { status: 408, data: { message: 'Request Timeout' } };
+            }
+
+
+            return { status: error.response.status, data: error.response.data };
+
+        }
+    }
+    //Get /résidences/price_range
+export const getResidencePriceRange = async(headers) => {
+    try {
+        const response = await privateService.get("/residences/price_range", { headers })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
@@ -144,11 +162,9 @@ export const getResidence = async(params, headers) => {
             console.error('La requête a expiré en raison d\'un timeout.');
             return { status: 408, data: { message: 'Request Timeout' } };
         }
-
-
         return { status: error.response.status, data: error.response.data };
-
     }
+
 }
 export const getMapResidence = async(params, headers) => {
     try {
