@@ -98,6 +98,10 @@ export const Carte = () => {
                 roomId: 5,
                 quantity: 0,
             },
+            {
+                roomId: 2,
+                quantity: 0,
+            },
         ],
         occupation: "",
         typeResi: [],
@@ -188,16 +192,12 @@ export const Carte = () => {
         minPrice: filterValue.minPrice,
         maxPrice: filterValue.maxPrice,
         numPeople: filterValue.numPeople,
-        roomIds: [
-            {
-                roomId: filterValue.roomIds[0].roomId,
-                quantity: filterValue.roomIds[0].quantity,
-            },
-            {
-                roomId: filterValue.roomIds[1].roomId,
-                quantity: filterValue.roomIds[1].quantity,
-            },
-        ],
+        "roomIds[0][roomId]": filterValue.roomIds[0].roomId,
+        "roomIds[0][quantity]": filterValue.roomIds[0].quantity,
+        "roomIds[1][roomId]": filterValue.roomIds[1].roomId,
+        "roomIds[1][quantity]": filterValue.roomIds[1].quantity,
+        "roomIds[2][roomId]": filterValue.roomIds[2].roomId,
+        "roomIds[2][quantity]": filterValue.roomIds[2].quantity,
          occupation: filterValue.occupation,
         typeIds: filterValue.typeResi,
         activitiesIds: filterValue.activitiesIds,

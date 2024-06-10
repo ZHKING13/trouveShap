@@ -310,7 +310,7 @@ const Residence = () => {
         activitiesIds: filterValue.activitiesIds,
         fromDate: filterValue.fromDate,
         toDate:filterValue.toDate
-        
+    
     };
 
     const deletResidence = async (id) => {
@@ -1126,6 +1126,7 @@ export const FilterModal = ({
                             textAlign: "center",
                             width: "125px",
                         }}
+                        value={filterValue.roomIds[0].quantity}
                         onChange={(e) => {
                             setFilterValue({
                                 ...filterValue,
@@ -1162,6 +1163,7 @@ export const FilterModal = ({
                             marginTop: "3px",
                             marginBottom:"3px"
                         }}
+                        value={filterValue.roomIds[1].quantity}
                         onChange={(e) => {
                             setFilterValue({
                                 ...filterValue,
@@ -1196,6 +1198,7 @@ export const FilterModal = ({
                             textAlign: "center",
                             width: "125px",
                         }}
+                        value={filterValue.roomIds[2].quantity}
                         onChange={(e) => {
                             setFilterValue({
                                 ...filterValue,
