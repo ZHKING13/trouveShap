@@ -14,7 +14,7 @@ import { icon } from "@fortawesome/fontawesome-svg-core";
 import FilterBoxe from "../components/FilterBoxe";
 import { Header } from "rsuite";
 import { FilterModal } from "./Residence";
-import { getMapResidence } from "../feature/API";
+import { getMapResidence, getResidencePriceRange } from "../feature/API";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import logo from "../assets/logo_sm.png";
 import Map from "../components/Map";
@@ -74,6 +74,7 @@ const position = { lat: 5.35, lng: -3.967696 };
 export const Carte = () => {
     const [filtertext, setFilterText] = useState("");
     const [residence, setResidence] = useState([]);
+    const [priceRange, setPriceRange] = useState({ min: 1, max: 111110 });
 
     const [loading, setLoading] = useState(false);
 
@@ -85,8 +86,8 @@ export const Carte = () => {
         rejectModal: false,
     });
     const [filterValue, setFilterValue] = useState({
-        minPrice: "",
-        maxPrice: "",
+         minPrice: priceRange.min,
+        maxPrice: priceRange.max,
         numPeople: 0,
         status: "",
         roomIds: [
@@ -159,6 +160,24 @@ export const Carte = () => {
             description: message,
         });
     };
+     const getPriceRange = async() => {
+        const res = await getResidencePriceRange(headers);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Session expiré",
+                "merci de vous reconnecter"
+            );
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        console.log(res.data);
+        setPriceRange(res.data);
+        
+}
     const filtResidence = async () => {
         setShowModal({
             ...showModal,
@@ -269,6 +288,7 @@ export const Carte = () => {
     useEffect(() => {
         setLoading(true);
         fetchResidence();
+        getPriceRange()
         console.log("fetching data");
     }, [
         filtertext,
@@ -395,6 +415,7 @@ export const Carte = () => {
                         toggleActivitiesIds={toggleActivitiesIds}
                         toggleTypeResi={toggleTypeResi}
                         togleDate={togleDate}
+                        priceRange={priceRange}
                     />
                     <Maps
                         location={{

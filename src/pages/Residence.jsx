@@ -68,7 +68,6 @@ const Residence = () => {
     const [residence, setResidence] = useState([]);
     const [location, setLocation] = useState(null);
     const [selectItem, setSelectItem] = useState(null);
-    const [priceRange, setPriceRange] = useState({ min: 5000, max: 500000 });
     const [spin, setSpin] = useState(false);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 7 });
     const [reason, setReason] = useState({
@@ -112,9 +111,11 @@ const Residence = () => {
 
         selectRange([startISO, endISO]);
     };
+    const [priceRange, setPriceRange] = useState({ min: 1, max: 1111111 });
+
     const [filterValue, setFilterValue] = useState({
-        minPrice: "",
-        maxPrice: "",
+        minPrice: priceRange.min,
+        maxPrice: priceRange.max,
         numPeople: "",
         status: "",
         roomIds: [
@@ -330,6 +331,7 @@ const Residence = () => {
         }
         console.log(res.data);
         setPriceRange(res.data);
+        
 }
     const deletResidence = async (id) => {
         setShowModal({ ...showModal, loading: true });
@@ -1040,8 +1042,8 @@ export const FilterModal = ({
                                 onConfirme();
                                 setFilterValue({
                                     ...filterValue,
-                                    minPrice: "",
-                                    maxPrice: "",
+                                    minPrice: priceRange.min,
+                                    maxPrice: priceRange.max,
                                     numPeople: "",
                                     roomIds: [
                                         {
@@ -1104,37 +1106,54 @@ export const FilterModal = ({
                     min={priceRange.min}
                     max={priceRange.max}
                     range
-                    defaultValue={[0, 0]}
-                    step={1000}
+                    defaultValue={[min, max]}
+                    step={1}
                     tooltip={false}
+                    style={{
+                        width: '100%',
+                    }}
                 />
                 <Space style={spaceStyle}>
-                    <Input
+                    <InputNumber
                         type="text"
+                       
                         value={min.toString()
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
-                        suffix="F CFA"
-                        placeholder="min"
+                        stringMode
+                       suffix="XOF"
+                        placeholder="Outlined"
                         onChange={(e) => {
+                            console.log(e);
                             setFilterValue({
                                 ...filterValue,
-                                minPrice: parseInt(e.target.value, 10),
+                                minPrice: parseInt(e, 10),
                             });
+                            console.log(e);
+                        }}
+                        style={{
+                            width: 135,
                         }}
                     />
                     -
-                    <Input
+                    <InputNumber
                         type="text"
+                        placeholder="Outlined"
+                        suffix="XOF"
+                        style={{
+                            width: 135,
+                        }}
+                        stringMode
                         value={max.toString()
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
-                        suffix="F CFA"
-                        placeholder="max"
+                        
                         onChange={(e) => {
                             setFilterValue({
                                 ...filterValue,
-                                maxPrice: parseInt(e.target.value, 10),
+                                maxPrice: parseInt(e, 10),
                             });
                         }}
+                       
+                        
                     />
                 </Space>
                 <Divider />
