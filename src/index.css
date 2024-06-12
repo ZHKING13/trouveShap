@@ -85,8 +85,15 @@ body {
     display: none !important;
 } */
 
-.ant-slider-track {
+.ant-slider-track,
+.rs-slider-bar,
+.rs-slider-handle {
     background-color: #A273FF !important;
+}
+
+.rs-slider-bar,
+.rs-slider-progress-bar {
+    width: 100% !important;
 }
 
 

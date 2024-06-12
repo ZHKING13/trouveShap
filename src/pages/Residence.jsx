@@ -4,6 +4,7 @@ import DataTable, {
     renderColor,
     renderIcon,
 } from "../components/DataTable";
+import {  RangeSlider, Row, Col, InputGroup } from 'rsuite';
 import Header from "../components/Header";
 import {
     Avatar,
@@ -111,11 +112,11 @@ const Residence = () => {
 
         selectRange([startISO, endISO]);
     };
-    const [priceRange, setPriceRange] = useState({ min: 1, max: 1111110 });
+    const [priceRange, setPriceRange] = useState({ min: 1, max: 1111111 });
 
     const [filterValue, setFilterValue] = useState({
-        minPrice: 0,
-        maxPrice: 0,
+        minPrice: priceRange?.min,
+        maxPrice: priceRange.max,
         numPeople: "",
         status: "",
         roomIds: [
@@ -136,7 +137,8 @@ const Residence = () => {
         typeResi: [],
         activitiesIds: [],
         fromDate: "",
-        toDate: ""
+        toDate: "",
+        reset:false
     });
     const [open, setOpen] = useState(false);
     const [modalAray, setModalAray] = useState([]);
@@ -330,15 +332,15 @@ const Residence = () => {
             return;
         }
         console.log(res.data);
-      await  setPriceRange({
+        setPriceRange({
             min: res.data.min,
             max: res.data.max
        })
-       await setFilterValue({
-            ...filterValue,
-            minPrice: res.data.min,
-            maxPrice: res.data.max
-        })
+    //    await setFilterValue({
+    //         ...filterValue,
+    //         minPrice: res.data.min,
+    //         maxPrice: res.data.max
+    //     })
         
 }
     const deletResidence = async (id) => {
@@ -413,6 +415,7 @@ const Residence = () => {
        
         fetchResidence();
     };
+
     const fetchResidence = async () => {
         
         setLoading(true);
@@ -442,7 +445,7 @@ const Residence = () => {
             status: filterValue.status,
         });
         getPriceRange()
-    }, [pagination.current, filterValue.status, filtertext]);
+    }, [pagination.current, filterValue.status, filtertext, filterValue.reset ]);
 
     return (
         <main>
@@ -1047,37 +1050,32 @@ export const FilterModal = ({
                     <div style={spaceStyle}>
                         <Button
                             onClick={() => {
-                                onConfirme();
-                                setFilterValue({
-                                    ...filterValue,
-                                    minPrice: priceRange.min,
-                                    maxPrice: priceRange.max,
-                                    numPeople: "",
-                                    roomIds: [
-                                        {
-                                            roomId: 1,
-                                            quantity: 0,
-                                        },
-                                        {
-                                            roomId: 2,
-                                            quantity: 0,
-                                        },
-                                        {
-                                            roomId: 5,
-                                            quantity: 0,
-                                        },
-                                    ],
-                                    typeResi: [],
-                                    occupation: "",
-                                    activitiesIds: [],
-                                    status:""
-                                });
+                                const resetFilterValues = {
+    minPrice: priceRange.min,
+    maxPrice: priceRange.max,
+    numPeople: "",
+    roomIds: [
+        { roomId: 1, quantity: 0 },
+        { roomId: 2, quantity: 0 },
+        { roomId: 5, quantity: 0 },
+    ],
+    typeResi: [],
+    occupation: "",
+    activitiesIds: [],
+                                    status: "",
+    reset: !filterValue.reset
+};
+                                  setFilterValue(prevState => ({
+        ...prevState,
+        ...resetFilterValues
+    }));
                                 
-                                console.log(filterValue);
-                                setShowModal({
-                                    ...showModal,
-                                    filterModal: false,
-                                });
+                                console.log("reset value ::::",filterValue);
+                                // setShowModal({
+                                //     ...showModal,
+                                //     filterModal: false,
+                                // });
+                                filtResidence();
 
                                 
                             }}
@@ -1102,19 +1100,24 @@ export const FilterModal = ({
                
 
                 <h3>Fourchette de prix</h3>
+              
                 <Slider
                     onChange={(value) => {
                         console.log(value);
-                        setFilterValue({
-                            ...filterValue,
-                            minPrice: value[0],
-                            maxPrice: value[1],
+                        setFilterValue(prevState => {
+                            return {
+                                ...prevState,
+                                minPrice: value[0],
+                                maxPrice: value[1]
+                            }
+                        
                         });
                     }}
                     min={priceRange.min}
                     max={priceRange.max}
                     range
-                    defaultValue={[min, max]}
+                    defaultValue={[priceRange.min, priceRange.max]}
+                    value={[filterValue.minPrice, filterValue.maxPrice]}
                     step={1}
                     tooltip={false}
                     style={{
@@ -1124,9 +1127,11 @@ export const FilterModal = ({
                 <Space style={spaceStyle}>
                     <InputNumber
                        
-                       
-                        value={min.toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                       formatter={(value) => {
+        if (value === null || value === undefined) return '';
+        return new Intl.NumberFormat('fr-FR').format(value);
+    }}
+                        value={min}
                         stringMode
                        suffix="XOF"
                         placeholder="Outlined"
@@ -1134,10 +1139,14 @@ export const FilterModal = ({
                         onChange={(e) => {
                             console.log(e);
                             
-                            const newValue = e === null || e === '' ? 1 : parseInt(e, 10);
-                            setFilterValue({
-                                ...filterValue,
-                                minPrice: newValue,
+                            const newValue = e === null || e === '' ? priceRange.min : parseInt(e, 10);
+                            setFilterValue(prevState => {
+                                return {
+                                    ...prevState,
+                                    minPrice: newValue
+                                }
+                            
+                            
                             });
                             console.log(e);
                         }}
@@ -1153,15 +1162,22 @@ export const FilterModal = ({
                         style={{
                             width: 135,
                         }}
-                        stringMode
-                        value={max.toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                         formatter={(value) => {
+        if (value === null || value === undefined) return '';
+        return new Intl.NumberFormat('fr-FR').format(value);
+    }}
+                        value={max}
                         
                         onChange={(e) => {
-                            const newValue = e === null || e === '' ? 1 : parseInt(e, 10);
-                            setFilterValue({
-                                ...filterValue,
-                                maxPrice: newValue,
+                            const newValue = e === null || e === '' ? priceRange.max : parseInt(e, 10);
+
+                            setFilterValue(prevState => {
+                                return {
+                                    ...prevState,
+                                    maxPrice: newValue 
+                                }
+                            
+                            
                             });
                         }}
                        
