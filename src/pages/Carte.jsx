@@ -74,7 +74,7 @@ const position = { lat: 5.35, lng: -3.967696 };
 export const Carte = () => {
     const [filtertext, setFilterText] = useState("");
     const [residence, setResidence] = useState([]);
-    const [priceRange, setPriceRange] = useState({ min: 1, max: 111110 });
+    const [priceRange, setPriceRange] = useState({ min: 1, max: 500000 });
 
     const [loading, setLoading] = useState(false);
 
@@ -175,7 +175,10 @@ export const Carte = () => {
             return;
         }
         console.log(res.data);
-        setPriceRange(res.data);
+         setPriceRange({
+             min: res.data.min,
+             max: res.data.max
+        });
         
 }
     const filtResidence = async () => {

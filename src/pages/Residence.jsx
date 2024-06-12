@@ -111,7 +111,7 @@ const Residence = () => {
 
         selectRange([startISO, endISO]);
     };
-    const [priceRange, setPriceRange] = useState({ min: 1, max: 1111111 });
+    const [priceRange, setPriceRange] = useState({ min: 1, max: 500000 });
 
     const [filterValue, setFilterValue] = useState({
         minPrice: priceRange.min,
@@ -330,7 +330,10 @@ const Residence = () => {
             return;
         }
         console.log(res.data);
-        setPriceRange(res.data);
+         setPriceRange({
+             min: res.data.min,
+             max: res.data.max
+        });
         
 }
     const deletResidence = async (id) => {
