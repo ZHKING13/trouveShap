@@ -175,10 +175,15 @@ export const Carte = () => {
             return;
         }
         console.log(res.data);
-         setPriceRange({
-             min: res.data.min,
-             max: res.data.max
-        });
+         await  setPriceRange({
+            min: res.data.min,
+            max: res.data.max
+       })
+       await setFilterValue({
+            ...filterValue,
+            minPrice: res.data.min,
+            maxPrice: res.data.max
+        })
         
 }
     const filtResidence = async () => {

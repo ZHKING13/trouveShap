@@ -111,11 +111,11 @@ const Residence = () => {
 
         selectRange([startISO, endISO]);
     };
-    const [priceRange, setPriceRange] = useState({ min: 1, max: 500000 });
+    const [priceRange, setPriceRange] = useState({ min: 1, max: 1111110 });
 
     const [filterValue, setFilterValue] = useState({
-        minPrice: priceRange.min,
-        maxPrice: priceRange.max,
+        minPrice: 0,
+        maxPrice: 0,
         numPeople: "",
         status: "",
         roomIds: [
@@ -330,10 +330,15 @@ const Residence = () => {
             return;
         }
         console.log(res.data);
-         setPriceRange({
-             min: res.data.min,
-             max: res.data.max
-        });
+      await  setPriceRange({
+            min: res.data.min,
+            max: res.data.max
+       })
+       await setFilterValue({
+            ...filterValue,
+            minPrice: res.data.min,
+            maxPrice: res.data.max
+        })
         
 }
     const deletResidence = async (id) => {
@@ -1118,18 +1123,21 @@ export const FilterModal = ({
                 />
                 <Space style={spaceStyle}>
                     <InputNumber
-                        type="text"
+                       
                        
                         value={min.toString()
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
                         stringMode
                        suffix="XOF"
                         placeholder="Outlined"
+                        min={0}
                         onChange={(e) => {
                             console.log(e);
+                            
+                            const newValue = e === null || e === '' ? 1 : parseInt(e, 10);
                             setFilterValue({
                                 ...filterValue,
-                                minPrice: parseInt(e, 10),
+                                minPrice: newValue,
                             });
                             console.log(e);
                         }}
@@ -1139,7 +1147,7 @@ export const FilterModal = ({
                     />
                     -
                     <InputNumber
-                        type="text"
+                        min={0}
                         placeholder="Outlined"
                         suffix="XOF"
                         style={{
@@ -1150,9 +1158,10 @@ export const FilterModal = ({
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
                         
                         onChange={(e) => {
+                            const newValue = e === null || e === '' ? 1 : parseInt(e, 10);
                             setFilterValue({
                                 ...filterValue,
-                                maxPrice: parseInt(e, 10),
+                                maxPrice: newValue,
                             });
                         }}
                        
