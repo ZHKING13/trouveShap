@@ -1136,10 +1136,23 @@ export const FilterModal = ({
                        suffix="XOF"
                         placeholder="Outlined"
                         min={0}
+                          onBlur={(e) => {
+                            console.log(e)
+                            if (e.target.value == null || e.target.value == undefined || e.target.value == "" || e.target.value == "0") {
+                                setFilterValue(prevState => {
+                                return {
+                                    ...prevState,
+                                    minPrice: priceRange.min 
+                                }
+                            
+                            
+                            });
+                            }
+                        }}
                         onChange={(e) => {
                             console.log(e);
                             
-                            const newValue = e === null || e === '' ? priceRange.min : parseInt(e, 10);
+                            const newValue = e === null || e === '' ? 0 : parseInt(e, 10);
                             setFilterValue(prevState => {
                                 return {
                                     ...prevState,
@@ -1169,7 +1182,7 @@ export const FilterModal = ({
                         value={max}
                         
                         onChange={(e) => {
-                            const newValue = e === null || e === '' ? priceRange.max : parseInt(e, 10);
+                            const newValue = e === null || e === '' ? 0 : parseInt(e, 10);
 
                             setFilterValue(prevState => {
                                 return {
@@ -1179,6 +1192,19 @@ export const FilterModal = ({
                             
                             
                             });
+                        }}
+                        onBlur={(e) => {
+                            console.log(e)
+                            if (e.target.value == null || e.target.value == undefined || e.target.value == "" || e.target.value == "0") {
+                                setFilterValue(prevState => {
+                                return {
+                                    ...prevState,
+                                    maxPrice: priceRange.max 
+                                }
+                            
+                            
+                            });
+                            }
                         }}
                        
                         
