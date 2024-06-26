@@ -304,12 +304,13 @@ const Residence = () => {
         limit: 7,
         status: filterValue.status,
         admin_search: filtertext,
-        "roomIds[0][roomId]": filterValue.roomIds[0].roomId,
-        "roomIds[0][quantity]": filterValue.roomIds[0].quantity,
-        "roomIds[1][roomId]": filterValue.roomIds[1].roomId,
-        "roomIds[1][quantity]": filterValue.roomIds[1].quantity,
-        "roomIds[2][roomId]": filterValue.roomIds[2].roomId,
-        "roomIds[2][quantity]": filterValue.roomIds[2].quantity,
+        ...filterValue.roomIds
+        .filter(room => room.quantity > 0)
+        .reduce((acc, room, index) => {
+            acc[`roomIds[${index}][roomId]`] = room.roomId;
+            acc[`roomIds[${index}][quantity]`] = room.quantity;
+            return acc;
+        }, {}),
         occupation: filterValue.occupation,
         typeIds: filterValue.typeResi,
         activitiesIds: filterValue.activitiesIds,

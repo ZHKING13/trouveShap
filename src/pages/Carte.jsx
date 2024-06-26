@@ -198,37 +198,39 @@ export const Carte = () => {
         "refresh-token": localStorage.getItem("refreshToken"),
     };
 
-    const params = {
-        limit: 7,
-        status: filterValue.status,
-        admin_search: filtertext,
-        zoomLevel: mapPosition.zoom,
-        viewport: {
-            northeast: {
-                lat: mapBounds.northeast?.lat,
-                lng: mapBounds.northeast?.lng,
-            },
-            southwest: {
-                lat: mapBounds.southwest?.lat,
-                lng: mapBounds.southwest?.lng,
-            },
+ const params = {
+    limit: 7,
+    status: filterValue.status,
+    admin_search: filtertext,
+    zoomLevel: mapPosition.zoom,
+    viewport: {
+        northeast: {
+            lat: mapBounds.northeast?.lat,
+            lng: mapBounds.northeast?.lng,
         },
-        minPrice: filterValue.minPrice,
-        maxPrice: filterValue.maxPrice,
-        numPeople: filterValue.numPeople,
-        "roomIds[0][roomId]": filterValue.roomIds[0].roomId,
-        "roomIds[0][quantity]": filterValue.roomIds[0].quantity,
-        "roomIds[1][roomId]": filterValue.roomIds[1].roomId,
-        "roomIds[1][quantity]": filterValue.roomIds[1].quantity,
-        "roomIds[2][roomId]": filterValue.roomIds[2].roomId,
-        "roomIds[2][quantity]": filterValue.roomIds[2].quantity,
-         occupation: filterValue.occupation,
-        typeIds: filterValue.typeResi,
-        activitiesIds: filterValue.activitiesIds,
-        fromDate: filterValue.fromDate,
-        toDate:filterValue.toDate
-    };
- const createQueryString = (data) => {
+        southwest: {
+            lat: mapBounds.southwest?.lat,
+            lng: mapBounds.southwest?.lng,
+        },
+    },
+    minPrice: filterValue.minPrice,
+    maxPrice: filterValue.maxPrice,
+    numPeople: filterValue.numPeople,
+    ...filterValue.roomIds
+        .filter(room => room.quantity > 0)
+        .reduce((acc, room, index) => {
+            acc[`roomIds[${index}][roomId]`] = room.roomId;
+            acc[`roomIds[${index}][quantity]`] = room.quantity;
+            return acc;
+        }, {}),
+    occupation: filterValue.occupation,
+    typeIds: filterValue.typeResi,
+    activitiesIds: filterValue.activitiesIds,
+    fromDate: filterValue.fromDate,
+    toDate: filterValue.toDate
+};
+
+const createQueryString = (data) => {
     const buildQuery = (obj, prefix) => {
         return Object.keys(obj)
             .filter((key) => {
@@ -270,7 +272,7 @@ export const Carte = () => {
         console.log(params)
         const filteredObject = createQueryString(params);
 
-        console.log(filteredObject);
+        console.log("filterObjet::::", filteredObject);
 
         const res = await getMapResidence(filteredObject, headers);
         console.log(res.data);

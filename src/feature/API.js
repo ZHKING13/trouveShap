@@ -105,13 +105,13 @@ const createQueryString = (data) => {
                 const queryKey = prefix ? `${prefix}[${key}]` : key;
 
                 if (Array.isArray(value)) {
-                    // Generate query string for arrays with explicit indices
                     return value
-                        .map((item, index) =>
-                            Array.isArray(item) || typeof item === 'object' ?
-                            buildQuery(item, `${queryKey}[${index}]`) :
-                            `${queryKey}[${index}]=${encodeURIComponent(item)}`
-                        )
+                        .map((item, index) => {
+                            if (typeof item === "object") {
+                                return buildQuery(item, `${queryKey}[${index}]`);
+                            }
+                            return `${queryKey}[${index}]=${encodeURIComponent(item)}`;
+                        })
                         .join("&");
                 }
 
