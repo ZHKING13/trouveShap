@@ -4,6 +4,8 @@ import DataTable, {
     renderColor,
     renderIcon,
 } from "../components/DataTable";
+import * as XLSX from "xlsx";
+
 import {  RangeSlider, Row, Col, InputGroup } from 'rsuite';
 import Header from "../components/Header";
 import {
@@ -29,7 +31,7 @@ import {
     
     
 } from "antd";
-import { PictureOutlined } from "@ant-design/icons";
+import { PictureOutlined,UploadOutlined } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Map from "../components/Map";
@@ -178,6 +180,37 @@ const Residence = () => {
       activitiesIds: checkedValues
     });
   };
+  const exportToCSV = (data, fileName) => {
+        console.log("dattt",data)
+        const formattedData = data.map((item) => ({
+            "Nom de la residence": item.name,
+            "Nom de l'Hôte": item.host.firstname + " " + item.host.lastname,
+            "Prix": item.price,
+            "Document Hôte": `${API_URL}/assets/uploads/docs/${item.host.identityDoc}`,
+            "Date d'ajout": new Date(item.createdAt).toLocaleDateString(),
+            "Statut": item.status,
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(formattedData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Newsletter");
+
+        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const dataBlob = new Blob([excelBuffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+        });
+
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(dataBlob);
+        link.href = url;
+        link.download = fileName + ".xlsx";
+
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
     const onCancel = (data) => {
         setSelectItem(data);
         setShowModal({
@@ -344,69 +377,7 @@ const Residence = () => {
     //     })
         
 }
-    const deletResidence = async (id) => {
-        setShowModal({ ...showModal, loading: true });
-        const header = {
-            Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
-            "refresh-token": localStorage.getItem("refreshToken"),
-            "Content-Type": "application/json",
-        };
-        const formdata = new FormData();
-        const { deletReason } = reason;
-        formdata.append("reason", deletReason);
-        let deleteReason = formdata.get("reason");
-
-        console.log(formdata);
-
-        if (deleteReason == "") {
-            openNotificationWithIcon(
-                "error",
-                "ERREUR",
-                "merci de remplir le champ raison"
-            );
-            setShowModal({ ...showModal, loading: false });
-            return;
-        }
-        const res = await deleteResidence(id, formdata, header);
-
-        console.log(res);
-        if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                res.status == 400 ? "ERREUR" : "Session expiré",
-                res.data.message
-            );
-            setShowModal({ ...showModal, loading: false });
-            if (res.status == 400) {
-                return;
-            }
-            localStorage.clear();
-            setTimeout(() => {
-                navigate("/login");
-            }, 1500);
-            return;
-        }
-        setShowModal({ ...showModal, loading: false });
-        openNotificationWithIcon(
-            "success",
-            "SUCCES",
-            "la résidence a été desactivé"
-        );
-        setResidence((prev) => {
-            return prev.map((item) => {
-                if (item.id == id) {
-                    item.status = "Désactivé";
-                }
-                return item;
-            });
-        });
-        setShowModal({ ...showModal, deletModal: false });
-        setReason({
-            ...reason,
-            deletReason: "",
-        });
-        // setResidence(res.data.residences);
-    };
+  
     const filtResidence = async () => {
         setShowModal({
             ...showModal,
@@ -416,7 +387,45 @@ const Residence = () => {
        
         fetchResidence();
     };
-
+    const exportResidence =async () => {
+            setLoading(true);
+        console.log(params)
+        let para = {
+        minPrice: filterValue.minPrice,
+        maxPrice: filterValue.maxPrice,
+        numPeople: filterValue.numPeople,
+       
+        status: filterValue.status,
+        admin_search: filtertext,
+        ...filterValue.roomIds
+        .filter(room => room.quantity > 0)
+        .reduce((acc, room, index) => {
+            acc[`roomIds[${index}][roomId]`] = room.roomId;
+            acc[`roomIds[${index}][quantity]`] = room.quantity;
+            return acc;
+        }, {}),
+        occupation: filterValue.occupation,
+        typeIds: filterValue.typeResi,
+        activitiesIds: filterValue.activitiesIds,
+        fromDate: filterValue.fromDate,
+            toDate: filterValue.toDate,
+        all:true
+    
+    };
+        const res = await getResidence(para, headers);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "ERREUR",
+                "merci de reesayer"
+            );
+          
+            setLoading(false);
+            return;
+        }
+        setLoading(false);
+        return res.data.residences
+}
     const fetchResidence = async () => {
         
         setLoading(true);
@@ -451,35 +460,61 @@ const Residence = () => {
     return (
         <main>
             <>
-                <Header
-                    title={"RESIDENCES"}
-                    path={"Résidences"}
-                    children={
-                        <FilterBoxe
-                            handleSearch={setFilterText}
-                            filtertext={filtertext}
-                            onClick={() => {
-                                setShowModal({
-                                    ...showModal,
-                                    filterModal: true,
-                                });
-                            }}
-                            placeHolder={"Rechercher une résidence"}
-                            children={
-                                <img
-                                    onClick={() => {
-                                        setShowModal({
-                                            ...showModal,
-                                            filterModal: true,
-                                        });
-                                    }}
-                                    src={Icon.filter}
-                                    alt="filter icon"
-                                />
-                            }
-                        />
-                    }
-                />
+                <>
+                  
+                    <Header
+                        title={"RESIDENCES"}
+                        path={"Résidences"}
+                        children={
+                            <Space>
+                                  <Button
+                                type="primary"
+                                icon={<UploadOutlined />}
+                                style={{
+                                    backgroundColor: "#ECE3FF",
+                                    border: "none",
+                                    color: "rgba(162, 115, 255, 1)",
+                                    borderRadius: "100px",
+                                    padding: "4px 12px",
+                                    height: "40px",
+                                    fontWeight:"bold"
+                                }}
+                                onClick={async() => {
+                                    const data = await exportResidence();
+                                    const fileName = "residence";
+                                    if (!data || data.length <0 ) return;
+                                    exportToCSV(data, fileName);
+                                }}
+                            >
+                                Exporter
+                            </Button>
+                                  <FilterBoxe
+                                handleSearch={setFilterText}
+                                filtertext={filtertext}
+                                onClick={() => {
+                                    setShowModal({
+                                        ...showModal,
+                                        filterModal: true,
+                                    });
+                                }}
+                                placeHolder={"Rechercher une résidence"}
+                                children={
+                                    <img
+                                        onClick={() => {
+                                            setShowModal({
+                                                ...showModal,
+                                                filterModal: true,
+                                            });
+                                        }}
+                                        src={Icon.filter}
+                                        alt="filter icon"
+                                    />
+                                }
+                            />
+                          </Space>
+                        }
+                    />
+                </>
                 {contextHolder}
 
                 <Drawer

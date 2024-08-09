@@ -3,7 +3,7 @@ import DataTable, { FormatDate } from "../components/DataTable";
 import Header from "../components/Header";
 import { DATA3 } from "../data";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
-import { getNewsletter,getAdminLogs, API_URL, getActionLogs } from "../feature/API";
+import { getNewsletter,getAdminLogs, API_URL, getActionLogs, getAllAdmins } from "../feature/API";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FilterBoxe from "../components/FilterBoxe";
@@ -39,6 +39,7 @@ function Logs() {
     });
     const [logs, setLogs] = useState([]);
     const [action,setAction]= useState([])
+    const [admin,setAdmin ]= useState([])
     const [filtertext, setFilterText] = useState("");
     const [dateRange, setDateRange] = useState({
         fromDate: null,
@@ -92,8 +93,8 @@ function Logs() {
     const exportToCSV = (data, fileName) => {
         console.log("dattt",data)
         const formattedData = data.logs.map((log) => ({
-            "Action": log.action,
-            "Details": log.details,
+            "Action": log?.action,
+            "Details": log?.details,
             "Membre Depuis": new Date(log.createdAt).toLocaleDateString(),
         }));
 
@@ -235,11 +236,13 @@ function Logs() {
                console.log("log params",filteredObject);
 
         let action = getActionLogs(headers)
+        let admin = getAllAdmins(headers)
         const log =  getAdminLogs(headers, filteredObject);
-         const [ret, res] = await Promise.all([action, log]);
+         const [ret, res,rest] = await Promise.all([action, log,admin]);
         console.log(res);
         console.log("action type", filteredObject);
         setAction(ret.data)
+        setAdmin(rest?.data)
 
         if (res.status !== 201) {
             openNotificationWithIcon(
@@ -329,6 +332,7 @@ function Logs() {
                 > </Header>
                 <FilterModal
                     action={action}
+                    admin={admin}
                     showModal={showModal}
                     setShowModal={setShowModal}
                     setFilterValue={setFilterValue}
@@ -376,7 +380,8 @@ export const FilterModal = ({
     toggleActivitiesIds,
     togleDate,
     action,
-    toggleType
+    toggleType,
+    admin
 }) => {
     return (
         <Drawer
@@ -448,9 +453,12 @@ export const FilterModal = ({
                 <Checkbox.Group  onChange={toggleType}
       value={filterValue.admins}>
       <Space direction="vertical">
-        <Checkbox value={1}>Hote</Checkbox>
-        <Checkbox value={4}>Visiteur</Checkbox>
-         <Checkbox value={6}>Contacte</Checkbox>
+                        {
+                            admin.map((item)=>{
+                                return         <Checkbox value={item.id}>{item?.firstname} {item?.lastname} </Checkbox>
+
+                            })
+        }
       
         
       </Space>
