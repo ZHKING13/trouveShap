@@ -2,7 +2,8 @@ import axios from "axios";
 
 
 // export const API_URL = "https://api.trouvechap.com";
-export const API_URL = "http://85.31.234.166:3032";
+// export const API_URL = "http://85.31.234.166:3032";
+export const API_URL = "https://preprodapi.trouvechap.com";
 const privateService = axios.create({
     baseURL: API_URL,
 });

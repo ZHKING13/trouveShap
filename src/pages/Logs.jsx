@@ -454,7 +454,7 @@ export const FilterModal = ({
       value={filterValue.admins}>
       <Space direction="vertical">
                         {
-                            admin.map((item)=>{
+                          admin &&  admin.map((item)=>{
                                 return         <Checkbox value={item.id}>{item?.firstname} {item?.lastname} </Checkbox>
 
                             })
