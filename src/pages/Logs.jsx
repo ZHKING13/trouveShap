@@ -274,9 +274,62 @@ function Logs() {
                     title={"LOGS"}
                     path={"logs"}
                     children={
-                        <p>header</p>
+                        <Space size={"large"}>
+                            <Button
+                                type="primary"
+                                icon={<UploadOutlined />}
+                                style={{
+                                    backgroundColor: "#ECE3FF",
+                                    border: "none",
+                                    color: "rgba(162, 115, 255, 1)",
+                                    borderRadius: "100px",
+                                    padding: "4px 12px",
+                                    height: "40px",
+                                    fontWeight:"bold"
+                                }}
+                                onClick={async() => {
+                                    const data = await getLogs();
+                                    const fileName = "logs";
+                                    if (!data || data.length <0 ) return;
+                                    exportToCSV(data, fileName);
+                                }}
+                            >
+                                Exporter
+                            </Button>
+                            <Button
+                                onClick={async() => {
+                                   setShowModal({
+                                            ...showModal,
+                                            filterModal: true,
+                                        });
+                                }}
+                                style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "4px 12px",
+                 height: "40px",
+                 fontWeight:"bold",
+                                    
+                borderRadius: "31px",
+                boxShadow: "14px 17px 40px 4px rgba(112, 144, 176, 0.08)",
+                background: "#fff",
+                gap: "10px",
+            }}
+            
+            >
+                                
+                            <img
+                                
+                                   
+                                    src={Icon.filter}
+                                    alt="filter icon"
+                                />
+                                <span>Filtres</span>
+                           </Button>
+                        </Space>
                     }
-                > </Header>
+               /> 
                 <FilterModal
                     action={action}
                     admin={admin}

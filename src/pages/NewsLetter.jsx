@@ -199,7 +199,7 @@ const NewsLetter = () => {
                             />
                         </Space>
                     }
-                > </Header>
+                />
                 <DataTable
                     pagination={{
                         total: pagination.total,
