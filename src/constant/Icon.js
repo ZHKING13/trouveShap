@@ -16,6 +16,8 @@ import map from "../assets/maps.svg";
 import eyeOf from "../assets/eye-off.svg";
 import user2 from "../assets/users-02.png";
 import users from "../assets/users.png";
+import logs from "../assets/logs.png";
+import admin from "../assets/admin.png";
 
 export const Icon = {
     wifi,
@@ -35,5 +37,7 @@ export const Icon = {
     doc,
     bank,
     user2,
-    users
+    users,
+    logs,
+    admin
 }

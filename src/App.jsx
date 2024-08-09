@@ -82,6 +82,16 @@ function App() {
             icon: <img src={user} />,
         },
         {
+            label: <Link to="/admins">Admin</Link>,
+            key: "admins",
+            icon: <img src={Icon.admin} />,
+        },
+        {
+            label: <Link to="/logs">Logs</Link>,
+            key: "logs",
+            icon: <img src={Icon.logs} />,
+        },
+        {
             label: <Link to="/login">Deconnexion</Link>,
             key: "login",
             icon: <img src={log} />,
@@ -90,6 +100,8 @@ function App() {
     const onClick = (e) => {
         if (e.key == "login") {
             localStorage.clear();
+             navigate("/login");
+            return
         }
         navigate(e.key);
     };

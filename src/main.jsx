@@ -23,6 +23,8 @@ import GuestRoute from "./feature/Guards/GuestRoute.jsx";
 import Remboursement from "./pages/Remboursement.jsx";
 import Users from "./pages/Users.jsx";
 import { Carte } from "./pages/Carte.jsx";
+import Logs from "./pages/Logs.jsx";
+import Admins from "./pages/Admins.jsx";
 library.add(fab, fas, far);
 const router = createBrowserRouter([
     {
@@ -48,6 +50,14 @@ const router = createBrowserRouter([
             {
                 path: "residence",
                 element: <Residence />,
+            },
+            {
+                path: "logs",
+                element: <Logs />,
+            },
+            {
+                path: "admins",
+                element: <Admins />,
             },
             {
                 path: "carte",

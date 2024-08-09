@@ -527,7 +527,7 @@ const DrawerComponent = ({
                             />
                             {selectItem.medias.map((item, index) => {
                                 return index == 0 ? null : (
-                                    <div
+                                    <div 
                                         style={{
                                             display: "none",
                                         }}

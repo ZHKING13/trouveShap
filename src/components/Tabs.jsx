@@ -13,6 +13,7 @@ import users from "../assets/Frame.png";
 import inbox from "../assets/inbox.png";
 import home from "../assets/home.png";
 import map from "../assets/maps.svg";
+import { Icon } from "../constant/Icon";
 
 
 const items = [
@@ -50,6 +51,16 @@ const items = [
         key: "newsletter",
 
         icon: <img src={inbox} />,
+        children: "",
+    },
+    {
+        key: "logs",
+        icon: <img src={Icon.logs} />,
+        children: "",
+    },
+    {
+        key: "admins",
+        icon: <img src={Icon.admin} />,
         children: "",
     },
     {

@@ -85,6 +85,10 @@ body {
     display: none !important;
 } */
 
+.ant-form-item {
+    margin-bottom: 10px !important;
+}
+
 .ant-slider-track,
 .rs-slider-bar,
 .rs-slider-handle {

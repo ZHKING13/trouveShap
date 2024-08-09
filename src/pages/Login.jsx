@@ -66,6 +66,7 @@ const Login = () => {
         localStorage.setItem("token", rest.data.token);
         localStorage.setItem("accesToken", rest.data.access_token);
         localStorage.setItem("refreshToken", rest.data.refresh_token);
+        let firstLogin = rest.data.isFirstLogin
         openNotificationWithIcon("success", "connexion reussi","vous allez etre redirigé vers votre espace");
         setTimeout(() => {
             navigate("/");
