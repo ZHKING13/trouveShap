@@ -6,10 +6,11 @@ const GuestRoute = ({element}) => {
     // Check if the user is authenticated
     const isAuthenticated = localStorage.getItem("isLog");
     const logUser = JSON.parse(localStorage.getItem("user"));
-//     if (logUser.isFirstLogin) {
-//         alert("premier connexion")
-//         return
-// }
+    const isFirstLogin = localStorage.getItem("firstLogin")
+    if (isFirstLogin === true) {
+        
+        return  <Navigate to="/firstlogin"/>
+}
      if (isAuthenticated && logUser.profile !== "Client") {
         return element;
     } else {

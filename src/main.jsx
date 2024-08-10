@@ -25,6 +25,7 @@ import Users from "./pages/Users.jsx";
 import { Carte } from "./pages/Carte.jsx";
 import Logs from "./pages/Logs.jsx";
 import Admins from "./pages/Admins.jsx";
+import FirstLogin from "./pages/isFirstLogin.jsx";
 library.add(fab, fas, far);
 const router = createBrowserRouter([
     {
@@ -63,6 +64,7 @@ const router = createBrowserRouter([
                 path: "carte",
                 element: <Carte />,
             },
+            
             {
                 path: "newsletter",
                 element: <NewsLetter />,
@@ -77,6 +79,10 @@ const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
     },
+     {
+        path: "/firstlogin",
+        element: <FirstLogin />,
+    },
     {
         path: "/forgot-password",
         element: <ForgotPassword />,
@@ -85,6 +91,7 @@ const router = createBrowserRouter([
         path: "/new-password",
         element: <ChangePassword />,
     },
+   
     {
         path: "/otp",
         element: <Otp />,

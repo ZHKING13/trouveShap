@@ -5,7 +5,7 @@ import google from "../assets/google.png";
 import { COLORS } from "../constant/Color";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { LoginUser } from "../feature/API";
+import { firsLogiReset, LoginUser } from "../feature/API";
 import { Spin, notification } from "antd";
 import Loader from "../components/Loader";
 const styleProps = {
@@ -19,7 +19,7 @@ const styleProps = {
     borderRadius: "100px",
 };
 
-const Login = () => {
+const FirstLogin = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState(new FormData());
     const [loading, setLoading] = useState(false);
@@ -34,42 +34,45 @@ const Login = () => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
+     const logUser = JSON.parse(localStorage.getItem("user"));
+    const headers = {
+        Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+        // "refresh-token": localStorage.getItem("refreshToken"),
+    };
     // validate input value befor submit
     const handleSubmit = async (e) => {
         setLoading(true);
         // check if formdat is empty
-        const { email, password } = formData;
-        if (!email || !password) {
+        const { password, password2 } = formData;
+        if (password != password2) {
             openNotificationWithIcon(
                 "error",
-                "champs requis",
+                "INVALIDE",
                 "veuillez remplir tous les champs"
             );
             setLoading(false);
             return;
         }
-
+let body = {
+    new_password: password,
+    email:logUser?.email
+}
         e.preventDefault();
-        const rest = await LoginUser(formData);
+        const rest = await firsLogiReset(body,headers);
         setLoading(false);
         console.log(rest);
-        console.log(formData);
         if (rest.status !== 201) {
             openNotificationWithIcon(
                 "error",
-                "connexion impossible",
+                "les deux champs ne correspondent pas",
                 rest.data.message
             );
             return;
         }
-        localStorage.setItem("isLog", true);
-        localStorage.setItem("user", JSON.stringify(rest.data));
-        localStorage.setItem("token", rest.data.token);
-        localStorage.setItem("accesToken", rest.data.access_token);
-        localStorage.setItem("refreshToken", rest.data.refresh_token);
-        localStorage.setItem("firstLogin", rest.data.isFirstLogin);
-        let firstLogin = rest.data.isFirstLogin
-        openNotificationWithIcon("success", "connexion reussi","vous allez etre redirigé vers votre espace");
+        
+        localStorage.setItem("firstLogin", true);
+        // let firstLogin = rest.data.isFirstLogin
+        openNotificationWithIcon("success", rest.data.message,"vous allez etre redirigé vers votre espace");
         setTimeout(() => {
             navigate("/");
         }, 1500);
@@ -86,11 +89,10 @@ const Login = () => {
                             letterSpacing: "-0.64px",
                         }}
                     >
-                        connexion
+                        Renitialisation du mots de passe
                     </p>
                     <span>
-                        saisissez votre adresse email et votre mot de passe pour
-                        vous connecter
+                       merci  re remplir le formulaire
                     </span>
 
                     <div
@@ -102,13 +104,13 @@ const Login = () => {
                         }}
                     >
                         {contextHolder}
-                        <label for="email">Email*</label>
+                        <label for="password">Mots de passe*</label>
                         <input
                             className="form-input"
-                            type="email"
-                            name="email"
-                            id="email"
-                            placeholder="Adrianagrest@trouvechap.com"
+                            type="password"
+                            name="password"
+                            id="password"
+                             placeholder="Min. 8 characters"
                             required
                             onChange={handleInputChange}
                         />
@@ -120,10 +122,10 @@ const Login = () => {
                             gap: "10px",
                         }}
                     >
-                        <label for="password">Mot de passe*</label>
+                        <label for="password2">confirmer le Mot de passe*</label>
                         <input
                             type="password"
-                            name="password"
+                            name="password2"
                             id="password"
                             required
                             className="form-input"
@@ -131,22 +133,7 @@ const Login = () => {
                             onChange={handleInputChange}
                         />
                     </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            fontSize: "12px",
-                            width: "100%",
-                        }}
-                    >
-                       
-                        <p>
-                            <Link to="/forgot-password">
-                                Mot de passe oublié?
-                            </Link>
-                        </p>
-                    </div>
+                    
                     <div
                         style={{
                             display: "flex",
@@ -196,4 +183,4 @@ const Login = () => {
         </Spin>
     );
 };
-export default Login;
+export default FirstLogin;

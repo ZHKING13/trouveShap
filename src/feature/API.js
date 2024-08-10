@@ -65,8 +65,25 @@ export const CheckPasswordRecoveryCode = async(data) => {
     }
     //put users/update-password
 export const UpdatePassword = async(data, headers) => {
+        try {
+            const response = await privateService.put("/users/update-password", data, { headers })
+            const { status, data: responseData } = response;
+            return { status, data: responseData };
+        } catch (error) {
+            console.log(error);
+            if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+                console.error('La requête a expiré en raison d\'un timeout.');
+                return { status: 408, data: { message: 'Request Timeout' } };
+            }
+            return { status: error.response.status, data: error.response.data };
+
+        }
+
+    }
+    // /users/first-reset-password
+export const firsLogiReset = async(data, headers) => {
     try {
-        const response = await privateService.put("/users/update-password", data, { headers })
+        const response = await privateService.post("/users/first-reset-password", data, { headers })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {

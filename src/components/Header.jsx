@@ -5,7 +5,6 @@ import {
 } from "@ant-design/icons";
 import { Input, Tooltip,Space, Button, Tag } from "antd";
 const Header = ({ path, title, children }) => {
-    console.log(children)
     return (
         <header
             style={{
