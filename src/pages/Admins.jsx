@@ -17,6 +17,7 @@ import * as XLSX from "xlsx";
 import axios, { all } from "axios";
 import { Icon } from "../constant/Icon";
 import Uploads from "../components/Upload";
+import ConfirmationDialog from "../components/Alert";
 const {Option} = Select
 function Admins() {
     const initialFormData = {
@@ -93,11 +94,11 @@ function Admins() {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleFileChange = (info) => {
-        console.log(info)
+    const handleFileChange = (event) => {
+        console.log(event)
         // if (info.file.status === 'done') {
         // }
-        setFormData({ ...formData, file: info.file.originFileObj });
+        setFormData({ ...formData, file: event });
     };
     const handleSubmit = async () => {
         setShowModal({
@@ -478,7 +479,7 @@ setAdmins(updateAdmin);
                 padding: "4px 12px",
                  height: "40px",
                  fontWeight:"bold",
-                                    
+                                   
                 borderRadius: "31px",
                 boxShadow: "14px 17px 40px 4px rgba(112, 144, 176, 0.08)",
                 background: "#fff",
@@ -498,61 +499,20 @@ setAdmins(updateAdmin);
                         </Space>
                     }
                 /> 
-        <ConfirmModal handleSubmit={handleSubmit} showModal={ showModal} setShowModal={setShowModal} />
+                {showModal.confirmModal && <ConfirmationDialog onConfirm={handleSubmit} open={showModal} onCancel={() => {
+                    setFormData(initialFormData)
+                    setShowModal({...showModal,
+                        confirmModal:false})
+        }} />}
+                {showModal.refresh && <ConfirmationDialog onConfirm={resetPwd} open={showModal} onCancel={() => {
+                    
+                    setShowModal({...showModal,
+                        refresh:false})
+        }} />}
 
                 <FormModal setFormData={setFormData} openNotificationWithIcon={openNotificationWithIcon} formData={formData} handleFileChange={handleFileChange} handleInputChange={handleInputChange} showModal={ showModal} setShowModal={setShowModal} />
                 <EditModal edit setFormData={setFormData} handleSubmit={handlEdit} openNotificationWithIcon={openNotificationWithIcon} formData={formData} handleFileChange={handleFileChange} handleInputChange={handleInputChange} showModal={showModal} setShowModal={setShowModal} />
-                <Modal
-            width={300}
-            destroyOnClose
-            onCancel={() => {
-                setShowModal({ ...showModal, confirmtModal: false });
-                
-            }}
-            centered
-            maskClosable={false}
-            footer={
-                <>
-                    <Divider />
-                    <div style={spaceStyle}>
-                        <Button
-                            onClick={() => {
-                                setShowModal({
-                                    ...showModal,
-                                    refresh: false,
-                                });
-
-                              
-                            }}
-                            style={{
-                                backgroundColor: "#FDE8E8 !important",
-                                color: "#EF4444",
-                                borderRadius: "25px",
-                            }}
-                            danger
-                        >
-                            Annuler
-                        </Button>
-                        <Button
-                            style={{
-                                borderRadius: "25px",
-                            }}
-                            onClick={resetPwd}
-                            type="primary"
-                            
-                        >
-                            Confirmer
-                        </Button>
-                    </div>
-                </>
-            }
-            open={showModal.refresh}
-        >
-            <div className="top">
-                <h4>voulez vous confirmer cette action ?</h4>
-                <span>cette action est irréversible</span>
-            </div>
-        </Modal>
+              
                 <DataTable
                     pagination={{
                         total: pagination.total,
@@ -655,6 +615,7 @@ export const FormModal = ({
     return (
         <Modal
             width={400}
+            closable={false}
             onCancel={() => {
 
                 setShowModal({ ...showModal, formModal: false });
@@ -667,7 +628,25 @@ export const FormModal = ({
             open={showModal.formModal}
         >
             <div className="top">
-                <h2>Nouvelle admin</h2>
+                <div style={{
+                    display: "flex",
+                    position:"relative",
+                    margin: "10px 0px",
+                    alignItems: "center",
+                    justifyContent: 'center',
+                    width:"100%"
+                }}>
+                    <img onClick={() => {
+
+                setShowModal({ ...showModal, formModal: false });
+                
+            }} className="icone" src="./close.png" alt="" />
+                      <h1 style={{
+                    color: "#2B3674",
+                        textALign: "center",
+                    marginLeft:""
+                }} >Nouvelle admin</h1>
+              </div>
 
                 <Form
                     preserve={false}
@@ -677,29 +656,8 @@ export const FormModal = ({
                     layout="vertical"
                     size="large"
                 >
-                    <Form.Item style={{
-              width: "100%",
-          }}  valuePropName="fileList"  getValueFromEvent={e => e.fileList}>
-                        <Upload accept=".png,.jpeg,.jpg" name="file"  onChange={handleFileChange}  listType="picture-card">
-            <button
-              style={{
-                border: 0,
-                background: 'none',
-              }}
-              type="button"
-            >
-              <PlusOutlined />
-              <div
-                style={{
-                                        marginTop: 8,
-                    width: '100%',
-                }}
-              >
-                cliquez ici pour ajouter une image
-              </div>
-            </button>
-          </Upload>
-        </Form.Item>
+                  
+                  <Uploads handleFileChange={handleFileChange} />
                     <Form.Item >
           <Input name="firstname" value={formData.firstname}
                             onChange={handleInputChange} placeholder="Nom " />
@@ -800,57 +758,11 @@ export const EditModal = ({
     }
     return (
         <div>
-            <Modal
-            width={300}
-            destroyOnClose
-            onCancel={() => {
-                setShowModal({ ...showModal, confirmtModal: false });
+           
+           {showModal.editConfirm && <ConfirmationDialog onCancel={() => {
+                setShowModal({ ...showModal, editConfirm: false });
                 
-            }}
-            centered
-            maskClosable={false}
-            footer={
-                <>
-                    <Divider />
-                    <div style={spaceStyle}>
-                        <Button
-                            onClick={() => {
-                                setModal({
-                                    ...modal,
-                                    confirmModal: false,
-                                });
-
-                              
-                            }}
-                            style={{
-                                backgroundColor: "#FDE8E8 !important",
-                                color: "#EF4444",
-                                borderRadius: "25px",
-                            }}
-                            danger
-                        >
-                            Annuler
-                        </Button>
-                        <Button
-                            style={{
-                                borderRadius: "25px",
-                            }}
-                            onClick={handlconfirm}
-                            type="primary"
-                            
-                        >
-                            Confirmer
-                        </Button>
-                    </div>
-                </>
-            }
-            open={modal.confirmModal}
-        >
-            <div className="top">
-                <h4>voulez vous confirmer cette action ?</h4>
-                <span>cette action est irréversible</span>
-            </div>
-        </Modal>
+            }} onConfirm={handlconfirm} />}
             <Modal
                 width={400}
                 onCancel={() => {

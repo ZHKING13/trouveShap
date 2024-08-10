@@ -85,6 +85,125 @@ body {
     display: none !important;
 } */
 
+
+/* ConfirmationDialog.css */
+
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.dialog-container {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    width: 350px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-title {
+    font-size: 30px;
+    color: #2B3674;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.dialog-message {
+    font-size: 16px;
+    color: #4a5568;
+    margin-bottom: 20px;
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.dialog-button {
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.cancel-button {
+    background-color: #fed7d7;
+    color: #e53e3e;
+    width: 40%;
+}
+
+.confirm-button {
+    background-color: #d6bcfa;
+    color: #6b46c1;
+    width: 40%;
+}
+
+.file-selector-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.file-dropzone {
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    margin-bottom: 5px;
+}
+
+.file-dropzone:hover {
+    border-color: #a0aec0;
+}
+
+.icon-container {
+    background-color: #e9d8fd;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.upload-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.icone {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 5px;
+    left: 1px
+}
+
+.file-dropzone p {
+    margin-top: 10px;
+    color: #718096;
+    font-size: 14px;
+}
+
+
+/* UPLOAD */
+
 .ant-form-item {
     margin-bottom: 10px !important;
 }
