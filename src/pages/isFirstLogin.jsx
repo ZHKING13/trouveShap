@@ -70,7 +70,7 @@ let body = {
             return;
         }
         
-        localStorage.setItem("firstLogin", true);
+        localStorage.setItem("firstLogin", false);
         // let firstLogin = rest.data.isFirstLogin
         openNotificationWithIcon("success", rest.data.message,"vous allez etre redirigé vers votre espace");
         setTimeout(() => {

@@ -609,7 +609,7 @@ export const DrawerComponent = ({
                     {selectItem && selectItem?.serial_number}
                 </h4>
             </div>
-            <Divider />
+            {/*<Divider />
             <div style={spaceStyle}>
                 <h4>Methode de versement hôte</h4>
                 <h4
@@ -621,7 +621,7 @@ export const DrawerComponent = ({
                         selectItem.residence?.host?.payment_method?.label) ||
                         "--"}
                 </h4>
-            </div>
+            </div>*/}
             <Divider />
             <h2
                 style={{
@@ -732,7 +732,7 @@ export const DrawerComponent = ({
                 </h2>
                 <div>
                     <span>Nombre de personnes</span>
-                    <h3>4 personnes</h3>
+                    <h3>{selectItem && selectItem.adults} personnes</h3>
                 </div>
             </div>
             <Divider />
