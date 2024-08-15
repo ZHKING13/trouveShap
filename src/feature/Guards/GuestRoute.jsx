@@ -7,7 +7,7 @@ const GuestRoute = ({element}) => {
     const isAuthenticated = localStorage.getItem("isLog");
     const logUser = JSON.parse(localStorage.getItem("user"));
     const isFirstLogin = localStorage.getItem("firstLogin")
-    if (isAuthenticated && isFirstLogin) {
+    if (isAuthenticated && isFirstLogin === "true") {
         
         return  <Navigate to="/firstlogin"/>
 }
