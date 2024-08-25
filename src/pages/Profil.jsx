@@ -15,7 +15,7 @@ import user from "../assets/users.png";
 import Stats from "../components/Stats";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { UpdatePassword, getProfilStats } from "../feature/API";
+import { API_URL, UpdatePassword, getProfilStats } from "../feature/API";
 import { formatAmount } from "./Home";
 
 const Profil = () => {
@@ -142,7 +142,7 @@ const Profil = () => {
                                         {logUser.profile}{" "}
                                     </Tag>
                                 </div>
-                                <img src={back} alt="" className="avatar" />
+                                <img src={`${API_URL}/assets/uploads/avatars/${logUser?.avatar}`} alt="" className="avatar" />
                                 <Divider />
                                 <div className="profilBotom">
                                     <div className="profilItem">

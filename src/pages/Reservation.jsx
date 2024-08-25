@@ -797,6 +797,34 @@ export const DrawerComponent = ({
                 <h3>{selectItem?.total.toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
+            {
+                selectItem?.preview_price_result && (
+                    <>
+                        <Divider />
+                                    <h2
+                                        style={{
+                        color: "#1B2559",
+                                        }}
+                                    >
+                                        Résumé
+                        </h2>
+                        
+                        {selectItem?.preview_price_result?.recap.map((item, index) => {
+                            return (
+                                <div key={index} style={spaceStyle}>
+                                    <span>
+                                        {item?.label}
+                                    </span>
+                                    <h3>
+                                        {item?.count}*{item?.price}
+                                    </h3>
+                                </div>
+                            );
+                        })}
+                    </>
+                )
+            }
+
             <Divider />
             <h2
                 style={{

@@ -1,7 +1,8 @@
 import { Button, Space, Spin, notification, DatePicker, Switch, Modal, Divider, Form,
   Input,
   Upload,
-  Select, } from "antd";
+  Select,
+  Tag, } from "antd";
 import DataTable, { FormatDate } from "../components/DataTable";
 import Header from "../components/Header";
 import { DATA3 } from "../data";
@@ -312,6 +313,15 @@ setAdmins(updateAdmin);
             key: "createdAt",
             dataIndex: "createdAt",
             render: (text) => <span>{FormatDate(text)}</span>,
+            responsive: ["lg"],
+        },
+        {
+            title: "Profile",
+            key: "profile",
+            dataIndex: "profile",
+            render: (text) => <Tag color="#A273FF">
+                                        {text}
+                                    </Tag>,
             responsive: ["lg"],
         },
         {
