@@ -124,7 +124,7 @@ const Reservation = () => {
             render: (text, record) => (
                 <span>
                     {" "}
-                    {record.residence.price
+                    {record.total
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
                     XOF
@@ -639,7 +639,7 @@ export const DrawerComponent = ({
                     }}
                 >
                     {selectItem &&
-                        selectItem?.residence.price
+                        selectItem?.preview_price_result?.averagePricePerNight
                             .toString()
                             .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
                     XOF / nuits
