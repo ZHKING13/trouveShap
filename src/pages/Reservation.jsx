@@ -641,7 +641,7 @@ export const DrawerComponent = ({
                     {selectItem &&
                         selectItem?.preview_price_result?.averagePricePerNight ?
                         selectItem?.preview_price_result?.averagePricePerNight.toString()
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, " "): selectItem.residence.price}{" "}
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, " ") : selectItem?.residence?.price}{" "}
                     XOF / nuits
                 </h2>
                 <p>Prix</p>
