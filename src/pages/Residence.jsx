@@ -917,7 +917,7 @@ const Residence = () => {
                                 <span>
                                     {" "}
                                     {selectItem?.refundGrid[
-                                        "Moins de 48h avant le jour J"
+                                        "Moins de 48 heures avant le jour J"
                                     ] + "%"}
                                 </span>
                             </div>
