@@ -11,7 +11,7 @@ const GuestRoute = ({ element }) => {
 
         return <Navigate to="/firstlogin" />
     }
-    if (isAuthenticated && logUser.profile !== "Client") {
+    if (isAuthenticated && logUser?.profile !== "Client") {
         return element;
     } else {
         return <Navigate to="/login" />

@@ -139,7 +139,7 @@ const Profil = () => {
                                         {logUser.firstname} {logUser.lastname}{" "}
                                     </p>
                                     <Tag color="#A273FF">
-                                        {logUser.profile}{" "}
+                                        {logUser?.profile}{" "}
                                     </Tag>
                                 </div>
                                 <img src={`${API_URL}/assets/uploads/avatars/${logUser?.avatar}`} alt="" className="avatar" />
