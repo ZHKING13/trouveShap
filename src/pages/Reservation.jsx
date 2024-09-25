@@ -783,7 +783,12 @@ export const DrawerComponent = ({
                 Montant de réservation
             </h2>
             <div style={spaceStyle}>
-                <span>Sous Total:</span>
+                <span>Sous Total de base:</span>
+                <h3>{selectItem?.preview_price_result?.normalSubtotal.toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
+            </div>
+            <div style={spaceStyle}>
+                <span>Sous Total Tarifaire:</span>
                 <h3>{selectItem?.subtotal.toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
