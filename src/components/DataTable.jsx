@@ -97,10 +97,10 @@ export function FormatDate(dateStr) {
 export const currencySign = ()=>{
         const curency = localStorage.getItem("currenciData");
     const parsedCurrency = JSON.parse(curency);
-    if (parsedCurrency.id == 4 || parsedCurrency.id == 3) {
+    if (parsedCurrency?.id == 4 || parsedCurrency?.id == 3) {
          return  parsedCurrency.sign + " "+ parsedCurrency.code;
     }
-    return  parsedCurrency.sign || "₣";
+    return  parsedCurrency?.sign || "₣";
 
     }
 const DataTable = ({
