@@ -1,6 +1,7 @@
 import React from "react";
 import { LineChart, Line, XAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { DATA } from "../../data";
+import { currencySign } from "../DataTable";
 
 const customTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -14,7 +15,7 @@ const customTooltip = ({ active, payload, label }) => {
                 padding: "5px",
             }}>
                 
-                <p className="label">{`xof : ${payload[0].value}`}</p>
+                <p className="label">{`${currencySign()} : ${payload[0].value}`}</p>
                 {/* Additional content as needed */}
             </div>
         );

@@ -94,7 +94,15 @@ export function FormatDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString("fr-FR", options);
 }
+export const currencySign = ()=>{
+        const curency = localStorage.getItem("currenciData");
+    const parsedCurrency = JSON.parse(curency);
+    if (parsedCurrency.id == 4 || parsedCurrency.id == 3) {
+         return  parsedCurrency.sign + " "+ parsedCurrency.code;
+    }
+    return  parsedCurrency.sign || "₣";
 
+    }
 const DataTable = ({
     column,
     data,
@@ -172,7 +180,7 @@ const DataTable = ({
             render: (text) => (
                 <span>
                     {text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                    <span></span> XOF{" "}
+                    <span></span> { currencySign()}{" "}
                 </span>
             ),
             responsive: ["md"],

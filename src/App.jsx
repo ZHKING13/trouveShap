@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -22,10 +22,21 @@ import inbox from "./assets/inbox.png";
 import home from "./assets/home.png";
 import TabsComponent from "./components/Tabs";
 import { Icon } from "./constant/Icon";
+import CurrencySelector from "./components/CurrencieModal";
+import { getCurrenciesList } from "./feature/API";
+export const getCurrencyId = async () => {
+    const curency = localStorage.getItem("currenciData");
+    const parsedCurrency = JSON.parse(curency);
+
+    console.log(curency)
+    return parsedCurrency ? parsedCurrency.id : 1;
+}
 function App() {
     const [count, setCount] = useState(0);
     const location = useLocation();
     const navigate = useNavigate();
+    const [currencies, setCurrencies] = useState([]);
+    const [showCurrencyModal, setShowCurrencyModal] = useState(false);
     const activeKeyFromUrl = location.pathname.replace("/", "") || "/";
     const [activeItem, setActiveItem] = useState(activeKeyFromUrl);
 
@@ -39,7 +50,19 @@ function App() {
         };
     }
     const [loading, setLoading] = useState(false);
-
+  const headers = {
+        Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+        "refresh-token": localStorage.getItem("refreshToken"),
+    };
+const getCurrencyList = async() => {
+    const res = await getCurrenciesList( headers);
+    if (res.status !== 200) {
+       
+        return;
+    }
+    console.log(res);
+    setCurrencies(res.data);
+}
     const items = [
         {
             label: <Link href="/">Home</Link>,
@@ -91,20 +114,46 @@ function App() {
             key: "logs",
             icon: <img src={Icon.logs} />,
         },
+         {
+            label: <p >Devise</p>,
+            key: "devise",
+            icon: <img style={{
+                width:"25px",
+                height:"25px"
+            }} src="./devise.png" />,
+        },
         {
             label: <Link to="/login">Deconnexion</Link>,
             key: "login",
             icon: <img src={log} />,
         },
+       
     ];
+    const onClose = () => {
+        setShowCurrencyModal(false);
+    };
+    const onConfirm = (selectedCurrency) => {
+        // get currencie object from array
+        const currency = currencies.find((item) => item.code === selectedCurrency);
+        localStorage.setItem("currenciData", JSON.stringify(currency));
+        localStorage.setItem("currency", selectedCurrency);
+        setShowCurrencyModal(false);
+    };
     const onClick = (e) => {
         if (e.key == "login") {
             localStorage.clear();
              navigate("/login");
             return
         }
+        if (e.key == "devise") {
+            setShowCurrencyModal(true);
+            return
+        }
         navigate(e.key);
     };
+    useEffect(() => {
+    getCurrencyList();
+  }, []);
     return (
         <Spin spinning={loading} tip="Chargement des données...">
             <div className="mainContainer">
@@ -112,6 +161,10 @@ function App() {
                     <div className="logoContainer">
                         <img src={logo} alt="" />
                     </div>
+                    {
+                        showCurrencyModal && <CurrencySelector currencies={currencies} onClose={onClose} onConfirm={ onConfirm} />
+                    }
+
                     <Menu
                         style={{
                             height: "100vh",

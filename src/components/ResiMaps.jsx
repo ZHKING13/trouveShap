@@ -45,6 +45,7 @@ import { Icon } from "../constant/Icon";
 import AdminMarker from "./AdminMarker";
 import { GoDotFill } from "react-icons/go";
 import { FaStar } from "react-icons/fa";
+import { currencySign } from "./DataTable";
 const Maps = ({
     location,
     Children,
@@ -544,7 +545,7 @@ setUserPosition({
                                             /\B(?=(\d{3})+(?!\d))/g,
                                             " "
                                         )}{" "}
-                                    FCFA Par Nuits{" "}
+                                    {currencySign()}Par Nuits{" "}
                                     </p>
                                     <div style={{
                                         height: "12px",
@@ -760,7 +761,7 @@ setUserPosition({
                             selectResidence.price
                                 .toString()
                                 .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                        XOF / nuits
+                       {currencySign()} / nuits
                     </h2>
                     <p>Prix</p>
                 </div>

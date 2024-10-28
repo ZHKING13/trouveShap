@@ -12,7 +12,7 @@ import {
     Button,
     Select,
 } from "antd";
-import DataTable, { renderColor, renderIcon } from "../components/DataTable";
+import DataTable, { currencySign, renderColor, renderIcon } from "../components/DataTable";
 import Header from "../components/Header";
 import TableComponent from "../components/Table";
 import {
@@ -127,7 +127,7 @@ const Reservation = () => {
                     {record.total
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                    XOF
+                   {currencySign()}
                 </span>
             ),
             responsive: ["md"],
@@ -642,7 +642,7 @@ export const DrawerComponent = ({
                         selectItem?.preview_price_result?.averagePricePerNightWithoutFee ?
                         selectItem?.preview_price_result?.averagePricePerNightWithoutFee.toLocaleString() :
                         selectItem?.residence?.price.toLocaleString()}{" "}
-                    XOF / nuits
+                    {currencySign()} / nuits
                 </h2>
                 <p>Prix</p>
             </div>

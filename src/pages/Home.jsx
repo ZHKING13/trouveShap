@@ -34,7 +34,7 @@ import BarCharts from "../components/chart/Bar";
 import AreaCharts from "../components/chart/AreaChart";
 import ChartHeader from "../components/CharteHeader";
 import Header from "../components/Header";
-import DataTable from "../components/DataTable";
+import DataTable, { currencySign } from "../components/DataTable";
 import {
     API_URL,
     deleteResidence,
@@ -348,7 +348,7 @@ const Home = () => {
                     <Stats
                         title="Gains mensuel"
                         subtitle={formatAmount(stats?.getCompanyMoneyMonth)}
-                        children="XOF"
+                        children={currencySign()}
                         icon={note}
                     />
                     <Stats
@@ -370,7 +370,7 @@ const Home = () => {
                         title="Portefeuille"
                         subtitle={formatAmount(stats?.getCompanyMoney)}
                         icon={wallet}
-                        children="XOF"
+                        children={currencySign()}
                     />
                 </div>
                 <div className="chartContainer">
@@ -613,7 +613,7 @@ const DrawerComponent = ({
                         selectItem.price
                             .toString()
                             .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                    XOF / nuits
+                    {currencySign()} / nuits
                 </h2>
                 <p>Prix</p>
             </div>

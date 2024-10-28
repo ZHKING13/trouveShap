@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import DataTable, {
+    currencySign,
     FormatDate,
     renderColor,
     renderIcon,
@@ -251,6 +252,43 @@ const Residence = () => {
             return prev.map((item) => {
                 if (item.id == id) {
                     item.status = res.data.status;
+                }
+                return item;
+            });
+        });
+        console.log(res);
+        openNotificationWithIcon(
+            "success",
+            "SUCCES",
+            "la résidence a été" + " " + res.data.status
+        );
+    };
+    const HandleDeletResidence =async (id) => {
+        setSpin(true);
+        const data = {
+            reason:reason.deletReason
+        };
+        const res = await deleteResidence(id, data, headers);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.data.message
+            );
+            if (res.status == 400) {
+                return;
+            }
+            localStorage.clear();
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+            return;
+        }
+        setSpin(false);
+        setResidence((prev) => {
+            return prev.map((item) => {
+                if (item.id == id) {
+                    item.status = "Désactivé";
                 }
                 return item;
             });
@@ -632,7 +670,7 @@ const Residence = () => {
                                 selectItem.price
                                     .toString()
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                            XOF / Nuits
+                            { currencySign()}/ Nuits
                         </h2>
                         <p>Prix</p>
                     </div>
@@ -969,7 +1007,11 @@ const Residence = () => {
                     loading={showModal.loading}
                     onConfirme={() => {
                         console.log(selectItem);
-                        deletResidence(selectItem.id);
+                        HandleDeletResidence(selectItem.id);
+                        setShowModal({
+                            ...showModal,
+                            deletModal: false,
+                        })
                     }}
                     reason={reason}
                     setReason={setReason}
@@ -1169,7 +1211,7 @@ export const FilterModal = ({
     }}
                         value={min}
                         stringMode
-                       suffix="XOF"
+                       suffix={currencySign()}
                         placeholder="Outlined"
                         min={0}
                           onBlur={(e) => {
@@ -1207,7 +1249,7 @@ export const FilterModal = ({
                     <InputNumber
                         min={0}
                         placeholder="Outlined"
-                        suffix="XOF"
+                        suffix={currencySign()}
                         style={{
                             width: 135,
                         }}

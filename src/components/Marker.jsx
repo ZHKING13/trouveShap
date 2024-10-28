@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Icon } from "../constant/Icon";
 import {CaretDownOutlined} from "@ant-design/icons"
+import { currencySign } from "./DataTable";
 const Marker = ({
     className,
     lat,
@@ -49,7 +50,7 @@ const Marker = ({
             draggable={draggable}
             {...props}
         >
-            {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} XOF
+            {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} {currencySign()}
             <div
                 style={{
                     // backgroundColor: "#A273FF",

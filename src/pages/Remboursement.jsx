@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import DataTable, {
+    currencySign,
     FormatDate,
     renderColor,
     renderIcon,
@@ -178,7 +179,7 @@ const Remboursement = () => {
                     {record?.refundedAmount
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                    XOF
+                    {currencySign()}
                 </span>
             ),
             responsive: ["md"],
@@ -648,7 +649,7 @@ const Remboursement = () => {
                                 selectItem?.booking?.residence?.price
                                     .toString()
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                            XOF / nuits
+                            {currencySign()} / nuits
                         </h2>
                         <p>Prix</p>
                     </div>
@@ -787,7 +788,7 @@ const Remboursement = () => {
                             Montant du remboursement
                         </h3>
                         <h3 style={{ color: "#A273FF" }}>
-                            {selectItem?.refundedAmount} fcfa
+                            {selectItem?.refundedAmount} {currencySign()}
                         </h3>
                     </div>
                     <Divider />
@@ -978,9 +979,9 @@ const FilterModal = ({
                     tooltip={false}
                 />
                 <Space style={spaceStyle}>
-                    <Input value={min + " " + "fcfa"} placeholder="min" />
+                    <Input value={min + " " + currencySign()} placeholder="min" />
                     -
-                    <Input value={max + " " + "fcfa"} placeholder="max" />
+                    <Input value={max + " " + currencySign()} placeholder="max" />
                 </Space>
                 <Divider />
                 <h3>Nombre de pièces</h3>
