@@ -6,13 +6,15 @@ const CurrencySelector = ({ currencies, onClose, onConfirm }) => {
   const   curency = localStorage.getItem("currency")
     // set currency code in state
     
-  const [selectedCurrency, setSelectedCurrency] = useState(localStorage.getItem("currency")|| "USD");
+  const [selectedCurrency, setSelectedCurrency] = useState(localStorage.getItem("currency")|| "XOF");
   const [hoveredOption, setHoveredOption] = useState(null);
   
 
   const handleConfirm = () => {
     onConfirm(selectedCurrency);
-    onClose();
+      onClose();
+      //   refresh the page
+      window.location.reload();
   };
 
   return (

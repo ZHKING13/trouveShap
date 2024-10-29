@@ -162,19 +162,25 @@ console.log("formdata::",form)
             setLoading(false)
             return
         }
-         let updateAdmin =  admins.map((item) => {
-            if (item.id === id) {
-               return res.data
-            }
-            return updateAdmin;
-            })
-            setAdmins(updateAdmin);
+         
         setLoading(false)
+        setShowModal((prev) => {
+            return {
+                ...prev,
+                editConfirm:false
+            }
+        })
         openNotificationWithIcon(
                 "success",
                 "Success ",
                 res?.data?.message
-            );
+        );
+        
+            setAdmins(prevAdmins => 
+  prevAdmins.map(item => 
+    item.id === id ? {...item, ...res.data} : item
+  )
+);
         
     }
     const resetPwd = async () => {
@@ -762,9 +768,11 @@ export const EditModal = ({
     
     const handlconfirm =(e)=>{
         setModal({...modal,
-            confirmModal: false
+            confirmModal: false,
+            
         })
         handleSubmit()
+         setShowModal({ ...showModal, editConfirm: false });
     }
     return (
         <div>
@@ -772,7 +780,12 @@ export const EditModal = ({
            {showModal.editConfirm && <ConfirmationDialog onCancel={() => {
                 setShowModal({ ...showModal, editConfirm: false });
                 
-            }} onConfirm={handlconfirm} />}
+            }} onConfirm={(e)=>{
+        setModal({...modal,
+            confirmModal: false, 
+        })
+        handleSubmit()
+    }} />}
             <Modal
                 width={400}
                 onCancel={() => {
