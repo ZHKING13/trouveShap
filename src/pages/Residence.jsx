@@ -1114,6 +1114,13 @@ export const FilterModal = ({
     togleDate,
     priceRange
 }) => {
+    useEffect(() => {
+        setFilterValue((prevState) => ({
+            ...prevState,
+            minPrice: priceRange.min,
+            maxPrice: priceRange.max,
+        }));
+    }, [priceRange, setFilterValue]);
     return (
         <Drawer
             // onCancel={() => {
