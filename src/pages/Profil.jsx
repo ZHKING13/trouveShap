@@ -15,19 +15,25 @@ import user from "../assets/users.png";
 import Stats from "../components/Stats";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { API_URL, UpdatePassword, getProfilStats } from "../feature/API";
+import { API_URL, UpdateAvatar, UpdatePassword, getProfilStats } from "../feature/API";
 import { formatAmount } from "./Home";
+import Uploads from "../components/Upload";
 
 const Profil = () => {
     const [loading, setLoading] = useOutletContext();
     const [stats, setStats] = useState([]);
     const [editMode, setEditMode] = useState(false);
+    const [avatarEditMode, setAvatarEditMode] = useState(false);
     const [passWord, setPassWord] = useState("");
     const [loading2, setLoading2] = useState(false);
     const [oldPassword, setOldPassword] = useState("");
     const [api, contextHolder] = notification.useNotification();
-    const logUser = JSON.parse(localStorage.getItem("user"));
+    const [avatar, setAvatar] = useState(null);
+    // const logUser = JSON.parse(localStorage.getItem("user"));
     const navigate = useNavigate();
+    const [logUser, setUser] = useState(
+        JSON.parse(localStorage.getItem("user"))
+    );
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({
             message: title,
@@ -41,6 +47,31 @@ const Profil = () => {
     };
     const handleChange = (e) => {
         setPassWord(e.target.value);
+    }
+    const upDateAvatar = async () => {
+        let data ={avatar}
+        setLoading2(true);
+        let header = {...headers, "Content-Type": "multipart/form-data"};
+        const res = await UpdateAvatar(data, header);
+        console.log(res);
+        if (res.status !== 200) {
+            openNotificationWithIcon(
+                "error",
+                "Erreur",
+                res.data.message
+            );
+            setLoading2(false);
+            return;
+        }
+        setUser({...logUser, avatar: res.data.avatar});
+        openNotificationWithIcon(
+            "success",
+            "Succès",
+            "Votre avatar a été modifié avec succès"
+        );
+        setLoading(false);
+        setAvatarEditMode(false);
+
     }
     const onSubmite = async () => {
         setLoading2(true);
@@ -84,6 +115,8 @@ const Profil = () => {
     }
     const fetchProfilStats = async () => {
         setLoading(true);
+         let user =  localStorage.getItem("user");
+         setUser(JSON.parse(user));
         const res = await getProfilStats(headers);
         console.log(res);
 
@@ -104,6 +137,8 @@ const Profil = () => {
     };
     useEffect(() => {
         fetchProfilStats();
+       
+        
     }, []);
     return (
         <main>
@@ -133,6 +168,7 @@ const Profil = () => {
                                     src={back}
                                     className="backgroundImg"
                                 />
+
                                 <div className="subtitle">
                                     <p>
                                         {" "}
@@ -142,7 +178,55 @@ const Profil = () => {
                                         {logUser?.profile}{" "}
                                     </Tag>
                                 </div>
-                                <img src={`${API_URL}/assets/uploads/avatars/${logUser?.avatar}`} alt="" className="avatar" />
+                                {avatarEditMode ? (
+                                    <div>
+                                        <Uploads
+                                            handleFileChange={(file) =>
+                                                setAvatar(file)
+                                            }
+                                        />
+                                        <Space>
+                                            <Button
+                                                onClick={() =>
+                                                    setAvatarEditMode(false)
+                                                }
+                                                danger
+                                            >
+                                                Annuler
+                                            </Button>
+                                            <Button
+                                                onClick={upDateAvatar}
+                                                type="primary"
+                                                loading={loading2}
+                                            >
+                                                Valider
+                                            </Button>
+                                        </Space>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <img
+                                            src={`${API_URL}/assets/uploads/avatars/${logUser?.avatar}`}
+                                            alt=""
+                                            className="avatar"
+                                        />
+                                        <img
+                                            style={{
+                                                position: "absolute",
+                                                top: 40,
+                                                right: 104,
+                                                background: "#A273FF",
+                                                padding: 5,
+                                                borderRadius: "50%",
+                                            }}
+                                            onClick={() => {
+                                                setAvatarEditMode(true);
+                                            }}
+                                            src={edit}
+                                            alt=""
+                                        />
+                                    </div>
+                                )}
                                 <Divider />
                                 <div className="profilBotom">
                                     <div className="profilItem">
@@ -225,7 +309,6 @@ const Profil = () => {
                                             )}{" "}
                                         </div>
                                     </Space>
-                                   
                                 </div>
                             </div>
                         </div>

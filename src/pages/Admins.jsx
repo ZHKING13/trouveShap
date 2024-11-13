@@ -151,7 +151,16 @@ console.log("formdata::",form)
     };
     const handlEdit = async () => {
         setLoading(true)
-         let res = await editAdmin(id,formData, headers)
+       
+        let headers = {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+            "refresh-token": localStorage.getItem("refreshToken"),
+        };
+      
+       
+        let res = await editAdmin(id,formData, headers)
+        console.log("formData avant envoi::", formData);
         console.log(res)
         if (res.status !== 200) {
             openNotificationWithIcon(
@@ -776,26 +785,26 @@ export const EditModal = ({
     }
     return (
         <div>
-           
-           {showModal.editConfirm && <ConfirmationDialog onCancel={() => {
-                setShowModal({ ...showModal, editConfirm: false });
-                
-            }} onConfirm={(e)=>{
-        setModal({...modal,
-            confirmModal: false, 
-        })
-        handleSubmit()
-    }} />}
+            {showModal.editConfirm && (
+                <ConfirmationDialog
+                    onCancel={() => {
+                        setShowModal({ ...showModal, editConfirm: false });
+                    }}
+                    onConfirm={(e) => {
+                        setModal({ ...modal, confirmModal: false });
+                        handleSubmit();
+                    }}
+                />
+            )}
             <Modal
                 width={400}
                 onCancel={() => {
                     setShowModal({ ...showModal, editModal: false });
-            
                 }}
                 centerededitModal
                 maskClosable={false}
                 destroyOnClose
-               footer={false}
+                footer={false}
                 open={showModal.editModal}
             >
                 <div className="top">
@@ -803,102 +812,96 @@ export const EditModal = ({
                     <Form
                         preserve={false}
                         style={{
-                  width: "100%",
-              }}
+                            width: "100%",
+                        }}
                         layout="vertical"
                         size="large"
                     >
-                        {/* <Form.Item style={{
-                  width: "100%",
-              }}  valuePropName="fileList"  getValueFromEvent={e => e.fileList}>
-                            <Upload accept=".png,.jpeg,.jpg" name="file"  onChange={handleFileChange}  listType="picture-card">
-                <button
-                  style={{
-                    border: 0,
-                    background: 'none',
-                  }}
-                  type="button"
-                >
-                  <PlusOutlined />
-                  <div
-                    style={{
-                                            marginTop: 8,
-                        width: '100%',
-                    }}
-                  >
-                    cliquez ici pour ajouter une image
-                  </div>
-                </button>
-              </Upload>
-            </Form.Item> */}
-                        <Form.Item >
-              <Input name="firstname" value={formData.firstname}
-                                onChange={handleInputChange} placeholder="Nom " />
-            </Form.Item>
-            <Form.Item  >
-                            <Input placeholder="Prenom"
+                        <Uploads handleFileChange={handleFileChange} />
+
+                        <Form.Item>
+                            <Input
+                                name="firstname"
+                                value={formData.firstname}
+                                onChange={handleInputChange}
+                                placeholder="Nom "
+                            />
+                        </Form.Item>
+                        <Form.Item>
+                            <Input
+                                placeholder="Prenom"
                                 name="lastname"
                                 value={formData.lastname}
                                 onChange={handleInputChange}
                             />
                         </Form.Item>
-            <Form.Item >
-              <Input   name="email"
+                        <Form.Item>
+                            <Input
+                                name="email"
                                 value={formData.email}
-                                onChange={handleInputChange} placeholder="Adresse Email" />
+                                onChange={handleInputChange}
+                                placeholder="Adresse Email"
+                            />
                         </Form.Item>
                         <Form.Item
-              name="profile"
-              noStyle
-              rules={[
-                {
-                  required: true,
-                  message: 'veuillez selectionner un rôle',
-                },
-              ]}
-            >
-              <Select   onChange={(e) => {
-                                setFormData({
-                                    ...formData,
-                                    profile:e
-                                })
-              }} placeholder="Selectionner un rôle">
-                <Option value="Admin">Admin</Option>
-                <Option value="SuperAdmin">SuperAdmin</Option>
-              </Select>
-            </Form.Item>
-                        <Form.Item style={{
-                  width: "100%",
-              }}>
-                             <Button
+                            name="profile"
+                            noStyle
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "veuillez selectionner un rôle",
+                                },
+                            ]}
+                        >
+                            <Select
+                                onChange={(e) => {
+                                    setFormData({
+                                        ...formData,
+                                        profile: e,
+                                    });
+                                }}
+                                placeholder="Selectionner un rôle"
+                            >
+                                <Option value="Admin">Admin</Option>
+                                <Option value="SuperAdmin">SuperAdmin</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            style={{
+                                width: "100%",
+                            }}
+                        >
+                            <Button
                                 style={{
                                     borderRadius: "25px",
                                     width: "100%",
-                                    marginTop: "5px"
+                                    marginTop: "5px",
                                 }}
                                 onClick={() => {
-                                    console.log("dataaa",formData)
-                                    if (!formData.firstname || !formData.email || !formData.profile || !formData.lastname) {
-                  openNotificationWithIcon(
-                    "error",
-                    "INVALIDE ",
-                    "veuillez remplir tout les champs"
-                );
-                return
-            }
+                                    console.log("dataaa", formData);
+                                    if (
+                                        !formData.firstname ||
+                                        !formData.email ||
+                                        !formData.profile ||
+                                        !formData.lastname
+                                    ) {
+                                        openNotificationWithIcon(
+                                            "error",
+                                            "INVALIDE ",
+                                            "veuillez remplir tout les champs"
+                                        );
+                                        return;
+                                    }
                                     setShowModal((prev) => {
                                         return {
                                             ...prev,
                                             editModal: false,
-                                            editConfirm:true
-                                        }
-                                    })
-                                    setModal({...modal,
-                confirmModal: true
-            })
+                                            editConfirm: true,
+                                        };
+                                    });
+                                    setModal({ ...modal, confirmModal: true });
                                 }}
                                 type="primary"
-            
                             >
                                 Confirmer
                             </Button>
