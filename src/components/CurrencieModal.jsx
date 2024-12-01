@@ -11,7 +11,7 @@ const LanguageCurrencySelector = ({ languages, currencies, onClose, onConfirm })
 
   const handleConfirm = () => {
     if (activeTab === 'lang') {
-      i18n.changeLanguage(lang.code);
+      i18n.changeLanguage(selectedLanguage);
       localStorage.setItem('lang', selectedLanguage);
     } else {
       const currency = currencies.find((item) => item.code === selectedCurrency);

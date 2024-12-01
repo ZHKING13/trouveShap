@@ -209,8 +209,14 @@ const getCurrencyList = async() => {
 
 export default function WrappedApp() {
   return (
-    <Suspense fallback="...loading">
+    <Suspense fallback={<LoadingComponent />}>
       <App />
     </Suspense>
   )
+}
+const LoadingComponent = () => {
+    return (
+        // center the loader
+        <div className="loader" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}></div>
+    )
 }
