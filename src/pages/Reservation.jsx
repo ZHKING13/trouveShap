@@ -20,7 +20,7 @@ import {
     InfoOutlined,
     RightOutlined,
 } from "@ant-design/icons";
-
+import { useTranslation} from 'react-i18next';
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { API_URL, getReservation, PayHost } from "../feature/API";
@@ -50,6 +50,7 @@ export function filterNullUndefinedValues(obj) {
 }
 
 const Reservation = () => {
+    const { t, i18n } = useTranslation();
     const [spin, setSpin] = useState(false);
     const [selectItem, setSelectItem] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -57,7 +58,7 @@ const Reservation = () => {
 
     const columns = [
         {
-            title: "Résidences",
+            title: t("menu.residence"),
             dataIndex: "nom",
             key: "nom",
             render: (text, record) => (
@@ -88,7 +89,7 @@ const Reservation = () => {
             ),
         },
         {
-            title: "Hôte",
+            title: t("table.hote"),
             dataIndex: "owner",
             key: "owner",
             render: (text, record) => (
@@ -102,7 +103,7 @@ const Reservation = () => {
             responsive: ["md"],
         },
         {
-            title: "Client",
+            title: t("table.client"),
             dataIndex: "user",
             key: "owner",
             render: (text, record) => (
@@ -118,7 +119,7 @@ const Reservation = () => {
             responsive: ["md"],
         },
         {
-            title: "Total",
+            title: t("table.total"),
             dataIndex: "prix",
             key: "price",
             render: (text, record) => (
@@ -134,14 +135,14 @@ const Reservation = () => {
         },
 
         {
-            title: "Date d'ajout",
+            title: t("table.date"),
             key: "date",
             dataIndex: "createdAt",
             render: (text) => <span>{FormatDate(text)}</span>,
             responsive: ["md"],
         },
         {
-            title: "Date de debut",
+            title: t("table.date_debut"),
             key: "date",
             dataIndex: "fromDate",
             render: (text) => (
@@ -156,7 +157,7 @@ const Reservation = () => {
             responsive: ["lg"],
         },
         {
-            title: "Date de fin",
+            title: t("date_fin"),
             key: "date",
             dataIndex: "toDate",
             render: (text) => (
@@ -171,7 +172,7 @@ const Reservation = () => {
             responsive: ["md"],
         },
         {
-            title: "Statut",
+            title: t("table.status"),
             key: "status",
             render: (_, record) => (
                 <Tag
@@ -185,7 +186,7 @@ const Reservation = () => {
             responsive: ["md"],
         },
         {
-            title: "Actions",
+            title: t("table.action"),
             key: "action",
             render: (_, record) => {
                 return (record.status == "En Cours" || record.status == "Terminée") && !record.hostPaidAt ? (
@@ -320,11 +321,7 @@ const Reservation = () => {
         console.log("params: ", filteredObject);
         const res = await getReservation(filteredObject, headers);
         if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                "Session expiré",
-                "merci de vous reconnecter"
-            );
+            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             localStorage.clear();
             setTimeout(() => {
                 navigate("/login");
@@ -346,8 +343,8 @@ const Reservation = () => {
         <main>
             <>
                 <Header
-                    title={"RESERVATION"}
-                    path={"Réservations"}
+                    title={t("menu.reservation")}
+                    path={t("menu.reservation")}
                     children={
                         <FilterBoxe
                             handleSearch={setFilterText}
@@ -355,7 +352,7 @@ const Reservation = () => {
                             dateRange={dateRange}
                             filtertext={filtertext}
                             selectRange={filtreByDate}
-                            placeHolder={"Chercher une réservation"}
+                            placeHolder={t("filter.reservation")}
                         />
                     }
                 />
@@ -391,7 +388,7 @@ const Reservation = () => {
                     }}
                     children={
                         <Select
-                            placeholder="Filtrer par status"
+                            placeholder={t("filter.byStatus")}
                             style={{ width: 180, marginRight: "13px" }}
                             allowClear
                             onChange={(value) => {
@@ -402,39 +399,39 @@ const Reservation = () => {
                             options={[
                                 {
                                     value: "waiting",
-                                    label: "En Attente",
+                                    label: t("status.waiting"),
                                 },
                                 {
                                     value: "accepted",
-                                    label: "Acceptée",
+                                    label: t("status.accepted"),
                                 },
                                 {
                                     value: "done",
-                                    label: "Terminée",
+                                    label: t("status.done"),
                                 },
                                 {
                                     value: "host_paid",
-                                    label: "Hôte Payé",
+                                    label: t("status.hostPaid"),
                                 },
                                 {
                                     value: "progressing",
-                                    label: "En Cours",
+                                    label: t("status.progressing"),
                                 },
                                 {
                                     value: "rejected",
-                                    label: "Rejetée",
+                                    label: t("status.rejected"),
                                 },
                                 {
                                     value: "cancelled",
-                                    label: "Annulée",
+                                    label: t("status.cancelled"),
                                 },
                                 {
                                     value: "refunded",
-                                    label: "Remboursée",
+                                    label: t("status.refunded"),
                                 },
                                 {
                                     value: "planified",
-                                    label: "Confirmée",
+                                    label: t("status.planified"),
                                 },
                             ]}
                         />
@@ -451,6 +448,7 @@ export const RequestModal = ({
     onConfirme,
     loading,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             width={300}
@@ -477,7 +475,7 @@ export const RequestModal = ({
                             }}
                             danger
                         >
-                            Annuler
+                            {t("button.cancel")}
                         </Button>
                         <Button
                             style={{
@@ -487,7 +485,7 @@ export const RequestModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Confirmer
+                            {t("button.confirm")}
                         </Button>
                     </div>
                 </>
@@ -495,8 +493,8 @@ export const RequestModal = ({
             open={showModal}
         >
             <div className="top">
-                <h4>voulez vous Valider la transaction ?</h4>
-                <span>cette action est irréversible</span>
+                <h4>{t("reservaton.valide")}</h4>
+                <span>{t("reservaton.valideDescription")}</span>
             </div>
         </Modal>
     );
@@ -529,6 +527,7 @@ export const DrawerComponent = ({
     setPayementModal,
     payementModal,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Drawer
             style={{
@@ -600,7 +599,7 @@ export const DrawerComponent = ({
             </div>
             <Divider />
             <div style={spaceStyle}>
-                <h4>Numéro de réservation</h4>
+                <h4>{t("reservaton.reservationNumber")}</h4>
                 <h4
                     style={{
                         color: "#1B2559",
@@ -642,9 +641,9 @@ export const DrawerComponent = ({
                         selectItem?.preview_price_result?.averagePricePerNightWithoutFee ?
                         selectItem?.preview_price_result?.averagePricePerNightWithoutFee.toLocaleString() :
                         selectItem?.residence?.price.toLocaleString()}{" "}
-                    {currencySign()} / nuits
+                    {currencySign()} / {t("other.nuits")}
                 </h2>
-                <p>Prix</p>
+                <p>{t("other.price")}</p>
             </div>
             <Divider />
             <h3
@@ -653,7 +652,7 @@ export const DrawerComponent = ({
                     margin: "10px 0",
                 }}
             >
-                Info Hôte
+                {t("other.infoHote")}
             </h3>
             <div
                 style={{
@@ -692,7 +691,7 @@ export const DrawerComponent = ({
                     margin: "10px 0",
                 }}
             >
-                Info Client
+                {t("reservaton.clientInfo")}
             </h3>
             <div
                 style={{
@@ -728,11 +727,11 @@ export const DrawerComponent = ({
                         color: "#1B2559",
                     }}
                 >
-                    Réservation
+                    {t("menu.reservation")}
                 </h2>
                 <div>
-                    <span>Nombre de personnes</span>
-                    <h3>{selectItem && selectItem.adults} personnes</h3>
+                    <span></span>
+                    <h3>{selectItem && selectItem.adults} {t("reservaton.personnes")}</h3>
                 </div>
             </div>
             <Divider />
@@ -755,7 +754,7 @@ export const DrawerComponent = ({
                     className="left"
                 >
                     <div style={subtitleSryle} className="subti">
-                        <p>Arrivée</p>
+                        <p>{t("reservaton.start")}</p>
                     </div>
                     <h3>{FormatDate(selectItem?.fromDate)} </h3>
                 </div>
@@ -768,7 +767,7 @@ export const DrawerComponent = ({
                     className="rigth"
                 >
                     <div style={subtitleSryle} className="subti">
-                        <p>Depart</p>
+                        <p>{t("reservaton.end")}</p>
                     </div>
                     <h3>{FormatDate(selectItem?.toDate)} </h3>
                 </div>
@@ -780,20 +779,20 @@ export const DrawerComponent = ({
                     color: "#1B2559",
                 }}
             >
-                Montant de réservation
+                {t("reservaton.amount")}
             </h2>
             <div style={spaceStyle}>
-                <span>Sous Total de base:</span>
+                <span>{t("reservaton.subTotal")}:</span>
                 <h3>{selectItem?.preview_price_result?.normalSubtotal.toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
             <div style={spaceStyle}>
-                <span>Sous Total Tarifaire:</span>
+                <span>{t("reservaton.subTotal2")}:</span>
                 <h3>{selectItem?.subtotal.toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
             <div style={spaceStyle}>
-                <span>Frais:</span>
+                <span>{t("reservaton.fee")}:</span>
                 <h3>{selectItem?.fee.toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
@@ -811,7 +810,7 @@ export const DrawerComponent = ({
                         color: "#1B2559",
                                         }}
                                     >
-                                        Résumé
+                                        {t("reservaton.resume")}
                         </h2>
                         
                         {selectItem?.preview_price_result?.recap.map((item, index) => {
@@ -836,15 +835,15 @@ export const DrawerComponent = ({
                     color: "#1B2559",
                 }}
             >
-                Revenus
+                {t("reservaton.Revenus")}
             </h2>
             <div style={spaceStyle}>
-                <span>Part de l’hôte :</span>
+                <span>{t("reservaton.partHote")} :</span>
                 <h3>{selectItem?.hostMoney.toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
             <div style={spaceStyle}>
-                <span>Part de Trouvechap :</span>
+                <span>{t("reservaton.partTc")} :</span>
                 <h3>{selectItem?.companyMoney.toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
             </div>
@@ -868,7 +867,7 @@ export const DrawerComponent = ({
                             color: "#1B2559",
                         }}
                     >
-                        Méthode de versement
+                        {t("reservaton.payement")}
                     </h3>
                     <RightOutlined
                         color="#A273FF"
@@ -907,7 +906,7 @@ export const DrawerComponent = ({
                         color: "#1B2559",
                     }}
                 >
-                    Code de validation
+                    {t("reservaton.code")}
                 </h2>
                 <h3 style={{ color: "#A273FF" }}>
                     {selectItem?.clientCode || "--"}
@@ -920,7 +919,7 @@ export const DrawerComponent = ({
                         color: "#1B2559",
                     }}
                 >
-                    Statut de la demande
+                    {t("reservaton.status")}
                 </h2>
                 <Tag color={renderColor(selectItem?.status)}>
                     {selectItem?.status}
@@ -935,7 +934,7 @@ export const DrawerComponent = ({
                                 color: "#1B2559",
                             }}
                         >
-                            Date d'annulation
+                            {t("reservaton.cancelDate")}
                         </h2>
                         <h3>{FormatDate(selectItem?.cancelleAt)}</h3>
                     </div>
@@ -947,13 +946,13 @@ export const DrawerComponent = ({
                     color: "#1B2559",
                 }}
             >
-                Grille de remboursement
+                {t("other.grille")}
             </h2>
             <div>
                 <ul>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Entre 1 et 3 mois avant le jour J
+                            {t("other.entre1mois_3mois")}
                         </li>
                         <span>
                             {selectItem?.residence?.refundGrid[
@@ -963,7 +962,7 @@ export const DrawerComponent = ({
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Entre 1 semaine et 1 mois avant le jour J
+                            {t("other.entre1semaine_1mois")}
                         </li>
                         <span>
                             {" "}
@@ -974,7 +973,7 @@ export const DrawerComponent = ({
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Entre 48h et 1 semaine avant le jour J
+                            {t("other.entre48h_1semaine")}
                         </li>
                         <span>
                             {" "}
@@ -985,7 +984,7 @@ export const DrawerComponent = ({
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Moins de 48 heures avant le jour J
+                            {t("other.moins48heures_1jour")}
                         </li>
                         <span>
                             {" "}
@@ -996,7 +995,7 @@ export const DrawerComponent = ({
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Plus de 3 mois avant le jour J
+                            {t("other.plus3mois_1jour")}
                         </li>
                         <span>
                             {" "}
@@ -1064,6 +1063,7 @@ const PayementModal = ({
     icon,
     otherPayment,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             width={500}
@@ -1084,7 +1084,7 @@ const PayementModal = ({
                        
                         onClick={() => setOpen(false)}
                     >
-                        Fermer
+                        {t("button.close")}
                     </div>
                 );
             }}
@@ -1105,7 +1105,7 @@ const PayementModal = ({
                 >
                     <h3>{paymentMethode?.label}</h3>
                     {versementInfos?.tempVers == "true" && (
-                        <Tag color="#22C55E">Temporaire</Tag>
+                        <Tag color="#22C55E">{t("reservaton.temp")}</Tag>
                     )}
                 </div>
                 {versementInfos?.tempVers == "true" && (
@@ -1115,7 +1115,7 @@ const PayementModal = ({
                                 color: "#6B7280",
                             }}
                         >
-                            Date d'ajout :
+                            {t("reservaton.addDate")} :
                         </p>
                         <h4 style={{ color: "#000" }}>
                             {new Date(
@@ -1143,8 +1143,8 @@ const PayementModal = ({
                         }}
                     >
                         {paymentMethode?.code == "rib"
-                            ? "Banque :"
-                            : "numero de téléphone :"}
+                            ? t("reservaton.bank")
+                            : t("reservaton.phone")}
                     </p>
                     <div
                         style={{
@@ -1187,7 +1187,7 @@ const PayementModal = ({
                         margin: "8px 0px 5px 0px",
                     }}
                 >
-                    {icon} <p>Autres moyens de paiement</p>
+                    {icon} <p>{t("reservaton.otherPayment")}</p>
                 </div>
                 {otherPayment?.map((item, index) => {
                     return (
@@ -1200,7 +1200,7 @@ const PayementModal = ({
                             >
                                 <h3>{item?.payment_method?.label}</h3>
                                 {item?.infos?.tempVers == "true" && (
-                                    <Tag color="#22C55E">Temporaire</Tag>
+                                    <Tag color="#22C55E">{t("reservaton.temp")}</Tag>
                                 )}
                             </div>
                             {item?.infos?.tempVers == "true" && (
@@ -1210,7 +1210,7 @@ const PayementModal = ({
                                             color: "#6B7280",
                                         }}
                                     >
-                                        Date d'ajout :
+                                        {t("reservaton.addDate")} :
                                     </p>
                                     <h4 style={{ color: "#000" }}>
                                         {new Date(

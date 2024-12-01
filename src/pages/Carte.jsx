@@ -19,7 +19,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import logo from "../assets/logo_sm.png";
 import Map from "../components/Map";
 import Maps from "../components/ResiMaps";
-
+import { useTranslation} from 'react-i18next';
 const residenceLocationArray = [
     { lat: 5.35, lng: -3.967696 },
     { lat: 5.395045275554687, lng: -3.967696 },
@@ -31,47 +31,11 @@ const residenceLocationArray = [
     { lat: 5.375045275554687, lng: -3.969696 },
     { lat: 5.386007366126123, lng: -4.005963317479037 },
 ];
-const CustomizedMarker = ({ position }) => (
-    <AdvancedMarker children position={position}>
-        <div
-            style={{
-                backgroundColor: "#A273FF ",
-                borderRadius: "6px",
 
-                minWidth: "70px",
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                alignItems: "center",
-                padding: "8px",
-                color: "#fff",
-                position: "relative",
-            }}
-            className="maps-statLeft"
-        >
-            100 000 FCFA
-            <div
-                style={{
-                    backgroundColor: "#A273FF ",
-                    borderBottomLeftRadius: "100%",
-                    borderBottomRightRadius: "100%",
-                    borderEndEndRadius: "100%",
-                    padding: "2px",
-                    width: "4px",
-                    height: "8px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    position: "absolute",
-                    bottom: "-8px",
-                }}
-            ></div>
-        </div>
-    </AdvancedMarker>
-);
 
 const position = { lat: 5.35, lng: -3.967696 };
 export const Carte = () => {
+    const { t, i18n } = useTranslation();
     const [filtertext, setFilterText] = useState("");
     const [residence, setResidence] = useState([]);
     const [priceRange, setPriceRange] = useState({ min: 1, max: 1111111 });
@@ -164,11 +128,7 @@ export const Carte = () => {
      const getPriceRange = async() => {
         const res = await getResidencePriceRange(headers);
         if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                "Session expiré",
-                "merci de vous reconnecter"
-            );
+            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             localStorage.clear();
             setTimeout(() => {
                 navigate("/login");
@@ -277,11 +237,7 @@ const createQueryString = (data) => {
         const res = await getMapResidence(filteredObject, headers);
         console.log(res.data);
         if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                "Session expiré",
-                "merci de vous reconnecter"
-            );
+            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             localStorage.clear();
             setTimeout(() => {
                 navigate("/login");
@@ -313,7 +269,7 @@ const createQueryString = (data) => {
                     width: "100%",
                 }}
                 spinning={false}
-                tip="Chargement des données..."
+                tip={t("menu.loading")}
             >
                 <div
                     style={{
@@ -325,8 +281,8 @@ const createQueryString = (data) => {
                     }}
                 >
                     <Header
-                        title={"RESIDENCES"}
-                        path={"Résidences"}
+                        title={t("menu.carte").toUpperCase()}
+                        path={t("menu.carte")}
                         children={
                             <div
                                 style={{
@@ -348,7 +304,7 @@ const createQueryString = (data) => {
                                 
                                 }} >
                                     <Select
-                                        placeholder="Filtrer par status"
+                                        placeholder={t("filter.byStatus")}
                                         style={{
                                             width: 180,
                                             marginRight: "13px",
@@ -366,19 +322,19 @@ const createQueryString = (data) => {
                                         options={[
                                             {
                                                 value: "waiting",
-                                                label: "En Attente",
+                                                label: t("status.waiting"),
                                             },
                                             {
                                                 value: "active",
-                                                label: "Activé",
+                                                label: t("status.active"),
                                             },
                                             {
                                                 value: "rejected",
-                                                label: "Rejeté",
+                                                label: t("status.rejected"),
                                             },
                                             {
                                                 value: "deleted",
-                                                label: "Désactivé",
+                                                label: t("status.deleted"),
                                             },
                                         ]}
                                     />
@@ -391,7 +347,7 @@ const createQueryString = (data) => {
                                                 filterModal: true,
                                             });
                                         }}
-                                        placeHolder={"Rechercher une résidence"}
+                                        placeHolder={t("filter.residence")}
                                         children={
                                             <img
                                                 onClick={() => {

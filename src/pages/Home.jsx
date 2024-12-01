@@ -19,6 +19,7 @@ import {
     Image,
 } from "antd";
 import { PictureOutlined } from "@ant-design/icons";
+import { Suspense } from 'react';
 
 import logo from "../assets/logo_sm.png";
 import icon from "../assets/build.png";
@@ -47,6 +48,7 @@ import { ConfrimeModal, DeletModal, RejectModal } from "./Residence";
 import { ImgModal } from "./Reservation";
 import { Icon } from "../constant/Icon";
 import Map from "../components/Map";
+import { useTranslation} from 'react-i18next';
 
 export function formatAmount(number) {
     if (number < 1000) {
@@ -74,7 +76,11 @@ const subtitleSryle = {
 const listStyle = {
     fontWeight: "bold",
 };
+
+
+
 const Home = () => {
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [modalAray, setModalAray] = useState([]);
@@ -342,32 +348,32 @@ const Home = () => {
     return (
         <>
             <main>
-                <Header title={"ACCUEIL"} />
+                <Header title={t("menu.home")} />
                 {contextHolder}
                 <div className="stats">
                     <Stats
-                        title="Gains mensuel"
+                        title={t("home.gain")}
                         subtitle={formatAmount(stats?.getCompanyMoneyMonth)}
                         children={currencySign()}
                         icon={note}
                     />
                     <Stats
-                        title="Résidences totales"
+                        title={t("home.residences")}
                         subtitle={stats?.getResidence}
                         icon={build}
                     />
                     <Stats
-                        title="Réservations totales"
+                        title={t("home.bookings")}
                         subtitle={stats?.getBooking}
                         icon={check}
                     />
                     <Stats
-                        title="Nombre de visiteurs"
+                        title={t("home.visits")}
                         subtitle={stats?.getVisits}
                         icon={user}
                     />
                     <Stats
-                        title="Portefeuille"
+                        title={t("home.wallet")}
                         subtitle={formatAmount(stats?.getCompanyMoney)}
                         icon={wallet}
                         children={currencySign()}
@@ -391,9 +397,10 @@ const Home = () => {
                                 name="periode"
                                 id=""
                             >
-                                <option value="">ce mois</option>
-                                <option value="">cette semaine</option>
-                                <option value="">cette année</option>
+                                <option value="">{t("home.month")}</option>
+                                <option value="">{t("home.week")}</option>
+                                <option value="">{t("home.year")}</option>
+                                
                             </select>
                         </div>
                         <div className="detail">
@@ -411,14 +418,14 @@ const Home = () => {
                     <div className="leftTable">
                         <div className="legendTab">
                             <div className="title">
-                                Historique de validation des résidences
+                                {t("home.history")}
                             </div>
                         </div>
                         <TableComponent Data={story} />
                     </div>
                     <div className="midleChart">
                         <ChartHeader
-                            subtitle={"Nombre de réservations"}
+                            subtitle={t("home.bookings")}
                             title={stats?.getBooking || 0}
                             // span={<Tag color="#22C55E">+20</Tag>}
                             children={
@@ -432,9 +439,9 @@ const Home = () => {
                     </div>
                     <div className="barChart">
                         <ChartHeader
-                            subtitle={"Résumé du trafic"}
+                            subtitle={t("home.trafic")}
                             title={stats?.getVisits || 0}
-                            span={"visiteur"}
+                            span={t("home.visiteur")}
                             // children={<Tag color="#22C55E">+2,45%</Tag>}
                         />
                         <BarCharts />
@@ -498,6 +505,8 @@ const DrawerComponent = ({
     onClose,
     location,
 }) => {
+        const { t, i18n } = useTranslation();
+
     return (
         <Drawer
             onClose={onClose}
@@ -566,13 +575,13 @@ const DrawerComponent = ({
                 >
                     <span>
                         <PictureOutlined /> +
-                        {selectItem && selectItem?.medias?.length} photos
+                        {selectItem && selectItem?.medias?.length} {t("other.photos")}
                     </span>
                 </div>
             </div>
             <Divider />
             <div style={spaceStyle}>
-                <h4>Numéro de résidence</h4>
+                <h4>{t("home.residenceNumber")}</h4>
                 <h4
                     style={{
                         color: "#1B2559",
@@ -583,7 +592,7 @@ const DrawerComponent = ({
             </div>
             <Divider />
             <div style={spaceStyle}>
-                <h4>Methode de versement hôte</h4>
+                <h4>{t("home.methode")}</h4>
                 <h4
                     style={{
                         color: "#1B2559",
@@ -613,9 +622,9 @@ const DrawerComponent = ({
                         selectItem.price
                             .toString()
                             .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                    {currencySign()} / nuits
+                    {currencySign()} / {t("other.nuits")}
                 </h2>
-                <p>Prix</p>
+                <p>{t("other.price")}</p>
             </div>
             <Divider />
             <div
@@ -637,7 +646,7 @@ const DrawerComponent = ({
                         marginLeft: "10px",
                     }}
                 >
-                    <p>Hôte</p>
+                    <p>{t("other.hote")}</p>
                     <h3
                         style={{
                             color: "#1B2559",
@@ -655,7 +664,7 @@ const DrawerComponent = ({
                     margin: "10px 0",
                 }}
             >
-                Description
+                {t("home.description")}
             </h3>
             {selectItem?.description?.map((item, index) => {
                 return (
@@ -680,7 +689,7 @@ const DrawerComponent = ({
             })}
             <Divider />
             <div orientation="vertical">
-                <h2>Comodités</h2>
+                <h2>{t("home.comodite")}</h2>
                 <div
                     style={{
                         display: "flex",
@@ -690,22 +699,22 @@ const DrawerComponent = ({
                     }}
                 >
                     <Space className="comodite">
-                        <img src={Icon.clim} /> Climatisation
+                        <img src={Icon.clim} /> {t("other.clim")}
                     </Space>
                     <Space className="comodite">
-                        <img src={Icon.tv} /> Télévision
+                        <img src={Icon.tv} /> {t("other.tv")}
                     </Space>
                     <Space className="comodite">
-                        <img src={Icon.wash} /> Lave linge
+                        <img src={Icon.wash} /> {t("other.wash")}
                     </Space>
                     <Space className="comodite">
-                        <img src={Icon.wifi} /> Wifi
+                        <img src={Icon.wifi} /> {t("other.wifi")}
                     </Space>
                     <Space className="comodite">
-                        <img src={Icon.refri} /> Réfrigérateur
+                        <img src={Icon.refri} /> {t("other.refri")}
                     </Space>
                     <Space className="comodite">
-                        <img src={Icon.fan} /> Ventilateur
+                        <img src={Icon.fan} /> {t("other.fan")}
                     </Space>
                 </div>
             </div>
@@ -715,7 +724,7 @@ const DrawerComponent = ({
                     color: "#1B2559",
                 }}
             >
-                Aperçu
+                {t("home.apercu")}
             </h2>
             <div
                 style={{
@@ -736,7 +745,7 @@ const DrawerComponent = ({
                 >
                     <div style={subtitleSryle} className="subti">
                         <img src={Icon.check} alt="" />
-                        <p>Règlement interieur</p>
+                        <p>{t("other.rules")}</p>
                     </div>
                     {selectItem?.rules?.map((item, index) => {
                         return <span key={index}>{item.rule?.title}</span>;
@@ -752,7 +761,7 @@ const DrawerComponent = ({
                 >
                     <div style={subtitleSryle} className="subti">
                         <img src={Icon.check} alt="" />
-                        <p>Type d’activités sociales</p>
+                        <p>{t("other.activities")}</p>
                     </div>
                     {selectItem?.activities?.map((item, index) => {
                         return <span key={index}>{item?.activity?.name}</span>;
@@ -765,13 +774,13 @@ const DrawerComponent = ({
                     color: "#1B2559",
                 }}
             >
-                Grille de remboursement
+                {t("home.grille")}
             </h2>
             <div>
                 <ul>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Entre 1 et 3 mois avant le jour J
+                            {t("other.entre1mois_3mois")}
                         </li>
                         <span>
                             {selectItem?.refundGrid[
@@ -781,7 +790,7 @@ const DrawerComponent = ({
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Entre 1 semaine et 1 mois avant le jour J
+                            {t("other.entre1semaine_1mois")}
                         </li>
                         <span>
                             {selectItem?.refundGrid[
@@ -791,7 +800,7 @@ const DrawerComponent = ({
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Entre 48h et 1 semaine avant le jour J
+                            {t("other.entre48h_1semaine")}
                         </li>
                         <span>
                             {selectItem?.refundGrid[
@@ -801,7 +810,7 @@ const DrawerComponent = ({
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Moins de 48 heures avant le jour J
+                            {t("other.moins48heures_1jour")}
                         </li>
                         <span>
                             {selectItem?.refundGrid[
@@ -811,7 +820,7 @@ const DrawerComponent = ({
                     </div>
                     <div style={spaceStyle}>
                         <li style={listStyle}>
-                            Plus de 3 mois avant le jour J
+                            {t("other.plus3mois_1jour")}
                         </li>
                         <span>
                             {selectItem?.refundGrid[
@@ -826,3 +835,5 @@ const DrawerComponent = ({
         </Drawer>
     );
 };
+
+

@@ -26,11 +26,12 @@ import { Carte } from "./pages/Carte.jsx";
 import Logs from "./pages/Logs.jsx";
 import Admins from "./pages/Admins.jsx";
 import FirstLogin from "./pages/isFirstLogin.jsx";
+import WrappedApp from "./App.jsx";
 library.add(fab, fas, far);
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <GuestRoute element={<App />} />,
+        element: <GuestRoute element={<WrappedApp />} />,
         children: [
             {
                 path: "",

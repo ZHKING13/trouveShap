@@ -24,6 +24,9 @@ import TabsComponent from "./components/Tabs";
 import { Icon } from "./constant/Icon";
 import CurrencySelector from "./components/CurrencieModal";
 import { getCurrenciesList } from "./feature/API";
+import { Suspense } from 'react';
+import { useTranslation} from 'react-i18next';
+import "./i18n";
 export const getCurrencyId = async () => {
     const curency = localStorage.getItem("currenciData");
     const parsedCurrency = JSON.parse(curency);
@@ -31,7 +34,13 @@ export const getCurrencyId = async () => {
     console.log(curency)
     return parsedCurrency ? parsedCurrency.id : 1;
 }
+export const getLanguageId = async () => {
+    const lang = localStorage.getItem("lang");
+    return lang ? lang : 'fr';
+}
+
 function App() {
+    const { t, i18n } = useTranslation();
     const [count, setCount] = useState(0);
     const location = useLocation();
     const navigate = useNavigate();
@@ -54,6 +63,16 @@ function App() {
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         "refresh-token": localStorage.getItem("refreshToken"),
     };
+    const languageList = [
+    {
+        code: 'fr',
+        name: t('other.fr'),
+    },
+    {
+        code: 'en',
+        name: t('other.en'),
+    },
+];
 const getCurrencyList = async() => {
     const res = await getCurrenciesList( headers);
     if (res.status !== 200) {
@@ -65,57 +84,57 @@ const getCurrencyList = async() => {
 }
     const items = [
         {
-            label: <Link href="/">Home</Link>,
+            label: <Link href="/">{t("menu.home")}</Link>,
             key: "/",
             icon: <img src={home} />,
         },
         {
-            label: <Link to="/users">Utilisateur</Link>,
+            label: <Link to="/users">{t("menu.users")}</Link>,
             key: "users",
             icon: <img src={users} />,
         },
         {
-            label: <Link to="/residence">Residence</Link>,
+            label: <Link to="/residence">{t("menu.residence")}</Link>,
             key: "residence",
             icon: <img src={icon} />,
         },
         {
-            label: <Link to="/reservation">Reservation</Link>,
+            label: <Link to="/reservation">{t("menu.reservation")}</Link>,
             key: "reservation",
             icon: <img src={check} />,
         },
         {
-            label: <Link to="/remboursement">Remboursement</Link>,
+            label: <Link to="/remboursement">{t("menu.remboursement")}</Link>,
             key: "remboursement",
             icon: <img src={check} />,
         },
         {
-            label: <Link to="/newsletter">Newsletter</Link>,
+            label: <Link to="/newsletter">{t("menu.newsletter")}</Link>,
             key: "newsletter",
             icon: <img src={inbox} />,
         },
         {
-            label: <Link to="/carte">Afficher la carte</Link>,
+            label: <Link to="/carte">{t("menu.carte")}</Link>,
             key: "/cartes",
             icon: <img src={Icon.map} />,
         },
         {
-            label: <Link to="/profil">Profil</Link>,
+            label: <Link to="/profil">{t("menu.profil")}</Link>,
             key: "profil",
             icon: <img src={user} />,
         },
         {
-            label: <Link to="/admins">Admin</Link>,
+            label: <Link to="/admins">{t("menu.admins")}</Link>,
             key: "admins",
             icon: <img src={Icon.admin} />,
         },
         {
-            label: <Link to="/logs">Logs</Link>,
+            label: <Link to="/logs">{t("menu.logs")}</Link>,
             key: "logs",
             icon: <img src={Icon.logs} />,
         },
          {
-            label: <p >Devise</p>,
+            label: <p >{t("menu.devise")}</p>,
             key: "devise",
             icon: <img style={{
                 width:"25px",
@@ -123,7 +142,7 @@ const getCurrencyList = async() => {
             }} src="./devise.png" />,
         },
         {
-            label: <Link to="/login">Deconnexion</Link>,
+            label: <Link to="/login">{t("menu.logout")}</Link>,
             key: "login",
             icon: <img src={log} />,
         },
@@ -133,10 +152,7 @@ const getCurrencyList = async() => {
         setShowCurrencyModal(false);
     };
     const onConfirm = (selectedCurrency) => {
-        // get currencie object from array
-        const currency = currencies.find((item) => item.code === selectedCurrency);
-        localStorage.setItem("currenciData", JSON.stringify(currency));
-        localStorage.setItem("currency", selectedCurrency);
+      
         setShowCurrencyModal(false);
     };
     const onClick = (e) => {
@@ -155,14 +171,14 @@ const getCurrencyList = async() => {
     getCurrencyList();
   }, []);
     return (
-        <Spin spinning={loading} tip="Chargement des données...">
+        <Spin spinning={loading} tip={t("menu.loading")}>
             <div className="mainContainer">
                 <div className="sideBar">
                     <div className="logoContainer">
                         <img src={logo} alt="" />
                     </div>
                     {
-                        showCurrencyModal && <CurrencySelector currencies={currencies} onClose={onClose} onConfirm={ onConfirm} />
+                        showCurrencyModal && <CurrencySelector languages={languageList} currencies={currencies} onClose={onClose} onConfirm={ onConfirm} />
                     }
 
                     <Menu
@@ -189,4 +205,12 @@ const getCurrencyList = async() => {
     );
 }
 
-export default App;
+
+
+export default function WrappedApp() {
+  return (
+    <Suspense fallback="...loading">
+      <App />
+    </Suspense>
+  )
+}

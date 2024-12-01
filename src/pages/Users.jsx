@@ -16,8 +16,10 @@ import Stats from "../components/Stats";
 import { Icon } from "../constant/Icon";
 import { all } from "axios";
 import userAvatarNotFound from "../assets/user_avatar_not_found.png";
+import { useTranslation} from 'react-i18next';
 
 export default function Users() {
+    const { t, i18n } = useTranslation();
     const [filtertext, setFilterText] = useState("");
     const [reservation, setReservation] = useState([]);
     const [spin, setSpin] = useState(false);
@@ -43,7 +45,7 @@ export default function Users() {
     };
     const columns = [
         {
-            title: "Nom d'utilisateur",
+            title: t("table.userName"),
             dataIndex: "name",
             key: "name",
             render: (text, record) => (
@@ -86,7 +88,7 @@ export default function Users() {
             ),
         },
         {
-            title: "Adresse email",
+            title: t("table.userEmail"),
             dataIndex: "email",
             key: "email",
             render: (text, record) => (
@@ -97,7 +99,7 @@ export default function Users() {
             responsive: ["md"],
         },
         {
-            title: "Numero de telephone",
+            title: t("table.userPhone"),
             dataIndex: "phone",
             key: "phone",
             render: (text, record) => (
@@ -108,7 +110,7 @@ export default function Users() {
             responsive: ["md"],
         },
         {
-            title: "Document",
+            title: t("table.doc"),
             key: "docs",
             dataIndex: "docs",
             render: (text, record) =>
@@ -133,7 +135,7 @@ export default function Users() {
             responsive: ["md"],
         },
         {
-            title: "Membre depuis",
+            title: t("table.userMember"),
             dataIndex: "date",
             key: "createdAt",
             render: (text, record) => (
@@ -143,7 +145,7 @@ export default function Users() {
         },
 
         {
-            title: "Statut",
+            title: t("table.status"),
             key: "status",
             render: (_, record) => (
                 <Tag
@@ -184,8 +186,8 @@ export default function Users() {
         if (res.status === 500) {
             openNotificationWithIcon(
                 "error",
-                res.data?.message || "Erreur serveur",
-                "merci de reessayer plus tard"
+                res.data?.message || t("error.500"),
+                t("error.retry")
             );
             setLoading(false);
             return;
@@ -193,8 +195,8 @@ export default function Users() {
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                "Session expiré",
-                "merci de vous reconnecter"
+               t("error.401"),
+                t("error.retry1")
             );
             setLoading(false);
             return;
@@ -214,16 +216,16 @@ export default function Users() {
         if (res.status === 500) {
             openNotificationWithIcon(
                 "error",
-                res.data?.message || "Erreur serveur",
-                "merci de reessayer plus tard"
+                res.data?.message || t("error.500"),
+                t("error.retry")
             );
             return;
         }
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                "Session expiré",
-                "merci de vous reconnecter"
+               t("error.401"),
+                t("error.retry1")
             );
             return;
         }
@@ -244,30 +246,30 @@ export default function Users() {
         <main>
             <>
                 {contextHolder}
-                <Header title={"Utilisateurs"} path={"Utilisateurs"} />
+                <Header title={t("menu.users")} path={t("menu.users")} />
                 <div className="stats">
                     <Stats
-                        title="Nombre de voyageurs"
+                        title={t("user.travelers")}
                         subtitle={usersStats.travelers}
                         icon={Icon.users}
                     />
                     <Stats
-                        title="Nombre d'hôtes"
+                        title={t("user.hosts")}
                         icon={Icon.user2}
                         subtitle={usersStats.hosts}
                     />
                     <Stats
-                        title="Taux d'évolution de la semaine"
+                        title={t("user.weekEvolutionPercent")}
                         subtitle={usersStats.weekEvolutionPercent + "%"}
                         icon={Icon.user2}
                     />
                     <Stats
-                        title="Taux d'évolution du mois"
+                        title={t("user.monthEvolutionPercent")}
                         subtitle={usersStats.monthEvolutionPercent + "%"}
                         icon={Icon.user2}
                     />
                     <Stats
-                        title="Taux d'évolution de l'année"
+                        title={t("user.yearEvolutionPercent")}
                         subtitle={usersStats.yearEvolutionPercent + "%"}
                         icon={Icon.user2} />
                 </div>
@@ -318,6 +320,7 @@ const TableHeader = ({
     status,
    
 }) => {
+    const { t, i18n } = useTranslation();
     const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
@@ -416,7 +419,7 @@ const TableHeader = ({
                 >
                     <input
                         type="text"
-                        placeholder="chercher par nom"
+                        placeholder={t("filter.byName")}
                         value={filtertext}
                         onChange={(e) => {
                             setFilterText(e.target.value);
@@ -432,7 +435,7 @@ const TableHeader = ({
                         }}
                     />
                     <Select
-                        placeholder="Filtrer par rôle"
+                        placeholder={t("filter.byRole")}
                         style={{ width: 180, marginRight: "13px" }}
                         allowClear
                         onChange={(value) => {
@@ -476,7 +479,7 @@ const TableHeader = ({
                             : null;
                     }}
                 >
-                    Exporter
+                    {t("other.export")}
                 </Button>
             </div>
         </div>

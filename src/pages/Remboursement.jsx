@@ -6,6 +6,7 @@ import DataTable, {
     renderIcon,
 } from "../components/DataTable";
 import Header from "../components/Header";
+import { useTranslation } from "react-i18next";
 import {
     Avatar,
     Button,
@@ -56,6 +57,7 @@ const contentStyle = {
     background: "#364d79",
 };
 const Remboursement = () => {
+    const { t, i18n } = useTranslation();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useOutletContext();
     const [filtertext, setFilterText] = useState("");
@@ -99,7 +101,7 @@ const Remboursement = () => {
     };
     const columns = [
         {
-            title: "Résidences",
+            title: t("menu.residence"),
             dataIndex: "name",
             key: "name",
             render: (text, record) => (
@@ -140,7 +142,7 @@ const Remboursement = () => {
             ),
         },
         {
-            title: "Hôte",
+            title: t("table.hote"),
             dataIndex: "owner",
             key: "owner",
             render: (text, record) => (
@@ -157,7 +159,7 @@ const Remboursement = () => {
             responsive: ["md"],
         },
         {
-            title: "Client",
+            title: t("table.client"),
             key: "clien",
             dataIndex: "client",
             render: (text, record) => (
@@ -171,7 +173,7 @@ const Remboursement = () => {
             responsive: ["md"],
         },
         {
-            title: "Montant remboursement",
+            title: t("table.amount"),
             dataIndex: "price",
             key: "price",
             render: (text, record) => (
@@ -186,14 +188,14 @@ const Remboursement = () => {
         },
 
         {
-            title: "Date de demande",
+            title: t("table.date_demande"),
             key: "createdAt",
             dataIndex: "createdAt",
             render: (text) => <span>{FormatDate(text)}</span>,
             responsive: ["lg"],
         },
         {
-            title: "Statut",
+            title: t("table.status"),
             key: "status",
             render: (_, record) => (
                 <Tag
@@ -207,7 +209,7 @@ const Remboursement = () => {
             responsive: ["md"],
         },
         {
-            title: "Actions",
+            title: t("table.action"),
             key: "action",
             render: (_, record) => {
                 return record.status == "En Attente" ? (
@@ -506,8 +508,8 @@ const Remboursement = () => {
         <main>
             <>
                 <Header
-                    title={"REMBOURSEMENTS"}
-                    path={"Remboursement"}
+                    title={t("menu.remboursement").toUpperCase()}
+                    path={t("menu.remboursement")}
                     children={
                         <FilterBoxe
                             setDateRange={setDateRange}
@@ -515,7 +517,7 @@ const Remboursement = () => {
                             dateRange={dateRange}
                             selectRange={filtResidence}
                             filtertext={filtertext}
-                            placeHolder="Rechercher une demande"
+                            placeHolder={t("filter.remboursement")}
                         />
                     }
                 />
@@ -604,7 +606,7 @@ const Remboursement = () => {
                     </div>
                     <Divider />
                     <div style={spaceStyle}>
-                        <h4>Numéro de demande</h4>
+                        <h4>{t("remboursement.demadeNumber")}</h4>
                         <h4
                             style={{
                                 color: "#1B2559",
@@ -615,7 +617,7 @@ const Remboursement = () => {
                     </div>
                     <Divider />
                     <div style={spaceStyle}>
-                        <h4>Methode de versement hôte</h4>
+                        <h4>{t("remboursement.hotePayment")}</h4>
                         <h4
                             style={{
                                 color: "#1B2559",
@@ -649,9 +651,9 @@ const Remboursement = () => {
                                 selectItem?.booking?.residence?.price
                                     .toString()
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                            {currencySign()} / nuits
+                            {currencySign()} / {t("other.nuits")}
                         </h2>
-                        <p>Prix</p>
+                        <p>{t("other.price")}</p>
                     </div>
                     <Divider />
                     <h3
@@ -660,7 +662,7 @@ const Remboursement = () => {
                             margin: "10px 0",
                         }}
                     >
-                        Info Hôte
+                        {t("other.infoHote")}
                     </h3>
                     <div
                         style={{
@@ -711,7 +713,7 @@ const Remboursement = () => {
                             margin: "10px 0",
                         }}
                     >
-                        Info Client
+                        {t("other.infoClient")}
                     </h3>
                     <div
                         style={{
@@ -761,7 +763,7 @@ const Remboursement = () => {
                         color: "#1B2559",
                                         }}
                                     >
-                                        Résumé
+                                        {t("remboursement.resume")}
                         </h2>
                         
                         {selectItem?.preview_price_result?.recap.map((item, index) => {
@@ -785,7 +787,7 @@ const Remboursement = () => {
                                 color: "#1B2559",
                             }}
                         >
-                            Montant du remboursement
+                            {t("remboursement.amount")}
                         </h3>
                         <h3 style={{ color: "#A273FF" }}>
                             {selectItem?.refundedAmount} {currencySign()}
@@ -798,7 +800,7 @@ const Remboursement = () => {
                                 color: "#1B2559",
                             }}
                         >
-                            Date de la demande
+                            {t("remboursement.date_demande")}
                         </h3>
                         <h3>{FormatDate(selectItem?.createdAt)}</h3>
                     </div>
@@ -809,7 +811,7 @@ const Remboursement = () => {
                                 color: "#1B2559",
                             }}
                         >
-                            Statut de la demande
+                            {t("remboursement.status")}
                         </h3>
                         <Tag
                             style={{
@@ -835,7 +837,7 @@ const Remboursement = () => {
                                         color: "#1B2559",
                                     }}
                                 >
-                                    Motif de la demande
+                                    {t("remboursement.motif")}
                                 </h3>
                                 <h4> {selectItem?.requestReason} </h4>
                             </div>
@@ -898,23 +900,23 @@ const Remboursement = () => {
                             options={[
                                 {
                                     value: "waiting",
-                                    label: "En Attente",
+                                    label: t("status.waiting"),
                                 },
                                 {
                                     value: "accepted",
-                                    label: "Acceptée",
+                                    label: t("status.accepted"),
                                 },
                                 {
                                     value: "rejected",
-                                    label: "Rejetée",
+                                    label: t("status.rejected"),
                                 },
                                 {
                                     value: "cancelled",
-                                    label: "Annulée",
+                                    label: t("status.cancelled"),
                                 },
                                 {
                                     value: "paid",
-                                    label: "Payée",
+                                    label: t("status.paid"),
                                 },
                             ]}
                         />
@@ -934,6 +936,7 @@ const FilterModal = ({
     onConfirme,
     filterValue,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             onCancel={() => setShowModal({ ...showModal, filterModal: false })}
@@ -951,10 +954,10 @@ const FilterModal = ({
                             danger
                             type="text"
                         >
-                            Tout effacer
+                            {t("button.clean")}
                         </Button>
                         <Button onClick={onConfirme} type="primary">
-                            Chercher
+                            {t("button.search")}
                         </Button>
                     </div>
                 </>
@@ -962,7 +965,7 @@ const FilterModal = ({
             open={showModal.filterModal}
         >
             <div className="top">
-                <h3>Fourchette de prix</h3>
+                <h3>{t("filter.priceRange")}</h3>
                 <Slider
                     onChange={(value) => {
                         console.log(value);
@@ -984,9 +987,9 @@ const FilterModal = ({
                     <Input value={max + " " + currencySign()} placeholder="max" />
                 </Space>
                 <Divider />
-                <h3>Nombre de pièces</h3>
+                <h3>{t("filter.roomNumber")}</h3>
                 <Space style={spaceStyle}>
-                    <span>chambre</span>
+                    <span>{t("filter.room")}</span>
                     <InputNumber
                         min={1}
                         max={7}
@@ -1000,7 +1003,7 @@ const FilterModal = ({
                 <Divider />
 
                 <Space style={spaceStyle}>
-                    <span>Salles de bain</span>
+                    <span>{t("filter.bain")}</span>
                     <InputNumber
                         min={1}
                         max={7}
@@ -1012,9 +1015,9 @@ const FilterModal = ({
                     />
                 </Space>
                 <Divider />
-                <h3>Nombre de personnes</h3>
+                <h3>{t("filter.numPeople")}</h3>
                 <Space style={spaceStyle}>
-                    <span>Nombre de personnes</span>
+                    <span>{t("filter.numPeople")}</span>
                     <InputNumber
                         min={1}
                         max={7}
@@ -1044,6 +1047,7 @@ const DeletModal = ({
     reason,
     setReason,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             width={300}
@@ -1077,7 +1081,7 @@ const DeletModal = ({
                             }}
                             type="primary"
                         >
-                            Annuler
+                            {t("button.cancel")}
                         </Button>
                         <Button
                             style={{
@@ -1090,7 +1094,7 @@ const DeletModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Confirmer
+                            {t("button.confirm")}
                         </Button>
                     </div>
                 </>
@@ -1098,7 +1102,7 @@ const DeletModal = ({
             open={showModal.deletModal}
         >
             <div className="top">
-                <h3>Pourquoi est ce que vous refusez le paiement?</h3>
+                <h3>{t("remboursement.reason")}</h3>
                 <Input.TextArea
                     value={reason.deletReason}
                     onChange={(e) => {
@@ -1121,6 +1125,7 @@ export const ConfrimeModal = ({
     setReason,
     reason,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             width={300}
@@ -1155,7 +1160,7 @@ export const ConfrimeModal = ({
                             }}
                             danger
                         >
-                            Annuler
+                            {t("button.cancel")}
                         </Button>
                         <Button
                             style={{
@@ -1165,7 +1170,7 @@ export const ConfrimeModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Garder
+                            {t("button.keep")}
                         </Button>
                     </div>
                 </>
@@ -1200,6 +1205,7 @@ export const RejectModal = ({
     setReason,
     reason,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             width={300}
@@ -1235,7 +1241,7 @@ export const RejectModal = ({
                             }}
                             danger
                         >
-                            Annuler
+                            {t("button.cancel")}
                         </Button>
                         <Button
                             style={{
@@ -1245,7 +1251,7 @@ export const RejectModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Confirmer
+                            {t("button.confirm")}
                         </Button>
                     </div>
                 </>
@@ -1253,8 +1259,8 @@ export const RejectModal = ({
             open={showModal.rejectModal}
         >
             <div className="top">
-                <h4>voulez vous Valider la transaction ?</h4>
-                <span>cette action est irréversible</span>
+                <h4>{t("reservaton.valide")}</h4>
+                <span>{t("reservaton.valideDescription")}</span>
             </div>
         </Modal>
     );

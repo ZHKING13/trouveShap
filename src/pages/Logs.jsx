@@ -13,6 +13,7 @@ const { RangePicker } = DatePicker;
 import * as XLSX from "xlsx";
 import { all } from "axios";
 import { Icon } from "../constant/Icon";
+import { useTranslation } from "react-i18next";
 
 const filterEmptyValues = (obj) => {
     const filteredObject = {};
@@ -31,6 +32,7 @@ const filterEmptyValues = (obj) => {
     return filteredObject;
 };
 function Logs() {
+    const { t } = useTranslation();
     const [loading, setLoading] = useOutletContext();
      const [showModal, setShowModal] = useState({
         deletModal: false,
@@ -120,7 +122,7 @@ function Logs() {
     };
   const columns = [
      {
-            title: "Nom et prénoms de l’admin",
+            title: t("table.adminName"),
             dataIndex: "name",
             key: "name",
             render: (text, record) => (
@@ -151,7 +153,7 @@ function Logs() {
             ),
         },
         {
-            title: "Adresse email",
+            title: t("table.userEmail"),
             dataIndex: "email",
             key: "email",
             render: (text, record) => (
@@ -168,7 +170,7 @@ function Logs() {
         },
 
         {
-            title: "Type d’actions",
+            title: t("table.actionType"),
             key: "action",
             dataIndex: "action",
             render: (text) => <span>{text}</span>,
@@ -184,7 +186,7 @@ function Logs() {
             responsive: ["lg"],
         },
         {
-            title: "Date d'ajout",
+            title: t("table.date"),
             key: "createdAt",
             dataIndex: "createdAt",
             render: (text) => <span>{FormatDate(text)}</span>,
@@ -294,7 +296,7 @@ function Logs() {
                                     exportToCSV(data, fileName);
                                 }}
                             >
-                                Exporter
+                                {t("other.export")}
                             </Button>
                             <Button
                                 onClick={async() => {
@@ -383,6 +385,7 @@ export const FilterModal = ({
     toggleType,
     admin
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Drawer
             // onCancel={() => {
@@ -426,7 +429,7 @@ export const FilterModal = ({
                             danger
                             type="text"
                         >
-                            Tout effacer
+                            {t("button.clean")}
                         </Button>
                         <Button onClick={() => {
                             setShowModal({
@@ -435,7 +438,7 @@ export const FilterModal = ({
                                 });
                             onConfirme()
                         }} type="primary">
-                            Chercher
+                            {t("button.search")}
                         </Button>
                     </div>
                 </>
@@ -464,7 +467,7 @@ export const FilterModal = ({
       </Space>
            <Divider />
           </Checkbox.Group>
-                <h3 style={{marginBottom:"10px"}}>Types d'actions</h3>
+                <h3 style={{marginBottom:"10px"}}>{t("table.actionType")}</h3>
                 <Checkbox.Group  onChange={toggleActivitiesIds}
       value={filterValue.actions}>
       <Space direction="vertical">
@@ -485,7 +488,7 @@ export const FilterModal = ({
                     flexDirection:"column",
                     gap:"10px"
                 }}>
-                    <h3>Date du log</h3>
+                    <h3>{t("table.logDate")}</h3>
                     <RangePicker onChange={togleDate} />
                 </div>
             </div>

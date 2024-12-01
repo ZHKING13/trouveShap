@@ -18,8 +18,10 @@ import { useEffect, useState } from "react";
 import { API_URL, UpdateAvatar, UpdatePassword, getProfilStats } from "../feature/API";
 import { formatAmount } from "./Home";
 import Uploads from "../components/Upload";
+import { useTranslation } from "react-i18next";
 
 const Profil = () => {
+    const { t, i18n } = useTranslation();
     const [loading, setLoading] = useOutletContext();
     const [stats, setStats] = useState([]);
     const [editMode, setEditMode] = useState(false);
@@ -121,11 +123,7 @@ const Profil = () => {
         console.log(res);
 
         if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                "Session expiré",
-                "merci de vous reconnecter"
-            );
+            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             localStorage.clear();
             setTimeout(() => {
                 navigate("/login");
@@ -192,14 +190,14 @@ const Profil = () => {
                                                 }
                                                 danger
                                             >
-                                                Annuler
+                                                {t("button.cancel")}
                                             </Button>
                                             <Button
                                                 onClick={upDateAvatar}
                                                 type="primary"
                                                 loading={loading2}
                                             >
-                                                Valider
+                                                {t("button.valid")}
                                             </Button>
                                         </Space>
                                     </div>
@@ -233,7 +231,7 @@ const Profil = () => {
                                         <div className="left">
                                             <img src={mail} alt="" />
                                             <div>
-                                                <p>Adresse email</p>
+                                                <p>email</p>
                                                 <h4> {logUser.email} </h4>
                                             </div>
                                         </div>
@@ -277,7 +275,7 @@ const Profil = () => {
                                                                 }
                                                                 danger
                                                             >
-                                                                Annuler
+                                                                {t("button.cancel")}
                                                             </Button>
                                                             <Button
                                                                 onClick={
@@ -288,7 +286,7 @@ const Profil = () => {
                                                                     loading2
                                                                 }
                                                             >
-                                                                Valider
+                                                                {t("button.valid")}
                                                             </Button>
                                                         </Space>
                                                     </Space>
@@ -315,23 +313,23 @@ const Profil = () => {
                     </div>
                     <div className="profilStat">
                         <Stats
-                            title={"Gain "}
+                            title={t("user.gain")}
                             subtitle={formatAmount(stats.getCompanyMoney)}
                             icon={note}
                         />
                         <Stats
-                            title="Réservation "
+                            title={t("user.reservation")}
                             subtitle={stats.getBooking}
                             icon={check}
                         />
                         <Stats
-                            title="Résidences "
+                            title={t("home.residences")}
                             subtitle={stats.getResidence}
                             icon={build}
                         />
                         <Stats
                             subtitle={stats.getVisits}
-                            title="Nombre de visiteur"
+                            title={t("user.visite")}
                             icon={user}
                         />
                     </div>

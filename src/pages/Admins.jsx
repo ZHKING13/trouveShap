@@ -19,8 +19,10 @@ import axios, { all } from "axios";
 import { Icon } from "../constant/Icon";
 import Uploads from "../components/Upload";
 import ConfirmationDialog from "../components/Alert";
+import { useTranslation } from "react-i18next";
 const {Option} = Select
 function Admins() {
+    const { t, i18n } = useTranslation();
     const initialFormData = {
     firstname: '',
     lastname: '',
@@ -262,7 +264,7 @@ setAdmins(updateAdmin);
     }
   const columns = [
      {
-            title: "Nom et prénoms de l’admin",
+            title: t("table.adminName"),
             dataIndex: "name",
             key: "name",
             render: (text, record) => (
@@ -293,7 +295,7 @@ setAdmins(updateAdmin);
             ),
         },
         {
-            title: "Adresse email",
+            title: t("table.userEmail"),
             dataIndex: "email",
             key: "email",
             render: (text, record) => (
@@ -310,28 +312,28 @@ setAdmins(updateAdmin);
         },
 
         {
-            title: "Numéro de téléphone",
+            title: t("table.userPhone"),
             key: "contact",
             dataIndex: "contact",
             render: (text) => <span>{text}</span>,
             responsive: ["lg"],
         },
         {
-            title: "Localisation",
+            title: t("table.location"),
             key: "location",
             dataIndex: "location",
             render: (text) => <span>{text}</span>,
             responsive: ["lg"],
         },
         {
-            title: "Date d'ajout",
+            title: t("table.date"),
             key: "createdAt",
             dataIndex: "createdAt",
             render: (text) => <span>{FormatDate(text)}</span>,
             responsive: ["lg"],
         },
         {
-            title: "Profile",
+            title: t("table.profile"),
             key: "profile",
             dataIndex: "profile",
             render: (text) => <Tag color="#A273FF">
@@ -349,7 +351,7 @@ setAdmins(updateAdmin);
             responsive: ["lg"],
         },
         {
-            title: "Action",
+            title: t("table.action"),
             key: "",
             dataIndex: "action",
             render: (text, record) => {
@@ -471,7 +473,7 @@ setAdmins(updateAdmin);
                                         });
                                 }}
                             >
-                                Ajouter
+                                {t("button.add")}
                             </Button>
                             <Button
                                 type="primary"
@@ -495,7 +497,7 @@ setAdmins(updateAdmin);
                                     setLoading(false)
                                 }}
                             >
-                                Exporter
+                                {t("other.export")}
                             </Button>
                             <Button style={{
                 display: "flex",
@@ -570,6 +572,7 @@ export const ConfirmModal = ({
    edit
    
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             width={300}
@@ -600,7 +603,7 @@ export const ConfirmModal = ({
                             }}
                             danger
                         >
-                            Annuler
+                            {t("button.cancel")}
                         </Button>
                         <Button
                             style={{
@@ -610,7 +613,7 @@ export const ConfirmModal = ({
                             type="primary"
                             
                         >
-                            Confirmer
+                            {t("button.confirm")}
                         </Button>
                     </div>
                 </>
@@ -618,8 +621,8 @@ export const ConfirmModal = ({
             open={edit ? showModal.editConfifirm:showModal.confirmModal}
         >
             <div className="top">
-                <h4>voulez vous Valider la transaction ?</h4>
-                <span>cette action est irréversible</span>
+                <h4>{t("reservaton.valide")}</h4>
+                <span>{t("reservaton.valideDescription")}</span>
             </div>
         </Modal>
     );
@@ -635,8 +638,7 @@ export const FormModal = ({
     setFormData
    
 }) => {
-   
-    
+   const { t, i18n } = useTranslation();
     return (
         <Modal
             width={400}
@@ -750,7 +752,7 @@ export const FormModal = ({
                             type="primary"
                             
                         >
-                            Confirmer
+                            {t("button.confirm")}
                         </Button>
                     </Form.Item>
                 </Form>
@@ -783,6 +785,7 @@ export const EditModal = ({
         handleSubmit()
          setShowModal({ ...showModal, editConfirm: false });
     }
+    const { t, i18n } = useTranslation();
     return (
         <div>
             {showModal.editConfirm && (
@@ -903,7 +906,7 @@ export const EditModal = ({
                                 }}
                                 type="primary"
                             >
-                                Confirmer
+                                {t("button.confirm")}
                             </Button>
                         </Form.Item>
                     </Form>

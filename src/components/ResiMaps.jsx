@@ -46,6 +46,7 @@ import AdminMarker from "./AdminMarker";
 import { GoDotFill } from "react-icons/go";
 import { FaStar } from "react-icons/fa";
 import { currencySign } from "./DataTable";
+import { useTranslation} from 'react-i18next';
 const Maps = ({
     location,
     Children,
@@ -56,6 +57,7 @@ const Maps = ({
     setMapBounds,
     loading,
 }) => {
+    const { t, i18n } = useTranslation();
     const [rerenderTrigger, setRerenderTrigger] = useState(0);
     const [selectResidence, setSelectResidence] = useState(null);
     const [showMarkers, setShowMarkers] = useState(true);
@@ -545,7 +547,7 @@ setUserPosition({
                                             /\B(?=(\d{3})+(?!\d))/g,
                                             " "
                                         )}{" "}
-                                    {currencySign()}Par Nuits{" "}
+                                        {currencySign()}/{ t("other.nuits")}
                                     </p>
                                     <div style={{
                                         height: "12px",
@@ -598,7 +600,7 @@ setUserPosition({
                                             if (item?.room.id === 2) {
                                                 return (
                                                     <p>
-                                                            {item?.count} Salon
+                                                            {item?.count} {t("filter.salon")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""}
@@ -615,8 +617,7 @@ setUserPosition({
                                             if (item?.room.id === 5) {
                                                 return (
                                                     <p>
-                                                            {item?.count} Salle
-                                                            de Bain
+                                                            {item?.count} {t("filter.bain")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""}
@@ -719,7 +720,7 @@ setUserPosition({
                 </div>
                 <Divider />
                 <div style={spaceStyle}>
-                    <h4>Numéro de résidence</h4>
+                    <h4>{t("home.residenceNumber")}</h4>
                     <h4
                         style={{
                             color: "#1B2559",
@@ -730,7 +731,7 @@ setUserPosition({
                 </div>
                 <Divider />
                 <div style={spaceStyle}>
-                    <h4>Methode de versement hôte</h4>
+                    <h4>{t("remboursement.hotePayment")}</h4>
                     <h4
                         style={{
                             color: "#1B2559",
@@ -761,7 +762,7 @@ setUserPosition({
                             selectResidence.price
                                 .toString()
                                 .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                       {currencySign()} / nuits
+                       {currencySign()} / {t("other.nuits")}
                     </h2>
                     <p>Prix</p>
                 </div>
@@ -772,7 +773,7 @@ setUserPosition({
                         margin: "10px 0",
                     }}
                 >
-                    Info Hôte
+                    {t("other.infoHote")}
                 </h3>
                 <div
                     style={{
@@ -840,7 +841,7 @@ setUserPosition({
 
                 <Divider />
                 <div orientation="vertical">
-                    <h2>Commodités</h2>
+                    <h2>{t("other.comodite")}</h2>
                     <div
                         style={{
                             display: "flex",
@@ -867,7 +868,7 @@ setUserPosition({
                         color: "#1B2559",
                     }}
                 >
-                    Aperçu
+                    {t("other.apercu")}
                 </h2>
                 <div
                     style={{
@@ -890,7 +891,7 @@ setUserPosition({
                     >
                         <div style={subtitleSryle} className="subti">
                             <img src={Icon.check} alt="" />
-                            <p>Règlement interieur</p>
+                            <p>{t("other.rules")}</p>
                         </div>
                         {selectResidence?.rules?.map((item, index) => {
                             return <span key={index}>{item.rule?.title}</span>;
@@ -907,7 +908,7 @@ setUserPosition({
                     >
                         <div style={subtitleSryle} className="subti">
                             <img src={Icon.check} alt="" />
-                            <p>Type d’activités sociales</p>
+                            <p>{t("other.activities")}</p>
                         </div>
                         {selectResidence?.activities?.map((item, index) => {
                             return (
@@ -924,7 +925,7 @@ setUserPosition({
                         width:"20px", height:"20px"
                     }} src={selectResidence?.occupation == "Full" ? "/maison.png": "/chambre1.png"} alt="" />
                    <h4> {
-                        selectResidence?.occupation == "Full" ? "Residence complète": "Residence Partiel"
+                        selectResidence?.occupation == "Full" ? t("filter.allResidence"): t("other.residencePartial")
                     }</h4>
                  </Space>
                 <Space style={info}>
@@ -943,7 +944,7 @@ setUserPosition({
                                                 return (
 
                                                     <h4>
-                                                            Chambre
+                                                            {t("filter.room")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""} : {item?.count} 
@@ -962,7 +963,7 @@ setUserPosition({
                                                 return (
 
                                                     <h4>
-                                                            Salon
+                                                            {t("filter.salon")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""} : {item?.count} 
@@ -982,8 +983,7 @@ setUserPosition({
                                                 return (
 
                                                     <h4>
-                                                            Salle
-                                                            de Bain
+                                                            {t("filter.bain")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""} : {item?.count} 
@@ -1000,13 +1000,13 @@ setUserPosition({
                         color: "#1B2559",
                     }}
                 >
-                    Grille de remboursement
+                    {t("other.grille")}
                 </h2>
                 <div>
                     <ul>
                         <div style={spaceStyle}>
                             <li style={listStyle}>
-                                Entre 1 et 3 mois avant le jour J
+                                {t("other.entre1mois_3mois")}
                             </li>
                             <span>
                                 {selectResidence?.refundGrid[
@@ -1016,7 +1016,7 @@ setUserPosition({
                         </div>
                         <div style={spaceStyle}>
                             <li style={listStyle}>
-                                Entre 1 semaine et 1 mois avant le jour J
+                                {t("other.entre1semaine_1mois")}
                             </li>
                             <span>
                                 {" "}
@@ -1027,7 +1027,7 @@ setUserPosition({
                         </div>
                         <div style={spaceStyle}>
                             <li style={listStyle}>
-                                Entre 48h et 1 semaine avant le jour J
+                                {t("other.entre48h_1semaine")}
                             </li>
                             <span>
                                 {" "}
@@ -1038,7 +1038,7 @@ setUserPosition({
                         </div>
                         <div style={spaceStyle}>
                             <li style={listStyle}>
-                                Moins de 48 heures avant le jour J
+                                {t("other.moins48heures_1jour")}
                             </li>
                             <span>
                                 {" "}
@@ -1049,7 +1049,7 @@ setUserPosition({
                         </div>
                         <div style={spaceStyle}>
                             <li style={listStyle}>
-                                Plus de 3 mois avant le jour J
+                                {t("other.plus3mois_1jour")}
                             </li>
                             <span>
                                 {" "}

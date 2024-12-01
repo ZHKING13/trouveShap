@@ -6,7 +6,8 @@ import DataTable, {
     renderIcon,
 } from "../components/DataTable";
 import * as XLSX from "xlsx";
-
+// impor useTranslation from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import {  RangeSlider, Row, Col, InputGroup } from 'rsuite';
 import Header from "../components/Header";
 import {
@@ -63,6 +64,7 @@ function convertToISO(dateString) {
     return ISOString;
 }
 const Residence = () => {
+    const { t, i18n } = useTranslation();
     const [selectResi, setSelecteResi] = useState(null);
     const [selectSpace, setSPaceIndex] = useState(null);
     const [loading, setLoading] = useOutletContext();
@@ -394,8 +396,8 @@ const Residence = () => {
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                "Session expiré",
-                "merci de vous reconnecter"
+               t("error.401"),
+                t("error.retry1")
             );
             localStorage.clear();
             setTimeout(() => {
@@ -472,8 +474,8 @@ const Residence = () => {
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                "Session expiré",
-                "merci de vous reconnecter"
+               t("error.401"),
+                t("error.retry1")
             );
             localStorage.clear();
             setTimeout(() => {
@@ -501,8 +503,9 @@ const Residence = () => {
                 <>
                   
                     <Header
-                        title={"RESIDENCES"}
-                        path={"Résidences"}
+                        title={t("menu.residence")}
+                        path={t("menu.residence")}
+                        
                         children={
                             <Space>
                                   <Button
@@ -524,7 +527,7 @@ const Residence = () => {
                                     exportToCSV(data, fileName);
                                 }}
                             >
-                                Exporter
+                                {t("other.export")}
                             </Button>
                                   <FilterBoxe
                                 handleSearch={setFilterText}
@@ -535,7 +538,7 @@ const Residence = () => {
                                         filterModal: true,
                                     });
                                 }}
-                                placeHolder={"Rechercher une résidence"}
+                                placeHolder={t("filter.residence")}
                                 children={
                                     <img
                                         onClick={() => {
@@ -628,7 +631,7 @@ const Residence = () => {
                     </div>
                     <Divider />
                     <div style={spaceStyle}>
-                        <h4>Numéro de résidence</h4>
+                        <h4>{t("residence.number")}</h4>
                         <h4
                             style={{
                                 color: "#1B2559",
@@ -639,7 +642,7 @@ const Residence = () => {
                     </div>
                     <Divider />
                     <div style={spaceStyle}>
-                        <h4>Methode de versement hôte</h4>
+                        <h4>{t("table.methode")}</h4>
                         <h4
                             style={{
                                 color: "#1B2559",
@@ -670,9 +673,9 @@ const Residence = () => {
                                 selectItem.price
                                     .toString()
                                     .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                            { currencySign()}/ Nuits
+                            { currencySign()}/ {t("other.nuits")}
                         </h2>
-                        <p>Prix</p>
+                        <p>{t("other.price")}</p>
                     </div>
                     <Divider />
                     <h3
@@ -681,7 +684,7 @@ const Residence = () => {
                             margin: "10px 0",
                         }}
                     >
-                        Info Hôte
+                        {t("other.infoHote")}
                     </h3>
                     <div
                         style={{
@@ -721,7 +724,7 @@ const Residence = () => {
                             margin: "10px 0",
                         }}
                     >
-                        Description
+                        {t("other.description")}
                     </h3>
                     {selectItem?.description?.map((item, index) => {
                         return (
@@ -747,7 +750,7 @@ const Residence = () => {
 
                     <Divider />
                     <div orientation="vertical">
-                        <h2>Comodités</h2>
+                        <h2>{t("other.comodite")}</h2>
                         <div
                             style={{
                                 display: "flex",
@@ -774,7 +777,7 @@ const Residence = () => {
                             color: "#1B2559",
                         }}
                     >
-                        Aperçu
+                        {t("other.apercu")}
                     </h2>
                     <div
                         style={{
@@ -797,7 +800,7 @@ const Residence = () => {
                         >
                             <div style={subtitleSryle} className="subti">
                                 <img src={Icon.check} alt="" />
-                                <p>Règlement interieur</p>
+                                <p>{t("other.rules")}</p>
                             </div>
                             {selectItem?.rules?.map((item, index) => {
                                 return (
@@ -816,7 +819,7 @@ const Residence = () => {
                         >
                             <div style={subtitleSryle} className="subti">
                                 <img src={Icon.check} alt="" />
-                                <p>Type d’activités sociales</p>
+                                <p>{t("other.activities")}</p>
                             </div>
                             {selectItem?.activities?.map((item, index) => {
                                 return (
@@ -855,7 +858,7 @@ const Residence = () => {
                                                 return (
 
                                                     <h4>
-                                                            Chambre
+                                                            {t("other.room")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""} : {item?.count} 
@@ -874,7 +877,7 @@ const Residence = () => {
                                                 return (
 
                                                     <h4>
-                                                            Salon
+                                                            {t("other.salon")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""} : {item?.count} 
@@ -894,8 +897,7 @@ const Residence = () => {
                                                 return (
 
                                                     <h4>
-                                                            Salle
-                                                            de Bain
+                                                            {t("other.bathroom")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""} : {item?.count} 
@@ -912,13 +914,13 @@ const Residence = () => {
                             color: "#1B2559",
                         }}
                     >
-                        Grille de remboursement
+                        {t("other.grille")}
                     </h2>
                     <div>
                         <ul>
                             <div style={spaceStyle}>
                                 <li style={listStyle}>
-                                    Entre 1 et 3 mois avant le jour J
+                                    {t("other.entre1mois_3mois")}
                                 </li>
                                 <span>
                                     {selectItem?.refundGrid[
@@ -928,7 +930,7 @@ const Residence = () => {
                             </div>
                             <div style={spaceStyle}>
                                 <li style={listStyle}>
-                                    Entre 1 semaine et 1 mois avant le jour J
+                                    {t("other.entre1semaine_1mois")}
                                 </li>
                                 <span>
                                     {" "}
@@ -939,7 +941,7 @@ const Residence = () => {
                             </div>
                             <div style={spaceStyle}>
                                 <li style={listStyle}>
-                                    Entre 48h et 1 semaine avant le jour J
+                                    {t("other.entre48h_1semaine")}
                                 </li>
                                 <span>
                                     {" "}
@@ -950,7 +952,7 @@ const Residence = () => {
                             </div>
                             <div style={spaceStyle}>
                                 <li style={listStyle}>
-                                    Moins de 48 heures avant le jour J
+                                    {t("other.moins48heures_1jour")}
                                 </li>
                                 <span>
                                     {" "}
@@ -961,7 +963,7 @@ const Residence = () => {
                             </div>
                             <div style={spaceStyle}>
                                 <li style={listStyle}>
-                                    Plus de 3 mois avant le jour J
+                                    {t("other.plus3mois_1jour")}
                                 </li>
                                 <span>
                                     {" "}
@@ -1068,19 +1070,19 @@ const Residence = () => {
                             options={[
                                 {
                                     value: "waiting",
-                                    label: "En Attente",
+                                    label: t("status.waiting"),
                                 },
                                 {
                                     value: "active",
-                                    label: "Activé",
+                                    label: t("status.active"),
                                 },
                                 {
                                     value: "rejected",
-                                    label: "Rejeté",
+                                    label: t("status.rejected"),
                                 },
                                 {
                                     value: "deleted",
-                                    label: "Désactivé",
+                                    label: t("status.deleted"),
                                 },
                             ]}
                         />
@@ -1114,6 +1116,7 @@ export const FilterModal = ({
     togleDate,
     priceRange
 }) => {
+    const { t, i18n } = useTranslation();
     useEffect(() => {
         setFilterValue((prevState) => ({
             ...prevState,
@@ -1167,10 +1170,10 @@ export const FilterModal = ({
                             danger
                             type="text"
                         >
-                            Tout effacer
+                            {t("button.clean")}
                         </Button>
                         <Button onClick={onConfirme} type="primary">
-                            Chercher
+                            {t("button.search")}
                         </Button>
                     </div>
                 </>
@@ -1184,7 +1187,7 @@ export const FilterModal = ({
             <div className="top">
                
 
-                <h3>Fourchette de prix</h3>
+                <h3>{t("filter.priceRange")}</h3>
               
                 <Slider
                     onChange={(value) => {
@@ -1296,9 +1299,9 @@ export const FilterModal = ({
                     />
                 </Space>
                 <Divider />
-                <h3>Nombre de pièces</h3>
+                <h3>{t("filter.roomNumber")}</h3>
                 <Space style={spaceStyle}>
-                    <span>chambre</span>
+                    <span>{t("filter.room")}</span>
                     <InputNumber
                         min={1}
                         max={15}
@@ -1333,7 +1336,7 @@ export const FilterModal = ({
                 </Space>
 
                 <Space style={spaceStyle}>
-                    <span>Salles de bain</span>
+                    <span>{t("filter.bain")}</span>
                     <InputNumber
                         min={1}
                         max={7}
@@ -1370,7 +1373,7 @@ export const FilterModal = ({
                 </Space>
                 
                 <Space style={spaceStyle}>
-                    <span>Salon</span>
+                    <span>{t("filter.salon")}</span>
                     <InputNumber
                         min={1}
                         max={10}
@@ -1404,9 +1407,9 @@ export const FilterModal = ({
                     />
                 </Space>
                 <Divider />
-                <h3>Nombre de personnes</h3>
+                <h3>{t("filter.numPeople")}</h3>
                 <Space style={spaceStyle}>
-                    <span>Nombre de personnes</span>
+                    <span>{t("filter.numPeople")}</span>
                     <InputNumber
                         min={1}
                         max={10}
@@ -1432,11 +1435,11 @@ export const FilterModal = ({
                     flexDirection:"column",
                     gap:"10px"
                 }}>
-                    <h3>Date de création</h3>
+                    <h3>{t("filter.date")}</h3>
                     <RangePicker onChange={togleDate} />
                 </div>
                 <Divider/>
-                    <h3>Type de residence</h3>
+                    <h3>{t("filter.type")}</h3>
                 <div  style={{
                     display:"flex",
                     gap: "10px",
@@ -1446,41 +1449,43 @@ export const FilterModal = ({
                    toggleTypeResi(1)
                 }} style={{...typeResi, backgroundColor: filterValue.typeResi.includes(1)? "#DAC7FF" : "transparent"}}>
                         <img style={resiImg} src="/maison.png" alt="" />
-                        <p>Maison</p>
+                        <p>{t("filter.maison")}</p>
                     </div>
                     <div onClick={() => {
                    toggleTypeResi(2)
                 }} style={{...typeResi, backgroundColor: filterValue.typeResi.includes(2) ? "#DAC7FF" : "transparent"}}>
                         <img style={resiImg} src="/building.png" alt="" />
-                        <p>Appartement</p>
+                        <p>{t("filter.appartement")}</p>
                     </div>
                     <div onClick={() => {
                     toggleTypeResi(3)
                 }} style={{...typeResi, backgroundColor: filterValue.typeResi.includes(3) ? "#DAC7FF" : "transparent"}}>
                         <img style={resiImg} src="/chalet.png" alt="" />
-                        <p>Chalet</p>
+                        <p>{t("filter.chalet")}</p>
                     </div>
                    
                 </div>
                 <Divider />
-                <h3 style={{marginBottom:"10px"}}>Activités Social</h3>
+                <h3 style={{marginBottom:"10px"}}>{t("other.activities")}</h3>
                 <Checkbox.Group  onChange={toggleActivitiesIds}
       value={filterValue.activitiesIds}>
       <Space direction="vertical">
-        <Checkbox value={1}>Baptêmes</Checkbox>
-        <Checkbox value={4}>Fêtes avec alcool </Checkbox>
-        <Checkbox value={5}>Enterrement de vie de jeunes</Checkbox>
-         <Checkbox value={6}>Séminaires</Checkbox>
+        <Checkbox value={1}>{t("activite.baptisms")}</Checkbox>
+        <Checkbox value={4}>{t("activite.parties_with_alcohol")} </Checkbox>
+        <Checkbox value={5}>{t("activite.bachelor_parties")}</Checkbox>
+         <Checkbox value={6}>{t("activite.seminars")}</Checkbox>
+        
          <Collapse  >
         <Collapse.Panel header="Afficher  plus">
              <Space direction="vertical">
-               <Checkbox value={2}>Mariages </Checkbox>
-        <Checkbox value={3}>Aniversaires</Checkbox>
-        <Checkbox value={7}>Conférences</Checkbox>
-        <Checkbox value={11}>Ateliers de peinture et de dessin</Checkbox>
-        <Checkbox value={12}>Dance</Checkbox>
-        <Checkbox value={13}>Sessions de création artistique</Checkbox>
-        <Checkbox value={14}>Fabrication d'artisanat local</Checkbox>
+               <Checkbox value={2}>{t("activite.weddings")} </Checkbox>
+        <Checkbox value={3}>{t("activite.birthdays")}</Checkbox>
+        <Checkbox value={7}>{t("activite.conferences")}</Checkbox>
+        <Checkbox value={11}>{t("activite.painting_workshops")}</Checkbox>
+        <Checkbox value={12}>{t("activite.dance")}</Checkbox>
+        <Checkbox value={13}>{t("activite.art_creation_sessions")}</Checkbox>
+        <Checkbox value={14}>{t("activite.local_craft_making")}</Checkbox>
+        
          </Space>
         </Collapse.Panel>
                             
@@ -1516,12 +1521,12 @@ export const FilterModal = ({
                     width:"80%"
                 }}>
                     <h4>
-                        Une Chambre
+                        {t("filter.rom1")}
                     </h4>
                     <span style={{
                         fontSize:"10px"
                     }}>
-                        Les clients ont droit à leur propre chambre dans la résidence et ont accès  à des espaces partagé
+                        {t("filter.room1Detail")}
                     </span>
                 </div>
                 <img src="/chambre1.png" alt="" />
@@ -1550,12 +1555,12 @@ export const FilterModal = ({
                     width:"80%"
                 }}>
                     <h4>
-                        Résidence entière
+                        {t("filter.partialResidence")}
                     </h4>
                     <span style={{
                         fontSize:"10px"
                     }}>
-                        Les clients disposent de la résidence dans son integralité
+                        {t("filter.allResidenceDetail")}
                     </span>
                 </div>
                 <img src="/maison.png" alt="" />
@@ -1571,6 +1576,7 @@ export const DeletModal = ({
     reason,
     setReason,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             width={300}
@@ -1604,7 +1610,7 @@ export const DeletModal = ({
                             }}
                             type="primary"
                         >
-                            Garder
+                            {t("button.keep")}
                         </Button>
                         <Button
                             style={{
@@ -1617,7 +1623,7 @@ export const DeletModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Desactivé
+                            {t("button.delete")}
                         </Button>
                     </div>
                 </>
@@ -1625,7 +1631,7 @@ export const DeletModal = ({
             open={showModal.deletModal}
         >
             <div className="top">
-                <h3>Confirmer la desactivation</h3>
+                <h3>{t("residence.confirmDelete")}</h3>
                 <Input.TextArea
                     value={reason.deletReason}
                     onChange={(e) => {
@@ -1634,7 +1640,7 @@ export const DeletModal = ({
                     style={{
                         marginTop: "10px",
                     }}
-                    placeholder="Raison de la desactivation"
+                    placeholder={t("residence.deleteReason")}
                 />
             </div>
         </Modal>
@@ -1648,6 +1654,7 @@ export const ConfrimeModal = ({
     setReason,
     reason,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             width={300}
@@ -1682,7 +1689,7 @@ export const ConfrimeModal = ({
                             }}
                             danger
                         >
-                            Annuler
+                            {t("button.cancel")}
                         </Button>
                         <Button
                             style={{
@@ -1692,7 +1699,7 @@ export const ConfrimeModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Confirmer
+                            {t("button.confirm")}
                         </Button>
                     </div>
                 </>
@@ -1700,9 +1707,9 @@ export const ConfrimeModal = ({
             open={showModal.addModal}
         >
             <div className="top">
-                <h3>Valider l’ajout</h3>
+                <h3>{t("residence.keep")}</h3>
                 <span>
-                    Voulez vous vraiment valider l’ajout de cette résidence ?
+                    {t("residence.acceptDescription")}
                 </span>
                 <Input.TextArea
                     style={{
@@ -1727,6 +1734,7 @@ export const RejectModal = ({
     setReason,
     reason,
 }) => {
+    const { t, i18n } = useTranslation();
     return (
         <Modal
             width={300}
@@ -1762,7 +1770,7 @@ export const RejectModal = ({
                             }}
                             danger
                         >
-                            Annuler
+                            {t("button.cancel")}
                         </Button>
                         <Button
                             style={{
@@ -1772,7 +1780,7 @@ export const RejectModal = ({
                             type="primary"
                             loading={loading}
                         >
-                            Confirmer
+                            {t("button.confirm")}
                         </Button>
                     </div>
                 </>
@@ -1780,9 +1788,9 @@ export const RejectModal = ({
             open={showModal.rejectModal}
         >
             <div className="top">
-                <h3>Valider le refus</h3>
+                <h3>{t("residence.cancel")}</h3>
                 <span>
-                    Voulez vous vraiment refuser l’ajout de cette résidence ?
+                    {t("residence.refuseDescription")}
                 </span>
                 <Input.TextArea
                     style={{

@@ -2,6 +2,7 @@ import { Button, Space, Spin, notification, DatePicker } from "antd";
 import DataTable, { FormatDate } from "../components/DataTable";
 import Header from "../components/Header";
 import { DATA3 } from "../data";
+import { useTranslation } from "react-i18next";
 import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import { getNewsletter } from "../feature/API";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -14,6 +15,7 @@ import * as XLSX from "xlsx";
 import { all } from "axios";
 
 const NewsLetter = () => {
+    const { t, i18n } = useTranslation();
     const [loading, setLoading] = useOutletContext();
     const [newsletter, setNewsletter] = useState([]);
     const [filtertext, setFilterText] = useState("");
@@ -62,7 +64,7 @@ const NewsLetter = () => {
     };
     const columns = [
         {
-            title: "Adresse email",
+            title: t("table.userEmail"),
             dataIndex: "email",
             key: "email",
             render: (text, record) => (
@@ -79,7 +81,7 @@ const NewsLetter = () => {
         },
 
         {
-            title: "Date d'ajout",
+            title: t("table.date"),
             key: "createdAt",
             dataIndex: "createdAt",
             render: (text) => <span>{FormatDate(text)}</span>,
@@ -140,11 +142,7 @@ const NewsLetter = () => {
         console.log(res);
 
         if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                "Session expiré",
-                "merci de vous reconnecter"
-            );
+            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             localStorage.clear();
             setTimeout(() => {
                 navigate("/login");
@@ -166,8 +164,8 @@ const NewsLetter = () => {
             <>
                 {contextHolder}
                 <Header
-                    title={"NEWSLETTER"}
-                    path={"Newsletter"}
+                    title={t("menu.newsletter").toUpperCase()}
+                    path={t("menu.newsletter")}
                     children={
                         <Space>
                             <Button
@@ -187,13 +185,13 @@ const NewsLetter = () => {
                                     exportToCSV(data, fileName);
                                 }}
                             >
-                                Exporter
+                                {t("other.export")}
                             </Button>
                             <FilterBoxe
                                 handleSearch={setFilterText}
                                 filtertext={filtertext}
                                 selectRange={filtreByDate}
-                                placeHolder={"Rechercher par email"}
+                                placeHolder={t("filter.byMail")}
                                 dateRange={dateRange}
                                 setDateRange={setDateRange}
                             />

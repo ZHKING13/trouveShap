@@ -7,6 +7,8 @@ import {
     ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { Icon } from "../constant/Icon";
+import { useTranslation} from 'react-i18next';
+
 
 export const renderIcon = (status) => {
     switch (status) {
@@ -120,6 +122,7 @@ const DataTable = ({
     children,
     header,
 }) => {
+    const { t, i18n } = useTranslation();
     const handleRowClick = (record) => {
         onclick && onclick(record);
     };
@@ -127,7 +130,7 @@ const DataTable = ({
 
     const columns = [
         {
-            title: "Résidences",
+            title: t("menu.residence"),
             dataIndex: "name",
             key: "name",
             render: (text, record) => (
@@ -158,7 +161,7 @@ const DataTable = ({
             ),
         },
         {
-            title: "Hôte",
+            title: t("other.hote"),
             dataIndex: "owner",
             key: "owner",
             render: (text, record) => (
@@ -174,7 +177,7 @@ const DataTable = ({
             responsive: ["md"],
         },
         {
-            title: "Prix / nuit",
+            title: t("table.price"),
             dataIndex: "price",
             key: "price",
             render: (text) => (
@@ -186,7 +189,7 @@ const DataTable = ({
             responsive: ["md"],
         },
         {
-            title: "Document Hôte",
+            title: t("table.document"),
             key: "docs",
             dataIndex: "docs",
             render: (text, record) =>
@@ -211,14 +214,14 @@ const DataTable = ({
             responsive: ["md"],
         },
         {
-            title: "Date d'ajout",
+            title: t("table.date"),
             key: "createdAt",
             dataIndex: "createdAt",
             render: (text) => <span>{FormatDate(text)}</span>,
             responsive: ["lg"],
         },
         {
-            title: "Statut",
+            title: t("table.status"),
             key: "status",
             render: (_, record) => (
                 <Tag
@@ -232,7 +235,7 @@ const DataTable = ({
             responsive: ["md"],
         },
         {
-            title: "Actions",
+            title: t("table.action"),
             key: "action",
             render: (_, record) => {
                 return record.status == "Désactivé" ? (

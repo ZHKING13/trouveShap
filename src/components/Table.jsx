@@ -7,6 +7,8 @@ import {
 } from "@ant-design/icons";
 import { FormatDate, renderColor, renderIcon } from "./DataTable";
 import { getStatusHistory } from "../feature/API";
+import { useTranslation} from 'react-i18next';
+
 
 const dataSource = [
     {
@@ -37,16 +39,17 @@ const dataSource = [
 
 
 
-const TableComponent = ({Data}) => {
+const TableComponent = ({ Data }) => {
+    const { t, i18n } = useTranslation();
     const columns = [
         {
-            title: "NOM",
+            title: t("table.name"),
             dataIndex: "residence.name",
             key: "residence.name",
             render: (text, record) => <span>{record?.residence?.name}</span>,
         },
         {
-            title: "STATUS",
+            title: t("table.status"),  
             dataIndex: "newStatus",
             key: "newStatus",
             render: (text, record) => (

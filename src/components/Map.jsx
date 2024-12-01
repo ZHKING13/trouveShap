@@ -1,8 +1,10 @@
 import GoogleMapReact from "google-map-react";
 import tv from "../assets/loca.svg";
 import { useEffect, useState } from "react";
+import { useTranslation} from 'react-i18next';
 
 const Map = ({ location }) => {
+    const { t, i18n } = useTranslation();
     const [rerenderTrigger, setRerenderTrigger] = useState(0);
     const CustomMarker = () => {
         return (
@@ -50,7 +52,7 @@ const Map = ({ location }) => {
                 borderRadius: "30px",
             }}
         >
-            <h2>Localisation du logement</h2>
+            <h2>{t("other.residenceLocation")}</h2>
             <GoogleMapReact
                 bootstrapURLKeys={{
                     key:"AIzaSyAYOroIYOdDWkyPJeSmSVCEOMnsUszUnLw"
