@@ -79,7 +79,9 @@
         "lang":"Choose language",
         "currency":"Choose currency",
         "fr":"French",
-        "en":"English"
+        "en":"English",
+        "back":"Back to home",
+        "visite": "visit"
     },
     "table":{
         "price": "Price / night",
@@ -128,6 +130,7 @@
     "visite":"number of visitors",
     "reservation":"Total reservations"
     
+    
 },
 "filter":{
     "byName": "Search by name",
@@ -155,7 +158,8 @@
     "allResidenceDetail": "The clients have access to the entire residence.",
     "room1Detail":"The clients are entitled to their own room in the residence and have access to shared spaces.",
     "reservation":"Search for a reservation",
-    "remboursement":"Search for a request"
+    "remboursement":"Search for a request",
+    "filtre":"filters"
 }
 ,
     "status": {
@@ -252,6 +256,20 @@
     "status":"Request status",
     "motif":"Request reason",
     "reason":"Why do you want to refuse the payment?"
+},
+"form":{
+  "name":"",
+  "currentPassword":"Current password",
+  "newPassword":"New password",
+  "changePassword":"Change password",
+  "password":"Password",
+  "newAdmin":"New admin",
+  "firstname":"Firstname",
+  "lastname":"Lastname",
+  "email":"Email",
+  "profile":"Profile",
+  "role":"Choose role",
+  "invalid":"please fill all fields"
 }
 
 

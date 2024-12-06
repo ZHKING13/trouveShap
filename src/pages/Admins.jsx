@@ -521,7 +521,7 @@ setAdmins(updateAdmin);
                                     src={Icon.filter}
                                     alt="filter icon"
                                 />
-                                <span>Filtres</span>
+                                <span> {t("filter.filtre")} </span>
                            </Button>
                         </Space>
                     }
@@ -672,7 +672,7 @@ export const FormModal = ({
                     color: "#2B3674",
                         textALign: "center",
                     marginLeft:""
-                }} >Nouvelle admin</h1>
+                }} >{t("form.newAdmin")}</h1>
               </div>
 
                 <Form
@@ -687,10 +687,10 @@ export const FormModal = ({
                   <Uploads handleFileChange={handleFileChange} />
                     <Form.Item >
           <Input name="firstname" value={formData.firstname}
-                            onChange={handleInputChange} placeholder="Nom " />
+                            onChange={handleInputChange} placeholder={t("form.firstname")} />
         </Form.Item>
         <Form.Item  >
-                        <Input placeholder="Prenom"
+                        <Input placeholder={t("form.lastname")}
                             name="lastname" 
                             value={formData.lastname}
                             onChange={handleInputChange}
@@ -699,7 +699,7 @@ export const FormModal = ({
         <Form.Item >
           <Input   name="email" 
                             value={formData.email}
-                            onChange={handleInputChange} placeholder="Adresse Email" />
+                            onChange={handleInputChange} placeholder={t("form.email")} />
                     </Form.Item>
                     <Form.Item
           name="profile"
@@ -707,7 +707,7 @@ export const FormModal = ({
           rules={[
             {
               required: true,
-              message: 'veuillez selectionner un rôle',
+              message: t("form.role"),
             },
           ]}
         >
@@ -716,7 +716,7 @@ export const FormModal = ({
                                 ...formData,
                                 profile:e
                             })
-          }} placeholder="Selectionner un rôle">
+          }} placeholder={t("form.role")}>
             <Option value="Admin">Admin</Option>
             <Option value="SuperAdmin">SuperAdmin</Option>
           </Select>
@@ -736,7 +736,7 @@ export const FormModal = ({
       openNotificationWithIcon(
                 "error",
                 "INVALIDE ",
-                "veuillez remplir tout les champs"
+                t("form.invalid")
             );
             return
 }

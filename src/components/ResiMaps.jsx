@@ -274,7 +274,7 @@ setUserPosition({
                 <p>
                     <LeftOutlined size={14} />
                 </p>
-                <span>Retourner a l’accueil</span>
+                <span>{t("other.back")}</span>
             </div>
             {loading && (
                 <div
@@ -587,7 +587,7 @@ setUserPosition({
                                     {selectResidence?.rooms.map(
                                         (item, index) => {
                                             if (item?.room.id === 1) {
-                                                return item?.count + " Chambre";
+                                                return item?.count + " " + t("filter.room");
                                             }
                                            
                                         }
@@ -648,7 +648,7 @@ setUserPosition({
                             borderRadius: "10px",
                         }}
                     >
-                        Visiter
+                        {t("other.visite")}
                     </a>
                 }
             >
@@ -764,7 +764,7 @@ setUserPosition({
                                 .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
                        {currencySign()} / {t("other.nuits")}
                     </h2>
-                    <p>Prix</p>
+                    <p>{t("other.price")} </p>
                 </div>
                 <Divider />
                 <h3

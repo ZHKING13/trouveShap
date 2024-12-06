@@ -43,7 +43,7 @@ const LanguageCurrencySelector = ({ languages, currencies, onClose, onConfirm })
               color: activeTab === 'lang' ? '#8B5CF6' : '#9CA3AF',
             }}
             onClick={() => setActiveTab('lang')}
-          >
+          > 
             {t('other.lang')}
           </button>
           <button
@@ -132,7 +132,7 @@ const LanguageCurrencySelector = ({ languages, currencies, onClose, onConfirm })
           onMouseLeave={() => setHoveredOption(null)}
           onClick={handleConfirm}
         >
-          {t('Confirmer')}
+          {t('button.confirm')}
         </button>
       </div>
     </div>

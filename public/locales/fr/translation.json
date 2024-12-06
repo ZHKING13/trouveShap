@@ -81,7 +81,9 @@
     "lang":"Choisir la langue",
     "currency":"Choisir la devise",
     "fr":"Français",
-    "en":"Anglais"
+    "en":"Anglais",
+    "back":"Retour à l'accueil",
+    "visite": "visiter"
     
     
   },
@@ -159,7 +161,8 @@
         "partialResidence":"Résidence partiel",
         "room1Detail":"Les clients ont droit à leur propre chambre dans la résidence et ont accès  à des espaces partagé",
         "reservation":"chercher une réservation",
-        "remboursement":"Rechercher une demande"
+        "remboursement":"Rechercher une demande",
+        "filtre":"filtres"
      },
     "status": {
     "waiting": "En Attente",
@@ -255,6 +258,20 @@
     "status":"Statut de la demande",
     "motif":"Motif de la demande",
     "reason":"Pourquoi est ce que vous refusez le paiement?"
+},
+"form":{
+  "name":"",
+  "currentPassword":"mots de passe actuel",
+  "newPassword":"nouveau mots de passe",
+  "changePassword":"changer le mot de passe",
+  "password":"mot de passe",
+  "newAdmin":"Nouvel admin",
+  "firstname":"Prénom",
+  "lastname":"Nom",
+  "email":"Adresse Email",
+  "profile":"Profil",
+  "role":"Choisir le rôle",
+  "invalid":"merci de remplir tout les champs"
 }
 
 }

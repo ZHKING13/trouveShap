@@ -243,8 +243,9 @@ const Profil = () => {
                                             <div>
                                                 <p>
                                                     {editMode
-                                                        ? "Changer le mot de passe"
-                                                        : "Mot de passe"}{" "}
+                                                        ? t("form.changePassword")
+                                                        : t("form.password")}{" "}
+                                                       
                                                 </p>
                                                 {editMode ? (
                                                     <Space
@@ -258,13 +259,13 @@ const Profil = () => {
                                                                         .value
                                                                 )
                                                             }
-                                                            placeholder="mots de pass actuel"
+                                                            placeholder={t("form.currentPassword")}
                                                         />
                                                         <Input.Password
                                                             onChange={
                                                                 handleChange
                                                             }
-                                                            placeholder="nouveau mots de passe"
+                                                            placeholder={t("form.newPassword")}
                                                         />
                                                         <Space>
                                                             <Button
