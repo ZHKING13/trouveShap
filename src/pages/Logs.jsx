@@ -393,6 +393,7 @@ export const FilterModal = ({
     admin
 }) => {
     const { t, i18n } = useTranslation();
+    const [lang,SetLang]=useState(localStorage.getItem("lang"))
     return (
         <Drawer
             // onCancel={() => {
@@ -480,7 +481,10 @@ export const FilterModal = ({
       <Space direction="vertical">
                         {
                             action.map((item,id) => {
-                                return (<Checkbox key={id} value={item}>{item}</Checkbox>)
+                                return (<Checkbox key={id} value={lang === "en" ? item.labelEn || item.label : item.label }
+>
+                                    {lang === "en" ? item.labelEn || item.label : item.label }
+                                </Checkbox>)
                             })
        }
         

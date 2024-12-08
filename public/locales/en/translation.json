@@ -45,7 +45,9 @@
         "description": "Description",
         "comodite": "Comodities",
         "apercu": "Overview",
-        "grille": "Remboursement Grid"
+        "grille": "Remboursement Grid",
+        "travelers":"Travelers",
+        "hosts":"Hosts"
     },
     "other": {
         "price": "Price",

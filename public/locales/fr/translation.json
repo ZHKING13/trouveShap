@@ -47,7 +47,9 @@
     "description": "Description",
     "comodite": "Comodités",
     "apercu": "Aperçu",
-    "grille": "Grille de remboursement"
+    "grille": "Grille de remboursement",
+    "travelers":"Voyageurs",
+    "hosts":"Hôtes"
   },
   "other": {
     "price": "Prix",

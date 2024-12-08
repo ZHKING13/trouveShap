@@ -723,53 +723,29 @@ const Residence = () => {
                     >
                         {t("other.description")}
                     </h3>
-                    {
-                        lang === "fr" ?(
-                            selectItem?.description?.map((item, index) => {
-                        return (
-                            <div
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    marginLeft: "10px",
-                                }}
-                                key={index}
-                            >
-                                <h4
-                                    style={{
-                                        color: "#1B2559",
-                                    }}
-                                >
-                                    {item?.title}
-                                </h4>
-                                <p>{item?.text}</p>
-                            </div>
-                        );
-                    }) 
-                        ) : (
-                                selectItem?.descriptionEn?.map((item, index) => {
-                        return (
-                            <div
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    marginLeft: "10px",
-                                }}
-                                key={index}
-                            >
-                                <h4
-                                    style={{
-                                        color: "#1B2559",
-                                    }}
-                                >
-                                    {item?.title}
-                                </h4>
-                                <p>{item?.text}</p>
-                            </div>
-                        );
-                    })
-                        )
-                    }
+                          {
+    (lang === "fr" ? selectItem?.description : selectItem?.descriptionEn || selectItem?.description)?.map(
+        (item, index) => (
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "10px",
+                }}
+                key={index}
+            >
+                <h4
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    {item?.title}
+                </h4>
+                <p>{item?.text}</p>
+            </div>
+        )
+    )
+}
 
                     <Divider />
                     <div orientation="vertical">
