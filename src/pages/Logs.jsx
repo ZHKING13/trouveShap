@@ -33,6 +33,7 @@ const filterEmptyValues = (obj) => {
 };
 function Logs() {
     const { t } = useTranslation();
+    const [lang,SetLang]=useState(localStorage.getItem("lang"))
     const [loading, setLoading] = useOutletContext();
      const [showModal, setShowModal] = useState({
         deletModal: false,
@@ -154,8 +155,8 @@ function Logs() {
         },
         {
             title: t("table.userEmail"),
-            dataIndex: "email",
-            key: "email",
+            dataIndex: "user",
+            key: "user",
             render: (text, record) => (
                 <div
                     style={{
@@ -164,7 +165,7 @@ function Logs() {
                         gap: "10px",
                     }}
                 >
-                    {text}
+                    {record?.user?.email}
                 </div>
             ),
         },
@@ -172,17 +173,23 @@ function Logs() {
         {
             title: t("table.actionType"),
             key: "action",
-            dataIndex: "action",
-            render: (text) => <span>{text}</span>,
+            dataIndex: lang === "en" ? "actionEn" || "action" : "action",
+            render: (text, record) => <span>
+                {lang === "en" ? record.actionEn || record.action : record.action }
+            </span>,
             responsive: ["lg"],
         },
         {
             title: "Details",
             key: "details",
-            dataIndex: "details",
-          render: (text) => <span style={{
+            // check si detailsEn existent si oui tu les affiches sinon tu affiches ldetails
+
+            dataIndex: lang === "en" ? "detailsEn" || "details" : "details",
+          render: (text,record) => <span style={{
               maxWidth:"60px"
-            }}>{text}</span>,
+          }}>
+                {lang === "en" ? record.detailsEn || record.details : record.details }
+            </span>,
             responsive: ["lg"],
         },
         {
@@ -386,6 +393,7 @@ export const FilterModal = ({
     admin
 }) => {
     const { t, i18n } = useTranslation();
+    const [lang,SetLang]=useState(localStorage.getItem("lang"))
     return (
         <Drawer
             // onCancel={() => {
@@ -473,7 +481,10 @@ export const FilterModal = ({
       <Space direction="vertical">
                         {
                             action.map((item,id) => {
-                                return (<Checkbox key={id} value={item}>{item}</Checkbox>)
+                                return (<Checkbox key={id} value={lang === "en" ? item.labelEn || item.label : item.label }
+>
+                                    {lang === "en" ? item.labelEn || item.label : item.label }
+                                </Checkbox>)
                             })
        }
         

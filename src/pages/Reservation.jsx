@@ -288,7 +288,7 @@ const Reservation = () => {
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.status == 400 ? "ERREUR" : t("error.401"),
                 res.data.message
             );
             if (res.status == 400) {

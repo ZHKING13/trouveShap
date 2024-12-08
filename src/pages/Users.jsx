@@ -446,12 +446,12 @@ const TableHeader = ({
                         options={[
                             {
                                 value: "Host",
-                                label: "Hôte",
+                                label: t("home.hosts")
                             },
 
                             {
                                 value: "Traveler",
-                                label: "Voyageur",
+                                label: t("home.travelers"),
                             },
                         ]}
                     />

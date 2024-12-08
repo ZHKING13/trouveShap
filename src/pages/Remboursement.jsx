@@ -58,6 +58,7 @@ const contentStyle = {
 };
 const Remboursement = () => {
     const { t, i18n } = useTranslation();
+    const [lang,SetLang]=useState(localStorage.getItem("lang"))
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useOutletContext();
     const [filtertext, setFilterText] = useState("");
@@ -440,7 +441,7 @@ const Remboursement = () => {
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                res.status == 400 ? "ERREUR" : "Session expiré",
+            res.status == 400 ? "error" : t("error.401"),
                 res.data.message
             );
             setPophover(false);
@@ -466,7 +467,7 @@ const Remboursement = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la remboursement a été" + " " + res.data.status
+            t("error.paid") + res.data.status
         );
     };
     const fetReimbursment = async () => {
@@ -484,11 +485,7 @@ const Remboursement = () => {
         const res = await getReimbusment(filteredObject, headers);
         console.log(res);
         if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                "Session expiré",
-                "merci de vous reconnecter"
-            );
+            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             localStorage.clear();
             setTimeout(() => {
                 navigate("/login");
@@ -839,7 +836,9 @@ const Remboursement = () => {
                                 >
                                     {t("remboursement.motif")}
                                 </h3>
-                                <h4> {selectItem?.requestReason} </h4>
+                                <h4>
+                                    {lang === "fr" ? selectItem?.requestReason : selectItem?.requestReasonEn}
+                                </h4>
                             </div>
                         </>
                     )}

@@ -47,7 +47,9 @@
     "description": "Description",
     "comodite": "Comodités",
     "apercu": "Aperçu",
-    "grille": "Grille de remboursement"
+    "grille": "Grille de remboursement",
+    "travelers":"Voyageurs",
+    "hosts":"Hôtes"
   },
   "other": {
     "price": "Prix",
@@ -122,7 +124,13 @@
     "404": "Not Found",
     "500": "Internal Server Error",
     "retry":"merci de reessayer plus tard",
-    "retry1":"merci de vous reconnecter"
+    "retry1":"merci de vous reconnecter",
+    "succes":"SUCCESS",
+    "updated":"la résidence a été ",
+    "deleted":"la residence a été supprimée",
+    "rejected":"Vous avez refusé cette résidence",
+    "accepted":"Vous avez accepté cette résidence",
+    "paid":"le remboursement a été "
     },
     "user": {
         "travelers":"Nombre de voyageurs",

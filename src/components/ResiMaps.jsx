@@ -58,6 +58,7 @@ const Maps = ({
     loading,
 }) => {
     const { t, i18n } = useTranslation();
+    const [lang,SetLang]=useState(localStorage.getItem("lang"))
     const [rerenderTrigger, setRerenderTrigger] = useState(0);
     const [selectResidence, setSelectResidence] = useState(null);
     const [showMarkers, setShowMarkers] = useState(true);
@@ -817,27 +818,30 @@ setUserPosition({
                 >
                     Description
                 </h3>
-                {selectResidence?.description?.map((item, index) => {
-                    return (
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                marginLeft: "10px",
-                            }}
-                            key={index}
-                        >
-                            <h4
-                                style={{
-                                    color: "#1B2559",
-                                }}
-                            >
-                                {item?.title}
-                            </h4>
-                            <p>{item?.text}</p>
-                        </div>
-                    );
-                })}
+         {
+    (lang === "fr" ? selectResidence?.description : selectResidence?.descriptionEn || selectResidence?.description)?.map(
+        (item, index) => (
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "10px",
+                }}
+                key={index}
+            >
+                <h4
+                    style={{
+                        color: "#1B2559",
+                    }}
+                >
+                    {item?.title}
+                </h4>
+                <p>{item?.text}</p>
+            </div>
+        )
+    )
+}
+
 
                 <Divider />
                 <div orientation="vertical">
@@ -856,7 +860,9 @@ setUserPosition({
                                     <img
                                         src={`${API_URL}/assets/icons/assets/${item?.asset?.icon}`}
                                     />
-                                    {item?.asset?.name}
+                                    {
+                                        lang === "fr" ? item?.asset?.name : item?.asset?.nameEn
+                                    }
                                 </Space>
                             );
                         })}
@@ -894,7 +900,9 @@ setUserPosition({
                             <p>{t("other.rules")}</p>
                         </div>
                         {selectResidence?.rules?.map((item, index) => {
-                            return <span key={index}>{item.rule?.title}</span>;
+                            return <span key={index}>
+                                {lang === "fr" ? item.rule?.title : item.rule?.titleEn}
+                            </span>;
                         })}
                     </div>
                     <div
@@ -912,7 +920,9 @@ setUserPosition({
                         </div>
                         {selectResidence?.activities?.map((item, index) => {
                             return (
-                                <span key={index}>{item.activity?.name}</span>
+                                <span key={index}>
+                                    {lang === "fr" ? item?.activity?.name : item?.activity?.nameEn}
+                                </span>
                             );
                         })}
                     </div>
