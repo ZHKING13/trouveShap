@@ -155,11 +155,7 @@ const Home = () => {
         };
         const res = await updateResidence(id, data, headers);
         if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                res.status == 400 ? "ERREUR" : "Session expiré",
-                res.data.message
-            );
+            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             if (res.status == 400) {
                 return;
             }
@@ -184,7 +180,7 @@ const Home = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été" + " " + res.data.status
+            t("erreur.updated") + res.data.status
         );
         console.log(id);
     };
@@ -205,8 +201,8 @@ const Home = () => {
         if (deleteReason == "") {
             openNotificationWithIcon(
                 "error",
-                "ERREUR",
-                "merci de remplir le champ raison"
+                "Error",
+                t("form.invalid")
             );
             setShowModal({ ...showModal, loading: false });
             return;
@@ -217,7 +213,7 @@ const Home = () => {
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.status == 400 ? "ERROR" : t("error.401"),
                 res.data.message
             );
             setShowModal({ ...showModal, loading: false });
@@ -234,7 +230,7 @@ const Home = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été desactivé"
+            t("erreur.deleted")
         );
         setResidence((prev) => {
             return prev.map((item) => {
@@ -272,7 +268,7 @@ const Home = () => {
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.status == 400 ? "ERROR" : t("error.401"),
                 res.data.message
             );
             if (res.status == 400) {
@@ -296,7 +292,7 @@ const Home = () => {
         openNotificationWithIcon(
             "success",
             "SUCCES",
-            "la résidence a été" + " " + res.data.status
+            t("erreur.updated") + res.data.status
         );
 
        
@@ -305,11 +301,7 @@ const Home = () => {
         const res = await getStatusHistory({page:1,limit:4}, headers);
         console.log("story", res);
         if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                "Session expiré",
-                "merci de vous reconnecter"
-            );
+            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             localStorage.clear();
             setTimeout(() => {
                 navigate("/login");
@@ -325,11 +317,7 @@ const Home = () => {
         const resi = await getResidence(params, headers);
         console.log(resi);
         if (res.status !== 200 || resi.status !== 200 ) {
-            openNotificationWithIcon(
-                "error",
-                "Session expiré",
-                "merci de vous reconnecter"
-            );
+            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             localStorage.clear();
             setTimeout(() => {
                 navigate("/login");
@@ -505,6 +493,7 @@ const DrawerComponent = ({
     onClose,
     location,
 }) => {
+    const [lang,SetLang]=useState(localStorage.getItem("lang"))
         const { t, i18n } = useTranslation();
 
     return (
@@ -666,7 +655,8 @@ const DrawerComponent = ({
             >
                 {t("home.description")}
             </h3>
-            {selectItem?.description?.map((item, index) => {
+            {
+                lang === "fr" ?(selectItem?.description?.map((item, index) => {
                 return (
                     <div
                         style={{
@@ -686,7 +676,30 @@ const DrawerComponent = ({
                         <p>{item?.text}</p>
                     </div>
                 );
-            })}
+                })) : (
+                        selectItem?.descriptionEn?.map((item, index) => {
+                return (
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginLeft: "10px",
+                        }}
+                        key={index}
+                    >
+                        <h4
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            {item?.title}
+                        </h4>
+                        <p>{item?.text}</p>
+                    </div>
+                );
+            })
+            )
+           }
             <Divider />
             <div orientation="vertical">
                 <h2>{t("home.comodite")}</h2>
@@ -748,7 +761,9 @@ const DrawerComponent = ({
                         <p>{t("other.rules")}</p>
                     </div>
                     {selectItem?.rules?.map((item, index) => {
-                        return <span key={index}>{item.rule?.title}</span>;
+                        return <span key={index}>
+                            {lang === "fr" ? item.rule?.title : item.rule?.titleEn}
+                        </span>;
                     })}
                 </div>
                 <div
@@ -764,7 +779,9 @@ const DrawerComponent = ({
                         <p>{t("other.activities")}</p>
                     </div>
                     {selectItem?.activities?.map((item, index) => {
-                        return <span key={index}>{item?.activity?.name}</span>;
+                        return <span key={index}>
+                            {lang === "fr" ? item?.activity?.name : item?.activity?.nameEn}
+                        </span>;
                     })}
                 </div>
             </div>

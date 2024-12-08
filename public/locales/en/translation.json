@@ -117,7 +117,13 @@
         "404": "Not Found",
         "500": "Internal Server Error",
         "retry":"please try again later",
-        "retry1":"please reconnect"
+        "retry1":"please reconnect",
+        "succes":"SUCCESS",
+        "updated":"the residence has been ",
+        "deleted":"the residence has been deleted",
+        "rejected":"You have rejected this residence",
+        "accepted":"You have accepted this residence",
+        "paid":" the reimbursement has been "
         },
         "user": {
     "travelers": "Number of travelers",

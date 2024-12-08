@@ -234,7 +234,7 @@ console.log("formdata::",form)
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                "ERREUR",
+                "Error",
                 res?.data.message
             );
             // localStorage.clear();
@@ -422,8 +422,8 @@ setAdmins(updateAdmin);
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                "Session expiré",
-                "merci de vous reconnecter"
+                t("error.401"),
+                t('error.retry')
             );
             // localStorage.clear();
             // setTimeout(() => {

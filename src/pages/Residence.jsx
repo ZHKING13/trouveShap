@@ -65,6 +65,7 @@ function convertToISO(dateString) {
 }
 const Residence = () => {
     const { t, i18n } = useTranslation();
+    const [lang,SetLang]=useState(localStorage.getItem("lang"))
     const [selectResi, setSelecteResi] = useState(null);
     const [selectSpace, setSPaceIndex] = useState(null);
     const [loading, setLoading] = useOutletContext();
@@ -237,7 +238,7 @@ const Residence = () => {
         if (res.status !== 200) {
             openNotificationWithIcon(
                 "error",
-                res.status == 400 ? "ERREUR" : "Session expiré",
+                res.status == 400 ? "ERROR" : t("error.401"),
                 res.data.message
             );
             if (res.status == 400) {
@@ -454,11 +455,7 @@ const Residence = () => {
     };
         const res = await getResidence(para, headers);
         if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                "ERREUR",
-                "merci de reesayer"
-            );
+            openNotificationWithIcon("error", t("error.400"), t("error.retry"));
           
             setLoading(false);
             return;
@@ -642,7 +639,7 @@ const Residence = () => {
                     </div>
                     <Divider />
                     <div style={spaceStyle}>
-                        <h4>{t("table.methode")}</h4>
+                        <h4>{t("home.methode")}</h4>
                         <h4
                             style={{
                                 color: "#1B2559",
@@ -726,7 +723,9 @@ const Residence = () => {
                     >
                         {t("other.description")}
                     </h3>
-                    {selectItem?.description?.map((item, index) => {
+                    {
+                        lang === "fr" ?(
+                            selectItem?.description?.map((item, index) => {
                         return (
                             <div
                                 style={{
@@ -746,7 +745,31 @@ const Residence = () => {
                                 <p>{item?.text}</p>
                             </div>
                         );
-                    })}
+                    }) 
+                        ) : (
+                                selectItem?.descriptionEn?.map((item, index) => {
+                        return (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    marginLeft: "10px",
+                                }}
+                                key={index}
+                            >
+                                <h4
+                                    style={{
+                                        color: "#1B2559",
+                                    }}
+                                >
+                                    {item?.title}
+                                </h4>
+                                <p>{item?.text}</p>
+                            </div>
+                        );
+                    })
+                        )
+                    }
 
                     <Divider />
                     <div orientation="vertical">
@@ -765,7 +788,9 @@ const Residence = () => {
                                         <img
                                             src={`${API_URL}/assets/icons/assets/${item?.asset?.icon}`}
                                         />
-                                        {item?.asset?.name}
+                                        {
+                                            lang === "fr" ? item?.asset?.name : item?.asset?.nameEn
+                                       }
                                     </Space>
                                 );
                             })}
@@ -804,7 +829,9 @@ const Residence = () => {
                             </div>
                             {selectItem?.rules?.map((item, index) => {
                                 return (
-                                    <span key={index}>{item.rule?.title}</span>
+                                    <span key={index}>
+                                        {lang === "fr" ? item.rule?.title : item.rule?.titleEn}
+                                    </span>
                                 );
                             })}
                         </div>
@@ -824,7 +851,9 @@ const Residence = () => {
                             {selectItem?.activities?.map((item, index) => {
                                 return (
                                     <span key={index}>
-                                        {item.activity?.name}
+                                       {
+                                        lang === "fr" ? item?.activity?.name : item?.activity?.nameEn
+                                       }
                                     </span>
                                 );
                             })}
@@ -858,7 +887,7 @@ const Residence = () => {
                                                 return (
 
                                                     <h4>
-                                                            {t("other.room")}
+                                                            {t("filter.room")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""} : {item?.count} 
@@ -877,7 +906,7 @@ const Residence = () => {
                                                 return (
 
                                                     <h4>
-                                                            {t("other.salon")}
+                                                            {t("filter.salon")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""} : {item?.count} 
@@ -897,7 +926,7 @@ const Residence = () => {
                                                 return (
 
                                                     <h4>
-                                                            {t("other.bathroom")}
+                                                            {t("filter.bain")}
                                                             {item?.count > 1
                                                                 ? "s"
                                                                 : ""} : {item?.count} 
