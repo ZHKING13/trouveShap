@@ -255,7 +255,8 @@
     "addDate":"Date d'ajout",
     "bank":"Banque :",
     "phone":"Numéro de téléphone :",
-    "temp":"Temporaire"
+    "temp":"Temporaire",
+    "unavailable":"non fournir"
 },
 "remboursement": {
     "demadeNumber":"Numéro de demande",
@@ -279,7 +280,8 @@
   "email":"Adresse Email",
   "profile":"Profil",
   "role":"Choisir le rôle",
-  "invalid":"merci de remplir tout les champs"
+  "invalid":"merci de remplir tout les champs",
+  "reason":"Raison du refus"
 }
 
 }

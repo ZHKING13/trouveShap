@@ -253,7 +253,8 @@
     "addDate":"Date added",
     "bank":"Bank :",
     "phone":"Phone number :",
-    "temp":"Temporary"
+    "temp":"Temporary",
+    "unavailable":"not available"
     },
     "remboursement": {
     "demadeNumber":"Request number",
@@ -277,7 +278,8 @@
   "email":"Email",
   "profile":"Profile",
   "role":"Choose role",
-  "invalid":"please fill all fields"
+  "invalid":"please fill all fields",
+  "reason":"Rejection reason"
 }
 
 

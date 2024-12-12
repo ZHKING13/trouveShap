@@ -318,7 +318,7 @@ const Remboursement = () => {
         console.log(res);
         openNotificationWithIcon(
             "success",
-            "SUCCES",
+            
             "la demande de remboursement a été" + " " + res.data.status
         );
         setPophover(false);
@@ -402,7 +402,7 @@ const Remboursement = () => {
         setShowModal({ ...showModal, spin: false });
         openNotificationWithIcon(
             "success",
-            "SUCCES",
+           
             "la demande de remboursement  a été refusée"
         );
         setResidence((prev) => {
@@ -466,7 +466,7 @@ const Remboursement = () => {
         console.log(res);
         openNotificationWithIcon(
             "success",
-            "SUCCES",
+            
             t("error.paid") + res.data.status
         );
     };

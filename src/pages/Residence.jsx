@@ -262,7 +262,7 @@ const Residence = () => {
         console.log(res);
         openNotificationWithIcon(
             "success",
-            "SUCCES",
+            
             "la résidence a été" + " " + res.data.status
         );
     };
@@ -299,7 +299,7 @@ const Residence = () => {
         console.log(res);
         openNotificationWithIcon(
             "success",
-            "SUCCES",
+           
             "la résidence a été" + " " + res.data.status
         );
     };
@@ -338,7 +338,7 @@ const Residence = () => {
         console.log(res);
         openNotificationWithIcon(
             "success",
-            "SUCCES",
+            
             "la résidence a été" + " " + res?.data?.status
         );
 
@@ -1801,7 +1801,7 @@ export const RejectModal = ({
                     style={{
                         marginTop: "10px",
                     }}
-                    placeholder="Raison du refus"
+                    placeholder={t("form.reason")}
                     onChange={(e) => {
                         console.log(e);
                         setReason({ ...reason, rejectReason: e.target.value });

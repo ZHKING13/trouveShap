@@ -27,10 +27,14 @@ import { API_URL, getReservation, PayHost } from "../feature/API";
 import FilterBoxe from "../components/FilterBoxe";
 import Map from "../components/Map";
 import { Icon } from "../constant/Icon";
+import { getLanguageId } from "../App";
+import { getStatusKeyFromValue } from "../constant/status";
+
 export function FormatDate(dateStr) {
+    let lang = getLanguageId();
     const options = { year: "numeric", month: "short", day: "numeric" };
     const date = new Date(dateStr);
-    return date.toLocaleDateString("fr-FR", options);
+    return date.toLocaleDateString(lang == "fr" ? "fr-FR" : "en-US", options);
 }
 export function filterNullUndefinedValues(obj) {
     const filteredObject = {};
@@ -128,7 +132,7 @@ const Reservation = () => {
                     {record.total
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}{" "}
-                   {currencySign()}
+                    {currencySign()}
                 </span>
             ),
             responsive: ["md"],
@@ -180,7 +184,7 @@ const Reservation = () => {
                     color={renderColor(record.status)}
                     key={record.status}
                 >
-                    {record.status}
+                    {t("status." + getStatusKeyFromValue(record.status))}
                 </Tag>
             ),
             responsive: ["md"],
@@ -189,7 +193,9 @@ const Reservation = () => {
             title: t("table.action"),
             key: "action",
             render: (_, record) => {
-                return (record.status == "En Cours" || record.status == "Terminée") && !record.hostPaidAt ? (
+                return (record.status == "En Cours" ||
+                    record.status == "Terminée") &&
+                    !record.hostPaidAt ? (
                     <Spin spinning={selectItem?.id == record.id ? spin : null}>
                         <img
                             onClick={() => {
@@ -313,7 +319,7 @@ const Reservation = () => {
         setLoad(false);
         setShowModal(false);
         console.log(res);
-        openNotificationWithIcon("success", "SUCCES", res.data.status);
+        openNotificationWithIcon("success",  res.data.status);
     };
     const fetchReservation = async () => {
         setLoading(true);

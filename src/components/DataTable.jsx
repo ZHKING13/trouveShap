@@ -47,6 +47,7 @@ export const renderIcon = (status) => {
     }
 };
 import { API_URL } from "../feature/API";
+import { getStatusKeyFromValue } from "../constant/status";
 
 export const renderColor = (status) => {
     switch (status) {
@@ -229,7 +230,7 @@ const DataTable = ({
                     color={renderColor(record.status)}
                     key={record.status}
                 >
-                    {record.status}
+                    {t("status." + getStatusKeyFromValue(record.status))}
                 </Tag>
             ),
             responsive: ["md"],

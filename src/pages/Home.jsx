@@ -179,7 +179,7 @@ const Home = () => {
         console.log(res);
         openNotificationWithIcon(
             "success",
-            "SUCCES",
+            
             t("erreur.updated") + res.data.status
         );
         console.log(id);
@@ -229,7 +229,7 @@ const Home = () => {
         setShowModal({ ...showModal, loading: false });
         openNotificationWithIcon(
             "success",
-            "SUCCES",
+           
             t("erreur.deleted")
         );
         setResidence((prev) => {
@@ -291,7 +291,7 @@ const Home = () => {
         console.log(res);
         openNotificationWithIcon(
             "success",
-            "SUCCES",
+           
             t("erreur.updated") + res.data.status
         );
 

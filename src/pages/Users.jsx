@@ -115,7 +115,7 @@ export default function Users() {
             dataIndex: "docs",
             render: (text, record) =>
                 record?.identityDoc == null ? (
-                    <span>non fournis</span>
+                    <span>{t("reservaton.unavailable")}</span>
                 ) : (
                     <a
                         style={{
@@ -158,7 +158,9 @@ export default function Users() {
                             color: record.enableHost ? "#F59E0B" : "#A273FF",
                         }}
                     >
-                        {!record.enableHost ? "Voyageur" : "Hôte"}
+                        {!record.enableHost
+                            ? t("home.travelers")
+                            : t("home.hosts")}
                     </p>
                 </Tag>
             ),
