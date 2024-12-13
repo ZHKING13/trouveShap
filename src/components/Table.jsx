@@ -8,6 +8,7 @@ import {
 import { FormatDate, renderColor, renderIcon } from "./DataTable";
 import { getStatusHistory } from "../feature/API";
 import { useTranslation} from 'react-i18next';
+import { getStatusKeyFromValue } from "../constant/status";
 
 
 const dataSource = [
@@ -49,7 +50,7 @@ const TableComponent = ({ Data }) => {
             render: (text, record) => <span>{record?.residence?.name}</span>,
         },
         {
-            title: t("table.status"),  
+            title: t("table.status"),
             dataIndex: "newStatus",
             key: "newStatus",
             render: (text, record) => (
@@ -58,7 +59,7 @@ const TableComponent = ({ Data }) => {
                     color={renderColor(text)}
                     key={text}
                 >
-                    {text}
+                    {t("status." + getStatusKeyFromValue(text))}
                 </Tag>
             ),
         },

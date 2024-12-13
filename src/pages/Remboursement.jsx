@@ -375,7 +375,7 @@ const Remboursement = () => {
             openNotificationWithIcon(
                 "error",
                 "ERREUR",
-                "merci de remplir le champ raison"
+                t("form.invalid")
             );
             setShowModal({ ...showModal, loading: false });
             return;

@@ -49,6 +49,7 @@ import { ImgModal } from "./Reservation";
 import { Icon } from "../constant/Icon";
 import Map from "../components/Map";
 import { useTranslation} from 'react-i18next';
+import { getStatusKeyFromValue } from "../constant/status";
 
 export function formatAmount(number) {
     if (number < 1000) {
@@ -179,8 +180,8 @@ const Home = () => {
         console.log(res);
         openNotificationWithIcon(
             "success",
-            
-            t("erreur.updated") + res.data.status
+
+            t("error.updated") + getStatusKeyFromValue(res.data.status)
         );
         console.log(id);
     };
@@ -230,7 +231,7 @@ const Home = () => {
         openNotificationWithIcon(
             "success",
            
-            t("erreur.deleted")
+            t("error.deleted")
         );
         setResidence((prev) => {
             return prev.map((item) => {
@@ -291,9 +292,11 @@ const Home = () => {
         console.log(res);
         openNotificationWithIcon(
             "success",
-           
-            t("erreur.updated") + res.data.status
+
+            t("error.updated") + " " + getStatusKeyFromValue(res.data.status)
         );
+     setShowModal({ ...showModal, rejectModal: false });
+
 
        
     };
