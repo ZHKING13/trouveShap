@@ -48,6 +48,7 @@ export const renderIcon = (status) => {
 };
 import { API_URL } from "../feature/API";
 import { getStatusKeyFromValue } from "../constant/status";
+import { getLanguageId } from "../App";
 
 export const renderColor = (status) => {
     switch (status) {
@@ -93,9 +94,10 @@ export const renderColor = (status) => {
     }
 };
 export function FormatDate(dateStr) {
-    const options = { year: "numeric", month: "long", day: "numeric" };
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    let lang = getLanguageId()
     const date = new Date(dateStr);
-    return date.toLocaleDateString("fr-FR", options);
+    return date.toLocaleDateString(lang == "fr" ? "fr-FR": "en-US", options);
 }
 export const currencySign = ()=>{
         const curency = localStorage.getItem("currenciData");

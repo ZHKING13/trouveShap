@@ -12,7 +12,7 @@
         "devise": "language and currency",
         "login": "Login",
         "logout": "Logout",
-        "remboursement": "Reimboursement",
+        "remboursement": "Refund",
         "loading": "Loading data...",
         "search": "Search",
         "filter": "Filters",
@@ -24,7 +24,7 @@
     "home":{
         "gain": "monthly earning",
         "visits": "Number of visitors",
-        "bookings": "Total reservations",
+        "bookings": "Total bookings",
         "residences": "Total residences",
         "wallet": "Wallet",
         "month": "Month",
@@ -83,7 +83,9 @@
         "fr":"French",
         "en":"English",
         "back":"Back to home",
-        "visite": "visit"
+        "visite": "visit",
+        "more":"show more",
+        "space":"Accessible spaces"
     },
     "table":{
         "price": "Price / night",
@@ -103,7 +105,7 @@
         "total": "Total",
         "date_debut": "Start date",
         "date_fin": "End date",
-        "amount":"Remboursement amount",
+        "amount":"refund amount",
         "date_demande":"Request date",
         "adminName":"Name of the admin",
         "location":"Location",
@@ -136,7 +138,7 @@
     "userList": "List of Users",
     "gain": "Earn",
     "visite":"number of visitors",
-    "reservation":"Total reservations"
+    "reservation":"Total booking"
     
     
 },
@@ -182,7 +184,8 @@
     "cancelled":"Cancelled",
     "refunded":"Refunded",
     "planified":"Planified",
-    "paid":"Paid"
+    "paid":"Paid",
+    "rejected2":"Rejected"
 
 },
 "button":{
@@ -279,7 +282,9 @@
   "profile":"Profile",
   "role":"Choose role",
   "invalid":"please fill all fields",
-  "reason":"Rejection reason"
+  "reason":"Rejection reason",
+  "image":"Click here to add an image",
+  "confirme":"do you really want to confirm this action?"
 }
 
 

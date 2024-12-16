@@ -10,7 +10,8 @@ export const statusMap = {
     "cancelled": "Annulée",
     "refunded": "Remboursée",
     "planified": "Confirmée",
-    "paid": "Payée"
+    "paid": "Payée",
+    "rejected2": "Rejetée",
 };
 
 export  const getStatusKeyFromValue =(statusValue)=> {

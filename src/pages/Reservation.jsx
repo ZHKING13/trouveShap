@@ -161,7 +161,7 @@ const Reservation = () => {
             responsive: ["lg"],
         },
         {
-            title: t("date_fin"),
+            title: t("table.date_fin"),
             key: "date",
             dataIndex: "toDate",
             render: (text) => (

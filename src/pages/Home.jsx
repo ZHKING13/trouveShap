@@ -339,7 +339,7 @@ const Home = () => {
     return (
         <>
             <main>
-                <Header title={t("menu.home")} />
+                <Header title={t("Dashbord")} />
                 {contextHolder}
                 <div className="stats">
                     <Stats

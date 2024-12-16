@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Uploads = ({ handleFileChange }) => {
+  const { t } = useTranslation();
   const [previewUrl, setPreviewUrl] = useState(null);
   const FileChange = (event) => {
      console.log(event)
@@ -35,7 +37,7 @@ const Uploads = ({ handleFileChange }) => {
                 className="upload-icon"
               />
             </div>
-            <p>Cliquez ici pour ajouter une image</p>
+            <p>{t("form.image")} </p>
           </>
         )}
       </label>

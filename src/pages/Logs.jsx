@@ -334,7 +334,7 @@ function Logs() {
                                     src={Icon.filter}
                                     alt="filter icon"
                                 />
-                                <span>Filtres</span>
+                                <span >{t("filter.filtre")} </span>
                            </Button>
                         </Space>
                     }

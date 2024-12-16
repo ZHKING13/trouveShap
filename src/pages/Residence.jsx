@@ -1481,7 +1481,7 @@ export const FilterModal = ({
          <Checkbox value={6}>{t("activite.seminars")}</Checkbox>
         
          <Collapse  >
-        <Collapse.Panel header="Afficher  plus">
+        <Collapse.Panel header={t("other.more")} key="1">
              <Space direction="vertical">
                <Checkbox value={2}>{t("activite.weddings")} </Checkbox>
         <Checkbox value={3}>{t("activite.birthdays")}</Checkbox>
@@ -1500,7 +1500,7 @@ export const FilterModal = ({
     </Checkbox.Group>
             </div>
             <Divider/>
-            <h3>Espaces accessibles</h3>
+            <h3> {t("other.space")}</h3>
             <div style={{
                 display:"flex",
                 gap:"10px",

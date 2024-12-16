@@ -85,7 +85,9 @@
     "fr":"Français",
     "en":"Anglais",
     "back":"Retour à l'accueil",
-    "visite": "visiter"
+    "visite": "visiter",
+    "more":"Afficher plus",
+    "space":"Espaces accessibles"
     
     
   },
@@ -184,7 +186,8 @@
     "cancelled":"Annulée",
     "refunded":"Remboursée",
     "planified":"Confirmée",
-    "paid":"Payée"
+    "paid":"Payée",
+    "rejected2":"Rejetée"
 },
 "button":{
     "confirm":"Confirmer",
@@ -281,7 +284,9 @@
   "profile":"Profil",
   "role":"Choisir le rôle",
   "invalid":"merci de remplir tout les champs",
-  "reason":"Raison du refus"
+  "reason":"Raison du refus",
+  "image":"Cliquez ici pour ajouter une image",
+  "confirme":"voulez vous vraiment confirmer cette action?"
 }
 
 }

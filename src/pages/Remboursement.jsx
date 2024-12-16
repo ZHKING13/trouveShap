@@ -48,6 +48,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import FilterBoxe from "../components/FilterBoxe";
 import { Icon } from "../constant/Icon";
 import { ImgModal } from "./Reservation";
+import { getStatusKeyFromValue } from "../constant/status";
 
 const contentStyle = {
     height: "160px",
@@ -204,7 +205,8 @@ const Remboursement = () => {
                     color={renderColor(record?.status)}
                     key={record.status}
                 >
-                    {record.status}
+                                        {t("status." + getStatusKeyFromValue(record.status))}
+                    
                 </Tag>
             ),
             responsive: ["md"],
@@ -751,33 +753,31 @@ const Remboursement = () => {
                         </div>
                     </div>
                     <Divider />
-                     {
-                selectItem?.preview_price_result && (
-                    <>
-                        <Divider />
-                                    <h2
-                                        style={{
-                        color: "#1B2559",
-                                        }}
-                                    >
-                                        {t("remboursement.resume")}
-                        </h2>
-                        
-                        {selectItem?.preview_price_result?.recap.map((item, index) => {
-                            return (
-                                <div key={index} style={spaceStyle}>
-                                    <span>
-                                        {item?.label}
-                                    </span>
-                                    <h3>
-                                        {item?.count}*{item?.price}
-                                    </h3>
-                                </div>
-                            );
-                        })}
-                    </>
-                )
-            }
+                    {selectItem?.preview_price_result && (
+                        <>
+                            <Divider />
+                            <h2
+                                style={{
+                                    color: "#1B2559",
+                                }}
+                            >
+                                {t("remboursement.resume")}
+                            </h2>
+
+                            {selectItem?.preview_price_result?.recap.map(
+                                (item, index) => {
+                                    return (
+                                        <div key={index} style={spaceStyle}>
+                                            <span>{item?.label}</span>
+                                            <h3>
+                                                {item?.count}*{item?.price}
+                                            </h3>
+                                        </div>
+                                    );
+                                }
+                            )}
+                        </>
+                    )}
                     <div style={spaceStyle}>
                         <h3
                             style={{
@@ -837,7 +837,9 @@ const Remboursement = () => {
                                     {t("remboursement.motif")}
                                 </h3>
                                 <h4>
-                                    {lang === "fr" ? selectItem?.requestReason : selectItem?.requestReasonEn}
+                                    {lang === "fr"
+                                        ? selectItem?.requestReason
+                                        : selectItem?.requestReasonEn}
                                 </h4>
                             </div>
                         </>
@@ -885,7 +887,7 @@ const Remboursement = () => {
                     }}
                     children={
                         <Select
-                            placeholder="Filtrer par status"
+                            placeholder={t("filter.byStatus")}
                             style={{ width: 180, marginRight: "13px" }}
                             allowClear
                             onChange={(value) => {

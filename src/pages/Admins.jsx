@@ -531,7 +531,7 @@ setAdmins(updateAdmin);
                     setShowModal({...showModal,
                         confirmModal:false})
         }} />}
-                {showModal.refresh && <ConfirmationDialog onConfirm={resetPwd} open={showModal} onCancel={() => {
+                {showModal.refresh && <ConfirmationDialog message={t("form.confirme")} onConfirm={resetPwd} open={showModal} onCancel={() => {
                     
                     setShowModal({...showModal,
                         refresh:false})
@@ -863,7 +863,7 @@ export const EditModal = ({
                                         profile: e,
                                     });
                                 }}
-                                placeholder="Selectionner un rôle"
+                                placeholder={t("form.role")}
                             >
                                 <Option value="Admin">Admin</Option>
                                 <Option value="SuperAdmin">SuperAdmin</Option>
@@ -891,7 +891,7 @@ export const EditModal = ({
                                         openNotificationWithIcon(
                                             "error",
                                             "INVALIDE ",
-                                            "veuillez remplir tout les champs"
+                                            t("form.invalid")
                                         );
                                         return;
                                     }

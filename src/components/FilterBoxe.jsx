@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Icon } from "../constant/Icon";
+import { useTranslation } from "react-i18next";
 // const { RangePicker } = DatePicker;
 function convertToISO(dateString) {
     const dateObject = new Date(dateString);
@@ -19,6 +20,7 @@ const FilterBoxe = ({
     setDateRange,
     dateRange,
 }) => {
+    const { t } = useTranslation();
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
@@ -87,7 +89,7 @@ const FilterBoxe = ({
                         startDate={startDate}
                         endDate={endDate}
                         withPortal
-                        placeholderText="trier par date"
+                        placeholderText={t("filter.byDate")}
                         dateFormat="yyy-MM-dd"
                         isClearable={true}
                     />
