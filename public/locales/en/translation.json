@@ -45,7 +45,7 @@
         "description": "Description",
         "comodite": "Comodities",
         "apercu": "Overview",
-        "grille": "Remboursement Grid",
+        "grille": "Refund Grid",
         "travelers":"Travelers",
         "hosts":"Hosts"
     },
@@ -58,7 +58,7 @@
         "description": "Description",
         "comodite": "Comodities",
         "apercu": "Overview",
-        "grille": "Remboursement Grid",
+        "grille": "Refund Grid",
         "rules": "Interior Regulations",
         "activities": "Type of social activities",
         "entre1mois_3mois": "Between 1 and 3 months before the day J",
@@ -262,7 +262,7 @@
     "remboursement": {
     "demadeNumber":"Request number",
     "hotePayment":"Host payment method",
-    "amount":"Remboursement amount",
+    "amount":"Refund amount",
     "resume":"Summary",
     "date_demande":"Request date",
     "status":"Request status",
