@@ -1,7 +1,7 @@
 {
     "menu": {
         "home": "Home",
-        "reservation": "Reservation",
+        "reservation": "Booking",
         "users": "Users",
         "residence": "Residence",
         "newsletter": "Newsletter",
@@ -167,8 +167,8 @@
     "partialResidence": "Partial residence",
     "allResidenceDetail": "The clients have access to the entire residence.",
     "room1Detail":"The clients are entitled to their own room in the residence and have access to shared spaces.",
-    "reservation":"Search for a reservation",
-    "remboursement":"Search for a request",
+    "reservation":"Search for a booking",
+    "remboursement":"Search for a refund",
     "filtre":"filters"
 }
 ,
@@ -234,12 +234,12 @@
     "reservaton": {
     "valide":"Do you really want to validate the transaction?",
     "valideDescription":"This action is irreversible",
-    "reservationNumber":"Reservation number",
+    "reservationNumber":"Booking number",
     "clientInfo":"Client info",
     "personnes":"people",
     "start":"Arrival",
     "end":"Departure",
-    "amount":"Reservation amount",
+    "amount":"Booking amount",
     "subTotal":"Subtotal",
     "subTotal2":"subtotal Rate",
     "fee":"Fees",
