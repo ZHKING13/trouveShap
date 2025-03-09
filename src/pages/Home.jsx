@@ -483,7 +483,7 @@ const Home = () => {
                                 ></Tag>
                             }
                         />
-                        <AreaCharts data={reservationstat?.bookingsPerMonth} />
+                        <AreaCharts data={reservationstat?.bookingsPerMonth ?? null} />
                     </div>
                     <div className="barChart">
                         <ChartHeader
@@ -492,7 +492,7 @@ const Home = () => {
                             span={t("home.visiteur")}
                             // children={<Tag color="#22C55E">+2,45%</Tag>}
                         />
-                        <BarCharts data={visitorState?.visitorsPerMonth} />
+                        <BarCharts data={visitorState?.visitorsPerMonth ?? null} />
                     </div>
                 </div>
                 <DeletModal

@@ -55,7 +55,7 @@ const LineCharts = ({ data, options }) => {
                 margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
                 min-width={600}
                 height={300}
-                data={transformData ? transformData: DATA}
+                data={transformedData ? transformedData: DATA}
             >
                 <Line
                     strokeWidth={3}

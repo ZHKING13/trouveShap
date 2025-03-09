@@ -323,6 +323,22 @@ export const getConversionStats = async (headers, query) => {
         return { status: error.response.status, data: error.response.data };
     }
 }
+// /stats/admin/cancellation-rate-bookings
+export const getCancelationRateBookings = async (headers, query) => {
+    try {
+        headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
+        const response = await privateService.get("/stats/admin/cancellation-rate-bookings", { headers, params: query })
+        const { status, data: responseData } = response;
+        return { status, data: responseData };
+    } catch (error) {
+        console.log(error);
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+            console.error('La requête a expiré en raison d\'un timeout.');
+            return { status: 408, data: { message: 'Request Timeout' } };
+        }
+        return { status: error.response.status, data: error.response.data };
+    }
+}
 // /stats/admin/mean-price-stats
 export const getMeanPriceStats = async (headers, query) => {
     try {
