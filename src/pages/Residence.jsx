@@ -928,9 +928,7 @@ const Residence = () => {
                                     {t("other.entre1mois_3mois")}
                                 </li>
                                 <span>
-                                    {selectItem?.refundGrid[
-                                        "Entre 1 mois et 3 mois avant le jour J"
-                                    ] + "%"}
+                                    {selectItem?.refundGrid?.["Entre 1 mois et 3 mois avant le jour J"] + "%"}
                                 </span>
                             </div>
                             <div style={spaceStyle}>
@@ -939,9 +937,7 @@ const Residence = () => {
                                 </li>
                                 <span>
                                     {" "}
-                                    {selectItem?.refundGrid[
-                                        "Entre 1 semaine et 1 mois avant le jour J"
-                                    ] + "%"}
+                                    {selectItem?.refundGrid?.["Entre 1 semaine et 1 mois avant le jour J"] + "%"}
                                 </span>
                             </div>
                             <div style={spaceStyle}>
@@ -950,9 +946,7 @@ const Residence = () => {
                                 </li>
                                 <span>
                                     {" "}
-                                    {selectItem?.refundGrid[
-                                        "Entre 48h et 1 semaine avant le jour J"
-                                    ] + "%"}
+                                    {selectItem?.refundGrid?.["Entre 48h et 1 semaine avant le jour J"] + "%"}
                                 </span>
                             </div>
                             <div style={spaceStyle}>
@@ -961,9 +955,7 @@ const Residence = () => {
                                 </li>
                                 <span>
                                     {" "}
-                                    {selectItem?.refundGrid[
-                                        "Moins de 48 heures avant le jour J"
-                                    ] + "%"}
+                                    {selectItem?.refundGrid?.["Moins de 48 heures avant le jour J"] + "%"}
                                 </span>
                             </div>
                             <div style={spaceStyle}>
@@ -972,9 +964,7 @@ const Residence = () => {
                                 </li>
                                 <span>
                                     {" "}
-                                    {selectItem?.refundGrid[
-                                        "Plus de 3 mois avant le jour J"
-                                    ] + "%"}
+                                    {selectItem?.refundGrid?.["Plus de 3 mois avant le jour J"] + "%"}
                                 </span>
                             </div>
                         </ul>
