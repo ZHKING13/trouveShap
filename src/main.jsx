@@ -27,6 +27,7 @@ import Logs from "./pages/Logs.jsx";
 import Admins from "./pages/Admins.jsx";
 import FirstLogin from "./pages/isFirstLogin.jsx";
 import WrappedApp from "./App.jsx";
+import Statistique from "./pages/Statistique.jsx";
 library.add(fab, fas, far);
 const router = createBrowserRouter([
     {
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
             {
                 path: "carte",
                 element: <Carte />,
+            },
+            {
+                path: "stats",
+                element: <Statistique />,
             },
             
             {

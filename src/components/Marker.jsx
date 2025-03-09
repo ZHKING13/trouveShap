@@ -16,6 +16,7 @@ const Marker = ({
     price,
     resiDetails,
     index,
+    stats,
     clickedMarkerIndex,
     ...props
 }) => {
@@ -50,7 +51,8 @@ const Marker = ({
             draggable={draggable}
             {...props}
         >
-            {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} {currencySign()}
+            {!stats && price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} {!stats && currencySign()}
+            {stats && <img src="./marker.png" alt="" /> }
             <div
                 style={{
                     // backgroundColor: "#A273FF",
