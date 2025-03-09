@@ -39,9 +39,12 @@ import DataTable, { currencySign } from "../components/DataTable";
 import {
     API_URL,
     deleteResidence,
+    getBookingStats,
+    getCompanyMoneyStats,
     getResidence,
     getStats,
     getStatusHistory,
+    getVisitorStats,
     updateResidence,
 } from "../feature/API";
 import { ConfrimeModal, DeletModal, RejectModal } from "./Residence";
@@ -50,7 +53,8 @@ import { Icon } from "../constant/Icon";
 import Map from "../components/Map";
 import { useTranslation} from 'react-i18next';
 import { getStatusKeyFromValue } from "../constant/status";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 export function formatAmount(number) {
     if (number < 1000) {
         return number?.toString();
@@ -88,6 +92,9 @@ const Home = () => {
     const [imgModal, setImgModal] = useState(false);
     const [location, setLocation] = useState({});
     const [story, setStory] = useState([]);
+    const [companyMoneyStat, setCompanyMoneyStat] = useState(null);
+    const [reservationstat, setReservationstat] = useState(null);
+    const [visitorState, setVisitorState] = useState(null);
     const [loading, setLoading] = useOutletContext();
     const [residence, setResidence] = useState([]);
     const [spin, setSpin] = useState(false);
@@ -315,10 +322,16 @@ const Home = () => {
     }
     const fetchSats = async () => {
         setLoading(true);
-        const res = await getStats(headers);
-        const history = await getResidenceHistory();
-        const resi = await getResidence(params, headers);
-        console.log(resi);
+      const [res, history, resi, companyStat, reservationStat, visitStat] =
+          await Promise.all([
+              getStats(headers),
+              getResidenceHistory(),
+              getResidence(params, headers),
+              getCompanyMoneyStats(headers),
+              getBookingStats(headers),
+              getVisitorStats(headers)
+          ]);
+        console.log("statscompagnie", visitStat);
         if (res.status !== 200 || resi.status !== 200 ) {
             openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
             localStorage.clear();
@@ -328,9 +341,12 @@ const Home = () => {
             return;
         }
         setStats(res.data);
+        setCompanyMoneyStat(companyStat?.data);
+        setReservationstat(reservationStat?.data)
+        setVisitorState(visitStat?.data);
         setResidence(resi.data.residences);
         setLoading(false);
-        console.log(stats);
+       
     };
 
     useEffect(() => {
@@ -370,47 +386,75 @@ const Home = () => {
                         children={currencySign()}
                     />
                 </div>
-                <div className="chartContainer">
-                    <div className="left">
-                        <div className="leftTitle">
-                            <select
-                                style={{
-                                    height: "30px",
-                                    borderRadius: "5px",
-                                    border: "none",
-                                    outline: "none",
-                                    backgroundColor: "#F6F1FF",
-                                    width: "100%",
-                                    fontWeight: "bold",
-                                    fontSize: "14px",
-                                    padding: "0 5px",
-                                }}
-                                name="periode"
-                                id=""
-                            >
-                                <option value="">{t("home.month")}</option>
-                                <option value="">{t("home.week")}</option>
-                                <option value="">{t("home.year")}</option>
-                                
-                            </select>
+                {companyMoneyStat ? (
+                    <div className="chartContainer">
+                        <div className="left">
+                            <div className="leftTitle">
+                                <select
+                                    style={{
+                                        height: "30px",
+                                        borderRadius: "5px",
+                                        border: "none",
+                                        outline: "none",
+                                        backgroundColor: "#F6F1FF",
+                                        width: "100%",
+                                        fontWeight: "bold",
+                                        fontSize: "14px",
+                                        padding: "0 5px",
+                                    }}
+                                    name="periode"
+                                    id=""
+                                >
+                                    <option value="">{t("home.month")}</option>
+                                    {/* <option value="">{t("home.week")}</option>
+                                <option value="">{t("home.year")}</option> */}
+                                </select>
+                            </div>
+                            <div className="detail">
+                                <p>
+                                    {formatAmount(
+                                        companyMoneyStat?.totalCompanyMoney || 0
+                                    )}
+                                </p>
+                                <p className="gain">
+                                    Gain
+                                    {/* <span>
+                                        {" "}
+                                        +{companyMoneyStat?.evolutionRate}%
+                                    </span> */}
+                                    <Tag
+                                        color={
+                                            companyMoneyStat?.evolutionRate >= 0
+                                                ? "#22C55E"
+                                                : "#FF3B30"
+                                        }
+                                    >
+                                        {companyMoneyStat?.evolutionRate >= 0
+                                            ? "+"
+                                            : "-"}
+                                        {companyMoneyStat?.evolutionRate}%
+                                    </Tag>
+                                </p>
+                            </div>
                         </div>
-                        <div className="detail">
-                            <p>{formatAmount(stats?.getCompanyMoneyMonth || 0)}</p>
-                            {/* <p className="gain">
-                                Gain<span> +2,45%</span>
-                            </p> */}
+                        <div className="chart">
+                            <LineCharts
+                                data={companyMoneyStat?.companyMoneyPerMonth}
+                            />
                         </div>
                     </div>
-                    <div className="chart">
-                        <LineCharts />
-                    </div>
-                </div>
+                ) : (
+                    <Skeleton
+                        style={{
+                            width: "100%",
+                            height: "300px",
+                        }}
+                    />
+                )}
                 <div className="multipleTable">
                     <div className="leftTable">
                         <div className="legendTab">
-                            <div className="title">
-                                {t("home.history")}
-                            </div>
+                            <div className="title">{t("home.history")}</div>
                         </div>
                         <TableComponent Data={story} />
                     </div>
@@ -418,7 +462,20 @@ const Home = () => {
                         <ChartHeader
                             subtitle={t("home.bookings")}
                             title={stats?.getBooking || 0}
-                            // span={<Tag color="#22C55E">+20</Tag>}
+                            span={
+                                <Tag
+                                    color={
+                                        reservationstat?.evolutionRate >= 0
+                                            ? "#22C55E"
+                                            : "#FF3B30"
+                                    }
+                                >
+                                    {reservationstat?.evolutionRate >= 0
+                                        ? "+"
+                                        : "-"}
+                                    {reservationstat?.evolutionRate}
+                                </Tag>
+                            }
                             children={
                                 <Tag
                                     color="#A"
@@ -426,7 +483,7 @@ const Home = () => {
                                 ></Tag>
                             }
                         />
-                        <AreaCharts />
+                        <AreaCharts data={reservationstat?.bookingsPerMonth} />
                     </div>
                     <div className="barChart">
                         <ChartHeader
@@ -435,7 +492,7 @@ const Home = () => {
                             span={t("home.visiteur")}
                             // children={<Tag color="#22C55E">+2,45%</Tag>}
                         />
-                        <BarCharts />
+                        <BarCharts data={visitorState?.visitorsPerMonth} />
                     </div>
                 </div>
                 <DeletModal
@@ -471,7 +528,7 @@ const Home = () => {
                         );
                     }}
                 />
-               
+
                 <DataTable
                     onConfirm={onConfirme}
                     onCancel={onCancel}

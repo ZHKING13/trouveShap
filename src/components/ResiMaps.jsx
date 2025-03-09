@@ -56,6 +56,7 @@ const Maps = ({
     mapBounds,
     setMapBounds,
     loading,
+    stats
 }) => {
     const { t, i18n } = useTranslation();
     const [lang,SetLang]=useState(localStorage.getItem("lang"))
@@ -149,7 +150,10 @@ setUserPosition({
         }
     };
 
-    const onMarkerClick = (e, { markerId, lat, lng, resiDetails,index }) => {
+    const onMarkerClick = (e, { markerId, lat, lng, resiDetails, index }) => {
+        if (stats) {
+            return
+        }
         setShowDetail(false);
         console.log("This is ->", markerId);
         console.log("This is index->", index);
@@ -215,6 +219,7 @@ setUserPosition({
             >
                 {arrayMap.map((items, index) => (
                     <Marker
+                        stats={stats}
                         style={{
                             backgroundColor: clickedMarkerIndex == items.id ? "#34176E" : "#A273FF",
                             borderRadius: "8px",
@@ -281,7 +286,7 @@ setUserPosition({
                 <div
                     style={{
                         position: "absolute",
-                        top: "100px",
+                        top: stats ? "350px" : "100px",
                         left: "50%",
                         backgroundColor: "#fff",
                         padding: "8px 12px",
@@ -302,7 +307,7 @@ setUserPosition({
             <div
                 style={{
                     position: "absolute",
-                    top: "100px",
+                    top: stats ? "400px" : "100px",
                     right: "30px",
 
                     display: "flex",

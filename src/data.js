@@ -1,7 +1,7 @@
 export const DATA = [
     { id: 1, month: "Jan", gain: 0 },
     { id: 2, month: "Feb", gain: 0 },
-    { id: 3, month: "Mar", gain: 0 },
+    { id: 3, month: "Mar", gain: 1 },
     { id: 4, month: "Apr", gain: 0 },
     { id: 5, month: "May", gain: 0 },
     { id: 6, month: "Jun", gain: 0 },
