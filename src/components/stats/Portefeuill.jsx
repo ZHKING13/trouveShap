@@ -8,6 +8,7 @@ import {
     getCompanyMoneyStats,
 } from "../../feature/API";
 import { currencySign } from "../DataTable";
+import BarCharts from "../chart/Bar";
 
 const Portefuille = () => {
     const [loading, setLoading] = useState(false);
@@ -92,7 +93,7 @@ const Portefuille = () => {
                 <Spin size="full" />
             ) : (
                 <div style={styles.chartWrapper}>
-                    <AreaCharts data={Stats?.companyMoneyPerMonth} />
+                    <BarCharts data={Stats?.companyMoneyPerMonth} />
                 </div>
             )}
         </div>
