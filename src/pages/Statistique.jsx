@@ -14,8 +14,9 @@ import EvolutionHotes from "../components/stats/HostStat";
 import Probleme from "../components/stats/Probleme";
 import ReservationStats from "../components/stats/Reservation";
 import EmplacementPage from "../components/stats/Emplacement";
-import CroissanceStat from "../components/stats/Croissance";
 import RatePrice from "../components/stats/RatePrice";
+import ConversionState from "../components/stats/Conversion";
+import CroissanceStat from "../components/stats/Croissance";
 function Statistique() {
     const [hostStat, setHostStat] = useState();
     const [rateStat, setRateStat] = useState();
@@ -42,7 +43,7 @@ function Statistique() {
     const fetchState = async () => {
         setLoading(true);
 
-        const [rate, host, cancel1,cancel2] = await Promise.all([
+        const [rate, host, cancel1, cancel2] = await Promise.all([
             getRateStat(headers),
             getHostStat(headers),
             getCancellationBookingStatOne(headers),
@@ -91,15 +92,15 @@ function Statistique() {
             { month: 12, count: 165000 },
         ],
     };
-const reservationData = {
-    annualReservations: 200,
-    cancellationRate: "18%",
-    refundedReservations: 150,
-    refundRate: "12%",
-    blockingRate: "18%",
-    totalAds: 1000,
-    blockedAds: 250,
-};
+    const reservationData = {
+        annualReservations: 200,
+        cancellationRate: "18%",
+        refundedReservations: 150,
+        refundRate: "12%",
+        blockingRate: "18%",
+        totalAds: 1000,
+        blockedAds: 250,
+    };
     useEffect(() => {
         fetchState();
     }, []);
@@ -141,7 +142,12 @@ const reservationData = {
                     />
                     <Tab
                         name="Prix Moyen Resi."
-                        isActive={activeTab === "Croissance"}
+                        isActive={activeTab === "Prix Moyen Resi."}
+                        onClick={handleTabClick}
+                    />
+                    <Tab
+                        name="Conversion & réservatrion"
+                        isActive={activeTab === "Conversion & réservatrion"}
                         onClick={handleTabClick}
                     />
                 </nav>
@@ -161,6 +167,9 @@ const reservationData = {
                     {activeTab === "Emplacement" && <EmplacementPage />}
                     {activeTab === "Croissance" && <CroissanceStat />}
                     {activeTab === "Prix Moyen Resi." && <RatePrice />}
+                    {activeTab === "Conversion & réservatrion" && (
+                        <ConversionState />
+                    )}
                     {/* {activeTab === "Nombre d'hôte" && <NombreHote />}
                   {activeTab === "Problèmes" && <Problemes />}
                   */}
