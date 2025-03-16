@@ -31,7 +31,9 @@ const RejectedResidence = () => {
     const fetchState = async () => {
         setLoading(true);
         try {
-            const query = getYearRange(selectedYear);
+              const query = {
+                  year: selectedYear,
+              };
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
@@ -81,6 +83,8 @@ const RejectedResidence = () => {
                         showYearPicker
                         dateFormat="yyyy"
                         disabled={loading}
+                        minDate={new Date(2024, 0, 1)}
+                        maxDate={new Date()}
                         customInput={
                             <CustomDatePickerButton year={selectedYear} />
                         }

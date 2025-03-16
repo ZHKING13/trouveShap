@@ -357,10 +357,10 @@ export const getMeanPriceStats = async (headers, query) => {
 }
 
 // get /stats/admin/booking-stats
-export const getBookingStats = async (headers) => {
+export const getBookingStats = async (headers,query) => {
     try {
         headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
-        const response = await privateService.get("/stats/admin/booking-stats", { headers })
+        const response = await privateService.get("/stats/admin/booking-stats", { headers, params: query })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
@@ -373,10 +373,10 @@ export const getBookingStats = async (headers) => {
     }
 }
 // get /stats/admin/visitor-stats
-export const getVisitorStats = async (headers) => {
+export const getVisitorStats = async (headers,query) => {
     try {
         headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
-        const response = await privateService.get("/stats/admin/visitor-stats", { headers })
+        const response = await privateService.get("/stats/admin/visitor-stats", { headers, params: query })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
@@ -389,10 +389,10 @@ export const getVisitorStats = async (headers) => {
     }
 }
 // get /stats/admin/rate-stat
-export const getRateStat = async (headers) => {
+export const getRateStat = async (headers,query) => {
     try {
         headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
-        const response = await privateService.get("/stats/admin/rate-stat", { headers })
+        const response = await privateService.get("/stats/admin/rate-stat", { headers, params: query })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
@@ -403,12 +403,48 @@ export const getRateStat = async (headers) => {
         }
         return { status: error.response.status, data: error.response.data };
     }
+}
+// /stats/admin/count-stats
+export const getCountStats = async (headers, query) => {
+    try {
+        headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
+        const response = await privateService.get("/stats/admin/count-stats", { headers, params: query })
+        const { status, data: responseData } = response;
+        return { status, data: responseData };
+    } catch (error) {
+        console.log(error);
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+            console.error('La requête a expiré en raison d\'un timeout.');
+            return { status: 408, data: { message: 'Request Timeout' } };
+        }
+        return { status: error.response.status, data: error.response.data };
+    }
+   
+
+}
+// /stats/admin/traveler-stat
+export const getTravelerStat = async (headers, query) => {
+    try {
+        headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
+        const response = await privateService.get("/stats/admin/traveler-stat", { headers, params: query })
+        const { status, data: responseData } = response;
+        return { status, data: responseData };
+    } catch (error) {
+        console.log(error);
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+            console.error('La requête a expiré en raison d\'un timeout.');
+            return { status: 408, data: { message: 'Request Timeout' } };
+        }
+        return { status: error.response.status, data: error.response.data };
+    }
+
+
 }
 // get /stats/admin/host-stat
-export const getHostStat = async (headers) => {
+export const getHostStat = async (headers,query) => {
     try {
         headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
-        const response = await privateService.get("/stats/admin/host-stat", { headers })
+        const response = await privateService.get("/stats/admin/host-stat", { headers, params: query })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
@@ -420,11 +456,30 @@ export const getHostStat = async (headers) => {
         return { status: error.response.status, data: error.response.data };
     }
 }
+///stats/admin/blocked-rate-stats
+export const getBlockedRateStats = async (headers,query) => {
+    try {
+        headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
+        const response = await privateService.get("/stats/admin/blocked-rate-stats", { headers, params: query })
+        const { status, data: responseData } = response;
+        return { status, data: responseData };
+    } catch (error) {
+        console.log(error);
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+            console.error('La requête a expiré en raison d\'un timeout.');
+            return { status: 408, data: { message: 'Request Timeout' } };
+        }
+        return { status: error.response.status, data: error.response.data };
+    }
+
+}
+
+
 // get /stats/admin/cancellation-booking-stat-one
-export const getCancellationBookingStatOne = async (headers) => {
+export const getCancellationBookingStatOne = async (headers,query) => {
     try {
         headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
-        const response = await privateService.get("/stats/admin/cancellation-booking-stat-one", { headers })
+        const response = await privateService.get("/stats/admin/cancellation-booking-stat-one", { headers, params: query })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {
@@ -436,10 +491,10 @@ export const getCancellationBookingStatOne = async (headers) => {
         return { status: error.response.status, data: error.response.data };
     }
 }
-export const getCancellationBookingStatTwo = async (headers) => {
+export const getCancellationBookingStatTwo = async (headers,query) => {
     try {
         headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
-        const response = await privateService.get("/stats/admin/cancellation-booking-stat-two", { headers })
+        const response = await privateService.get("/stats/admin/cancellation-booking-stat-two", { headers, params: query })
         const { status, data: responseData } = response;
         return { status, data: responseData };
     } catch (error) {

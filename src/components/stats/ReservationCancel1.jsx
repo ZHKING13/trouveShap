@@ -31,7 +31,9 @@ const ReservationCancel = () => {
     const fetchState = async () => {
         setLoading(true);
         try {
-            const query = getYearRange(selectedYear);
+              const query = {
+                  year: selectedYear,
+              };
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
@@ -83,6 +85,8 @@ const ReservationCancel = () => {
                         showYearPicker
                         dateFormat="yyyy"
                         disabled={loading}
+                        minDate={new Date(2024, 0, 1)}
+                        maxDate={new Date()}
                         customInput={
                             <CustomDatePickerButton year={selectedYear} />
                         }
@@ -115,6 +119,7 @@ const styles = {
         borderRadius: "12px",
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
         minWidth: "450px",
+        height: "300px",
     },
     header: {
         display: "flex",
@@ -153,7 +158,6 @@ const styles = {
         marginTop: "20px",
     },
     chartWrapper: {
-        height: "300px",
-        boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.12)",
+        height: "100%",
     },
 };

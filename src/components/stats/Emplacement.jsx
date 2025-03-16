@@ -191,7 +191,7 @@ const EmplacementPage = () => {
                                 ? 0 || stats?.meanPricePerNightPerCity
                                       .toString()
                                       .replace(/\B(?=(\d{3})+(?!\d))/g, " ") +" "+
-                                  currencySign() 
+                                  currencySign() || 0
                                 : index === 2
                                 ? 0|| stats?.meanPricePerNightPerCity
                                       .toString()

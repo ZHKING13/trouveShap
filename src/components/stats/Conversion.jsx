@@ -39,7 +39,7 @@ const getYearRange = (year) => ({
         
         setLoading(true);
         try {
-            const query = getYearRange(selectedYear);
+            const query = {year:selectedYear.getFullYear()};
             const [stay, cancel] = await Promise.all([
                 getConversionStats(headers,query),
                 getCancelationRateBookings(headers,query),
@@ -112,6 +112,8 @@ const getYearRange = (year) => ({
                         onChange={(date) => setSelectedYear(date)}
                         showYearPicker
                         dateFormat="yyyy"
+                        minDate={new Date(2024, 0, 1)}
+                        maxDate={new Date()}
                         customInput={<CustomDateButton />}
                     />
                 </div>
@@ -146,11 +148,19 @@ const getYearRange = (year) => ({
                         onChange={(date) => setSelectedYear(date)}
                         showYearPicker
                         dateFormat="yyyy"
+                        minDate={new Date(2024, 0, 1)}
+                        maxDate={new Date()}
                         customInput={<CustomDateButton />}
                     />
                 </div>
 
-                <h1 style={{ ...styles.bigText, color: "#9B74F3",textAlign:"left" }}>
+                <h1
+                    style={{
+                        ...styles.bigText,
+                        color: "#9B74F3",
+                        textAlign: "left",
+                    }}
+                >
                     {cancelState?.cancellationRate || 0}%
                 </h1>
 
