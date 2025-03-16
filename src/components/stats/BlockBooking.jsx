@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { notification } from "antd";
-import AreaCharts from "../chart/AreaChart";
-import { getRefungBooking } from "../../feature/API";
+import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from "recharts";
+import { getBlockedRateStats } from "../../feature/API";
 
-const RefundBooking = () => {
+const BlockBooking = () => {
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [stats, setStats] = useState(null);
@@ -27,13 +27,12 @@ const RefundBooking = () => {
                 Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
                 "refresh-token": localStorage.getItem("refreshToken"),
             };
-            const response = await getRefungBooking(headers, {
+            const response = await getBlockedRateStats(headers, {
                 year: selectedYear,
             });
 
             if (response.status !== 200)
                 throw new Error(response?.data?.message || "Erreur inconnue");
-
             setStats(response.data);
         } catch (error) {
             notifyError(error.message);
@@ -46,18 +45,28 @@ const RefundBooking = () => {
         fetchData();
     }, [selectedYear]);
 
+    const pieData = [
+        {
+            name: "Total Résidences",
+            value: stats?.totalResidences || 0,
+            color: "#FFD580",
+        },
+        {
+            name: "Résidences Bloquées",
+            value: stats?.totalBlockedResidences || 0,
+            color: "#5CB85C",
+        },
+       
+    ];
+
     return (
         <div style={styles.container}>
             {contextHolder}
             <div style={styles.header}>
+               
                 <StatBlock
-                    title="Réservations remboursées"
-                    value={stats?.totalRefundedBookings}
-                    loading={loading}
-                />
-                <StatBlock
-                    title="Taux de remboursement"
-                    value={stats?.refundRate}
+                    title="Taux de blockage"
+                    value={stats?.blockedRate}
                     loading={loading}
                 />
                 <DatePickerSelector
@@ -69,21 +78,46 @@ const RefundBooking = () => {
             {loading ? (
                 <p style={styles.loader}>Chargement...</p>
             ) : (
-                <AreaCharts data={stats?.refundedBookingsPerMonth} />
+                <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                        <Pie
+                            data={pieData}
+                            dataKey="value"
+                            nameKey="name"
+                            innerRadius={1}
+                            outerRadius={80}
+                        >
+                            {pieData.map((entry, index) => (
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={entry.color}
+                                />
+                            ))}
+                        </Pie>
+                        <Legend
+                            verticalAlign="bottom"
+                            height={50}
+                            formatter={(value, entry) => {
+                                const item = pieData.find(
+                                    (data) => data.name === value
+                                );
+                                return `${value}: ${item?.value || 0}`;
+                            }}
+                        />
+                    </PieChart>
+                </ResponsiveContainer>
             )}
         </div>
     );
 };
 
-// **Composant Réutilisable pour les Stats**
 const StatBlock = ({ title, value, loading }) => (
     <div>
         <p style={styles.subtitle}>{title}</p>
-        <p style={styles.mainValue}>{loading ? "..." : value || "0"}</p>
+        <p style={styles.mainValue}>{loading ? "..." : value + "%" || "0%"}</p>
     </div>
 );
 
-// **Sélecteur d'année personnalisé**
 const DatePickerSelector = ({ year, onChange, loading }) => (
     <DatePicker
         selected={new Date(year, 0, 1)}
@@ -97,16 +131,12 @@ const DatePickerSelector = ({ year, onChange, loading }) => (
     />
 );
 
-// **Bouton du DatePicker**
 const CustomDatePickerButton = React.forwardRef(({ year, onClick }, ref) => (
     <button style={styles.datePickerButton} onClick={onClick} ref={ref}>
         {year} <span style={styles.calendarIcon}>📅</span>
     </button>
 ));
 
-export default RefundBooking;
-
-// **Styles**
 const styles = {
     container: {
         backgroundColor: "white",
@@ -150,3 +180,5 @@ const styles = {
         marginTop: "20px",
     },
 };
+
+export default BlockBooking;

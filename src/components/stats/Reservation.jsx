@@ -8,8 +8,9 @@ import AreaCharts from "../chart/AreaChart";
 import ReservationCancel from "./ReservationCancel1";
 import RefundBookin from "./refundBooking";
 import RejectedResidence from "./RejectedResidence";
+import BlockBooking from "./blockBooking";
 
-const ReservationChart = ({   }) => {
+const ReservationChart = ({ annualReservations, cancellationRate }) => {
     // 📆 État pour stocker l'année sélectionnée
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
@@ -35,7 +36,7 @@ const ReservationChart = ({   }) => {
         <div style={styles.container}>
             <ReservationCancel />
             <RefundBookin />
-            {/* <RejectedResidence/> */}
+            <BlockBooking/>
         </div>
     );
 };

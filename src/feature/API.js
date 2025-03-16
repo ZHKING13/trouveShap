@@ -456,6 +456,25 @@ export const getHostStat = async (headers,query) => {
         return { status: error.response.status, data: error.response.data };
     }
 }
+///stats/admin/blocked-rate-stats
+export const getBlockedRateStats = async (headers,query) => {
+    try {
+        headers = { ...headers, "Currency-id": await getCurrencyId(), "lang": await getLanguageId() }
+        const response = await privateService.get("/stats/admin/blocked-rate-stats", { headers, params: query })
+        const { status, data: responseData } = response;
+        return { status, data: responseData };
+    } catch (error) {
+        console.log(error);
+        if (error.code === 'ECONNABORTED' || error.code === "ERR_NETWORK") {
+            console.error('La requête a expiré en raison d\'un timeout.');
+            return { status: 408, data: { message: 'Request Timeout' } };
+        }
+        return { status: error.response.status, data: error.response.data };
+    }
+
+}
+
+
 // get /stats/admin/cancellation-booking-stat-one
 export const getCancellationBookingStatOne = async (headers,query) => {
     try {
