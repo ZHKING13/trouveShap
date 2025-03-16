@@ -9,7 +9,7 @@ import ReservationCancel from "./ReservationCancel1";
 import RefundBookin from "./refundBooking";
 import RejectedResidence from "./RejectedResidence";
 
-const ReservationChart = ({ annualReservations, cancellationRate }) => {
+const ReservationChart = ({   }) => {
     // 📆 État pour stocker l'année sélectionnée
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 

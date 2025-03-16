@@ -113,6 +113,8 @@ const EarnStats = () => {
                         showYearPicker
                         dateFormat="yyyy"
                         disabled={loading}
+                        minDate={new Date(2024, 0, 1)}
+                        maxDate={new Date()}
                         customInput={
                             <CustomDatePickerButton year={selectedYear} />
                         }

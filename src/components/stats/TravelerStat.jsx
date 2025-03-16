@@ -1,12 +1,12 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
-import { getHostStat } from "../../feature/API";
+import { getHostStat, getTravelerStat } from "../../feature/API";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Spin } from "antd";
 
-const EvolutionHotes = () => {
+const EvolutionTravelers = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -19,9 +19,11 @@ const EvolutionHotes = () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 };
-                const { data } = await getHostStat(headers, {
+                const { data } = await getTravelerStat(headers, {
                     year: selectedYear,
                 });
+                console.log(data);
+                
                 setStats(data);
             } catch (error) {
                 console.error(
@@ -47,7 +49,7 @@ const EvolutionHotes = () => {
         );
     if (!stats) return <p>Aucune donnée disponible</p>;
 
-    const { evolutionRate, hostPerMonth, totalHosts } = stats;
+    const { evolutionRate, travelerPerMonth, totalTravelers } = stats;
     const monthNames = [
         "Jan",
         "Fév",
@@ -62,14 +64,14 @@ const EvolutionHotes = () => {
         "Nov",
         "Déc",
     ];
-    const labels = hostPerMonth.map((item) => monthNames[item.month - 1]);
-    const dataValues = hostPerMonth.map((item) => item.count);
+    const labels = travelerPerMonth.map((item) => monthNames[item.month - 1]);
+    const dataValues = travelerPerMonth.map((item) => item.count);
 
     const chartData = {
         labels,
         datasets: [
             {
-                label: "Nombre d'hôtes",
+                label: "Nombre de voyageurs",
                 data: dataValues,
                 borderColor: "#9B74F3",
                 backgroundColor: "rgba(155, 116, 243, 0.2)",
@@ -96,7 +98,7 @@ const EvolutionHotes = () => {
     return (
         <div style={styles.container}>
             <Header
-                totalHosts={totalHosts}
+                totalTravelers={totalTravelers}
                 evolutionRate={evolutionRate}
                 selectedYear={selectedYear}
                 handleYearChange={handleYearChange}
@@ -113,14 +115,17 @@ const EvolutionHotes = () => {
 };
 
 const Header = ({
-    totalHosts,
+    totalTravelers,
     evolutionRate,
     selectedYear,
     handleYearChange,
 }) => (
     <div style={styles.header}>
-        <InfoBox label="Nombre d'hôtes" value={totalHosts.toLocaleString()} />
-        <InfoBox label="Taux de croissance" value={`${evolutionRate || 0}%`} />
+        <InfoBox
+            label="Nombre d'hôtes"
+            value={totalTravelers || 0}
+        />
+        <InfoBox label="Taux de croissance" value={`${evolutionRate?.toFixed(2) || 0}%`} />
         <DatePicker
             selected={new Date(selectedYear, 0, 1)}
             onChange={(e) => handleYearChange(e)}
@@ -184,4 +189,4 @@ const styles = {
     },
 };
 
-export default EvolutionHotes;
+export default EvolutionTravelers;

@@ -1,40 +1,45 @@
-import React, { useState } from "react";
-import {
-    BarChart,
-    Bar,
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    Tooltip,
-    CartesianGrid,
-    ResponsiveContainer,
-} from "recharts";
+import React, { useEffect, useState } from "react";
+
 import EarnStats from "./EarnStat";
 import ReservationStats from "./ReservationStats";
 import VisiteurStats from "./VisiteurStat";
 import Portefuille from "./Portefeuill";
+import { getCountStats } from "../../feature/API";
 
 const CroissanceStat = () => {
-    const [selectedYear, setSelectedYear] = useState(2025);
+       const [selectedYear, setSelectedYear] = useState(new Date());
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(false);
+ useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            const query = {
+                year:selectedYear.getFullYear(),
+            }
+            console.log(query);
+            
+            try {
+                const headers = {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                };
+                const stat = await getCountStats(headers, query);
+                
+                setStats(stat.data);
+                setLoading(false);
+            } catch (error) {
+                console.error(
+                    "Erreur lors de la récupération des données",
+                    error
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+ 
 
-    const dataBar = [
-        { name: "Jan", valeur: 100000 },
-        { name: "Fév", valeur: 200000 },
-        { name: "Mar", valeur: 150000 },
-        { name: "Avr", valeur: 250000 },
-        { name: "Mai", valeur: 300000 },
-        { name: "Juin", valeur: 220000 },
-    ];
-
-    const dataLine = [
-        { name: "Jan", valeur: 3600 },
-        { name: "Fév", valeur: 4200 },
-        { name: "Mar", valeur: 3800 },
-        { name: "Avr", valeur: 4500 },
-        { name: "Mai", valeur: 4800 },
-        { name: "Juin", valeur: 4600 },
-    ];
 
     return (
         <div style={styles.container}>
@@ -42,11 +47,16 @@ const CroissanceStat = () => {
             <div style={styles.statCards}>
                 <div style={styles.statCard}>
                     <p style={styles.statTitle}>Résidences totales</p>
-                    <h2 style={styles.statValue}>32</h2>
+                    <h2 style={styles.statValue}>
+                        {" "}
+                        {stats?.totalResidences || 0}{" "}
+                    </h2>
                 </div>
                 <div style={styles.statCard}>
                     <p style={styles.statTitle}>Réservations totales</p>
-                    <h2 style={styles.statValue}>250</h2>
+                    <h2 style={styles.statValue}>
+                        {stats?.totalBookings || 0}
+                    </h2>
                 </div>
             </div>
 
@@ -59,20 +69,17 @@ const CroissanceStat = () => {
 
                 {/* Réservations */}
                 <div style={styles.chartCard}>
-                   
-                    <ReservationStats/>
+                    <ReservationStats />
                 </div>
 
                 {/* Visiteurs */}
                 <div style={styles.chartCard}>
-                    
-                   <VisiteurStats/>
+                    <VisiteurStats />
                 </div>
 
                 {/* Portefeuille */}
                 <div style={styles.chartCard}>
-                    
-                    <Portefuille/>
+                    <Portefuille />
                 </div>
             </div>
         </div>

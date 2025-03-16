@@ -32,7 +32,9 @@ const Portefuille = () => {
     const fetchState = async () => {
         setLoading(true);
         try {
-            const query = getYearRange(selectedYear);
+            const query = {
+                year: selectedYear,
+            }
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
@@ -64,10 +66,15 @@ const Portefuille = () => {
                 <div>
                     <p style={styles.subtitle}>Portefeuille </p>
                     <p style={styles.mainValue}>
-                        {loading ? "..." : Stats?.totalCompanyMoney.toString()
-                                                          .replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
-                                                          " " +
-                                                          currencySign() || "0" || "0"}
+                        {loading
+                            ? "..."
+                            : Stats?.totalCompanyMoney
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
+                                  " " +
+                                  currencySign() ||
+                              "0" ||
+                              "0"}
                     </p>
                 </div>
                 <div>
@@ -83,6 +90,8 @@ const Portefuille = () => {
                         showYearPicker
                         dateFormat="yyyy"
                         disabled={loading}
+                        minDate={new Date(2024, 0, 1)}
+                        maxDate={new Date()}
                         customInput={
                             <CustomDatePickerButton year={selectedYear} />
                         }
