@@ -22,6 +22,7 @@ const NoteMoyenne = () => {
                     year: selectedYear.getFullYear(),
                 });
                 setStats(data);
+                
             } catch (error) {
                 console.error(
                     "Erreur lors de la récupération des données",
@@ -49,7 +50,7 @@ const NoteMoyenne = () => {
         totalResidences,
     } = stats;
 
-    const labels = Object.keys(nbResidencesPerRateValue);
+    const labels = Object?.keys(nbResidencesPerRateValue);
     const dataValues = Object.values(nbResidencesPerRateValue);
     const colors = labels.map((_, index) =>
         index % 2 === 0 ? "#FC9C66" : "#9B74F3"

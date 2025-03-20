@@ -144,7 +144,9 @@ body {
     color: #e53e3e;
     width: 40%;
 }
-
+.searchInput{
+    width: 100%;
+}
 .confirm-button {
     background-color: #d6bcfa;
     color: #6b46c1;
