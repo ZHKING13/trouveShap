@@ -31,8 +31,8 @@ const Probleme = () => {
                     Authorization: "Bearer " + localStorage.getItem("token"),
                 };
                 const [cancel1, cancel2] = await Promise.all([
-                    getCancellationBookingStatOne(headers),
-                    getCancellationBookingStatTwo(headers),
+                    getCancellationBookingStatOne(headers,query),
+                    getCancellationBookingStatTwo(headers,query),
                 ]);
                 setCancelData({
                     cancel1Rate: cancel1.data,
@@ -65,10 +65,10 @@ const Probleme = () => {
         cancelData.cancel2Rate;
 
     const pieData = {
-        labels: cancellationReasonStat.map((item) => item.reason),
+        labels: cancellationReasonStat?.map((item) => item.reason),
         datasets: [
             {
-                data: cancellationReasonStat.map((item) => item.percentage),
+                data: cancellationReasonStat?.map((item) => item.percentage),
                 backgroundColor: ["#FFD580", "#5CB85C", "#FF6F61"],
                 hoverOffset: 4,
             },
@@ -92,7 +92,7 @@ const Probleme = () => {
     return (
         <div style={styles.container}>
             <ChartContainer
-                title="Taux de conversion"
+                title="Taux d'annulation"
                 value={`${cancellationRate} %`}
                 handlDatePicker={(e) => setSelectedYear(e)}
                 year={selectedYear}

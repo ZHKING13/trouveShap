@@ -100,7 +100,6 @@ const RatePrice = () => {
     return (
         <div
             style={{
-               
                 backgroundColor: "#fff",
             }}
         >
@@ -118,7 +117,7 @@ const RatePrice = () => {
                     <div style={styles.chartHeader}>
                         <div>
                             <p style={styles.chartTitle}>
-                                Nombre total de réservation
+                              Prix moyen des résidences
                             </p>
                             <h2 style={styles.totalBookings}>
                                 {stats?.meanPrice

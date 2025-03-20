@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import { FaHome, FaBuilding, FaMountain } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
-import { notification } from "antd";
+import { notification, Spin } from "antd";
 import { getCityStats, getMapResidence } from "../../feature/API";
 import Maps from "../ResiMaps";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { currencySign } from "../DataTable";
+import StatsMaps from "./StatsMap";
+import { Autocomplete } from "@react-google-maps/api";
+import { useGoogleMaps } from "../../config/map";
+import { Navigate } from "react-router-dom";
 
-const CustomDatePickerButton = React.forwardRef(({ year, onClick }, ref) => (
-    <button style={styles.datePickerButton} onClick={onClick} ref={ref}>
-        {year} <span style={styles.calendarIcon}>📅</span>
-    </button>
-));
 const EmplacementPage = () => {
     const [propertyType, setPropertyType] = useState("Toutes les propriétés");
     const [searchCity, setSearchCity] = useState("");
     const [showFilter, setShowFilter] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { isLoaded } = useGoogleMaps();
     const [stats, setStats] = useState(null);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [api, contextHolder] = notification.useNotification();
@@ -32,11 +32,11 @@ const EmplacementPage = () => {
             lng: -3.967696,
         },
     });
-        const [residence, setResidence] = useState([]);
-    
+    const [residence, setResidence] = useState([]);
+
     const [mapPosition, setMapPosition] = useState({
-        lat: 5.35,
         lng: -3.967696,
+        lat: 5.35,
         zoom: 13,
     });
     const [filterValue, setFilterValue] = useState({
@@ -50,32 +50,72 @@ const EmplacementPage = () => {
     };
 
     const handlePropertyChange = (type) => {
-        setPropertyType(type);
-    };
-     const getYearRange = (year) => ({
-         fromDate: `${year}-01-01`,
-         toDate: `${year}-12-31`,
-     });
-    const params = {
-        limit: 7,
-        admin_search: searchCity,
-        zoomLevel: mapPosition.zoom,
-        viewport: {
-            northeast: {
-                lat: mapBounds.northeast?.lat,
-                lng: mapBounds.northeast?.lng,
-            },
-            southwest: {
-                lat: mapBounds.southwest?.lat,
-                lng: mapBounds.southwest?.lng,
-            },
-        },
-
-        typeIds: filterValue.typeResi,
-        fromDate: getYearRange(selectedYear).fromDate,
-        toDate: getYearRange(selectedYear).toDate,
+        setFilterValue((prevState) => {
+            const newTypeResi = prevState.typeResi.includes(type)
+                ? prevState.typeResi.filter((item) => item !== type)
+                : [...prevState.typeResi, type];
+            return { ...prevState, typeResi: newTypeResi };
+        });
     };
 
+    const getYearRange = (year) => ({
+        fromDate: `${year}-01-01`,
+        toDate: `${year}-12-31`,
+    });
+    const params = useMemo(
+        () => ({
+            limit: 7,
+            admin_search: searchCity,
+            zoomLevel: mapPosition.zoom,
+            viewport: {
+                northeast: {
+                    lat: mapBounds.northeast?.lat,
+                    lng: mapBounds.northeast?.lng,
+                },
+                southwest: {
+                    lat: mapBounds.southwest?.lat,
+                    lng: mapBounds.southwest?.lng,
+                },
+            },
+            typeIds: filterValue.typeResi,
+            fromDate: getYearRange(selectedYear).fromDate,
+            toDate: getYearRange(selectedYear).toDate,
+        }),
+        [
+            searchCity,
+            mapPosition.zoom,
+            mapBounds,
+            filterValue.typeResi,
+            selectedYear,
+        ]
+    );
+
+    const autocompleteRef = useRef(null);
+    const handlePlaceSelect = () => {
+        if (!autocompleteRef.current) return;
+        const place = autocompleteRef.current.getPlace();
+        console.log("place", place.name);
+        setSearchCity(place.name);
+        if (place.geometry) {
+            setMapPosition({
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng(),
+                zoom: 13,
+            });
+            if (place.geometry.viewport) {
+                setMapBounds({
+                    northeast: {
+                        lat: place.geometry.viewport.getNorthEast().lat(),
+                        lng: place.geometry.viewport.getNorthEast().lng(),
+                    },
+                    southwest: {
+                        lat: place.geometry.viewport.getSouthWest().lat(),
+                        lng: place.geometry.viewport.getSouthWest().lng(),
+                    },
+                });
+            }
+        }
+    };
     const createQueryString = (data) => {
         const buildQuery = (obj, prefix) => {
             return Object.keys(obj)
@@ -117,24 +157,20 @@ const EmplacementPage = () => {
 
         return buildQuery(data);
     };
-   
-     const handleYearChange = (date) => {
-         setSelectedYear(date.getFullYear());
-     };
-    const mapOptions = {
-        center: { lat: 5.345317, lng: -4.024429 },
-        zoom: 13,
+
+    const handleYearChange = (date) => {
+        setSelectedYear(date.getFullYear());
     };
-     const headers = {
-         "Content-Type": "application/json",
-         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
-         "refresh-token": localStorage.getItem("refreshToken"),
-     };
+
+    const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
+        "refresh-token": localStorage.getItem("refreshToken"),
+    };
     const fetchState = async () => {
         setLoading(true);
         try {
             const query = getYearRange(selectedYear);
-           
 
             const res = await getCityStats(headers, query);
             console.log(res);
@@ -149,32 +185,39 @@ const EmplacementPage = () => {
             setLoading(false);
         }
     };
- const fetchResidence = async () => {
-        console.log(params)
+    const fetchResidence = async () => {
+        setLoading(true);
+        console.log(params);
         const filteredObject = createQueryString(params);
 
         console.log("filterObjet::::", filteredObject);
 
         const res = await getMapResidence(filteredObject, headers);
-        console.log(res.data);
+        console.log("total resi", res.data.length);
         if (res.status !== 200) {
-            openNotificationWithIcon("error", t("error.401"), t("error.retry1"));
+            openNotificationWithIcon(
+                "error",
+                t("error.401"),
+                t("error.retry1")
+            );
             localStorage.clear();
             setTimeout(() => {
-                navigate("/login");
+                Navigate("/login");
             }, 1500);
             return;
         }
         setResidence(res.data);
-                setLoading(false);
-
+        setLoading(false);
     };
+    const prevMapBounds = mapBounds;
+    useEffect(() => {
+        fetchResidence();
+    }, [mapBounds, mapPosition, searchCity,filterValue.typeResi]);
+
     useEffect(() => {
         fetchState();
-        fetchResidence();
-        setLoading(true);
-    }, [selectedYear, mapBounds, mapPosition, searchCity]);
-    return (
+    }, [selectedYear]);
+    return isLoaded ? (
         <div style={styles.container}>
             {contextHolder}
             {/* Statistiques */}
@@ -188,15 +231,21 @@ const EmplacementPage = () => {
                         <p style={styles.statTitle}>{title}</p>
                         <h2 style={styles.statValue}>
                             {index === 1
-                                ? 0 || stats?.meanPricePerNightPerCity
+                                ? 0 ||
+                                  stats?.meanPricePerNightPerCity
                                       .toString()
-                                      .replace(/\B(?=(\d{3})+(?!\d))/g, " ") +" "+
-                                  currencySign() || 0
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
+                                      " " +
+                                      currencySign() ||
+                                  0
                                 : index === 2
-                                ? 0|| stats?.meanPricePerNightPerCity
+                                ? 0 ||
+                                  stats?.meanPricePerNightPerCity
                                       .toString()
-                                      .replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " "+
-                                  currencySign() || 0
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
+                                      " " +
+                                      currencySign() ||
+                                  0
                                 : stats?.countPerCity}
                         </h2>
                     </div>
@@ -205,13 +254,29 @@ const EmplacementPage = () => {
 
             {/* Filtres */}
             <div style={styles.filtersContainer}>
-                <input
-                    type="text"
-                    placeholder="Chercher une ville"
-                    value={searchCity}
-                    onChange={(e) => setSearchCity(e.target.value)}
-                    style={styles.searchInput}
-                />
+                <div style={styles.searchInput}>
+                    {" "}
+                    <Autocomplete
+                        onLoad={(autocomplete) =>
+                            (autocompleteRef.current = autocomplete)
+                        }
+                        onPlaceChanged={handlePlaceSelect}
+                        className="searchInput"
+                    >
+                        <input
+                            type="text"
+                            placeholder="Chercher une ville"
+                            value={searchCity}
+                            onChange={(e) => setSearchCity(e.target.value)}
+                            style={{
+                                width: "90%",
+                                padding: "12px",
+                                border: "1px solid #E5E7EB",
+                                borderRadius: "8px",
+                            }}
+                        />
+                    </Autocomplete>
+                </div>
 
                 <div style={styles.dropdownWrapper}>
                     <button
@@ -226,54 +291,55 @@ const EmplacementPage = () => {
                                 style={styles.closeIcon}
                                 onClick={() => setShowFilter(false)}
                             />
-                            <button
-                                onClick={() =>
-                                    handlePropertyChange(
-                                        "Toutes les propriétés"
-                                    )
-                                }
-                                style={styles.filterItem}
+                          
+                            <div
+                                onClick={() => handlePropertyChange(1)}
+                                style={{
+                                    ...styles.filterItem,
+                                    backgroundColor:
+                                        filterValue.typeResi.includes(1)
+                                            ? "#DAC7FF"
+                                            : "transparent",
+                                }}
                             >
-                                <FaHome style={styles.icon} /> Toutes les
-                                propriétés
-                            </button>
-                            <button
-                                onClick={() => handlePropertyChange("Maison")}
-                                style={styles.filterItem}
-                            >
-                                <FaHome style={styles.icon} /> Maison
-                            </button>
-                            <button
-                                onClick={() =>
-                                    handlePropertyChange("Appartement")
-                                }
-                                style={styles.filterItem}
-                            >
-                                <FaBuilding style={styles.icon} /> Appartement
-                            </button>
-                            <button
-                                onClick={() => handlePropertyChange("Chalet")}
-                                style={styles.filterItem}
-                            >
-                                <FaMountain style={styles.icon} /> Chalet
-                            </button>
-
-                            <div style={styles.filterActions}>
-                                <button
-                                    onClick={() =>
-                                        setPropertyType("Toutes les propriétés")
-                                    }
-                                    style={styles.clearButton}
-                                >
-                                    Tout effacer
-                                </button>
-                                <button
-                                    onClick={() => setShowFilter(false)}
-                                    style={styles.applyButton}
-                                >
-                                    Appliquer
-                                </button>
+                                <img style={resiImg} src="/maison.png" alt="" />
+                                <p>Maison</p>
                             </div>
+                            <div
+                                onClick={() => handlePropertyChange(2)}
+                                style={{
+                                    ...styles.filterItem,
+                                    backgroundColor:
+                                        filterValue.typeResi.includes(2)
+                                            ? "#DAC7FF"
+                                            : "transparent",
+                                }}
+                            >
+                                <img
+                                    style={resiImg}
+                                    src="/building.png"
+                                    alt=""
+                                />
+                                <p>Appartement</p>
+                            </div>
+                            <devicePixelRatio
+                                onClick={() => handlePropertyChange(3)}
+                                style={{
+                                    ...styles.filterItem,
+                                    backgroundColor:
+                                        filterValue.typeResi.includes(3)
+                                            ? "#DAC7FF"
+                                            : "transparent",
+                                }}
+                            >
+                                <img style={resiImg} src="/chalet.png" alt="" />{" "}
+                                <p>
+                                Chalet 
+
+                                </p>
+                            </devicePixelRatio>
+
+                            
                         </div>
                     )}
                 </div>
@@ -294,7 +360,7 @@ const EmplacementPage = () => {
 
             {/* Carte Google */}
             <div style={styles.mapContainer}>
-                <Maps
+                <StatsMaps
                     location={{
                         lat: mapPosition.lat,
                         lng: mapPosition.lng,
@@ -308,17 +374,36 @@ const EmplacementPage = () => {
                     mapBounds={mapBounds}
                     setMapBounds={setMapBounds}
                     stats
-                ></Maps>
+                ></StatsMaps>
             </div>
+        </div>
+    ) : (
+        <div style={styles.spinnerContainer}>
+            <Spin size="large" />
         </div>
     );
 };
-
+const resiImg = {
+    width: "30px",
+    height: "30px",
+};
+const CustomDatePickerButton = React.forwardRef(({ year, onClick }, ref) => (
+    <button style={styles.datePickerButton} onClick={onClick} ref={ref}>
+        {year} <span style={styles.calendarIcon}>📅</span>
+    </button>
+));
 const styles = {
     container: {
         padding: "20px",
         fontFamily: "'Inter', sans-serif",
         backgroundColor: "#F8F9FC",
+    },
+    spinnerContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "80vh", // Ensure it takes the full height of the viewport
+        width: "100%",
     },
     statsContainer: {
         display: "flex",
@@ -378,15 +463,19 @@ const styles = {
         top: "110%",
         left: 0,
     },
+
     filterItem: {
         display: "flex",
-        alignItems: "center",
+
+        gap: "10px",
         padding: "10px",
-        border: "none",
-        background: "none",
-        width: "100%",
-        cursor: "pointer",
-        fontSize: "14px",
+        border: "1px solid #DAC7FF",
+        borderRadius: "5px",
+        width: "80%",
+        flexDirection: "row",
+        marginBottom:"5px"
+       
+       
     },
     icon: {
         marginRight: "8px",
@@ -431,6 +520,7 @@ const styles = {
         borderRadius: "12px",
         overflow: "hidden",
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        position: "relative",
     },
     datePickerContainer: {
         position: "relative",
