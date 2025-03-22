@@ -212,182 +212,190 @@ const EmplacementPage = () => {
     const prevMapBounds = mapBounds;
     useEffect(() => {
         fetchResidence();
-    }, [mapBounds, mapPosition, searchCity,filterValue.typeResi]);
+    }, [mapBounds, mapPosition, searchCity, filterValue.typeResi]);
 
     useEffect(() => {
         fetchState();
     }, [selectedYear]);
     return isLoaded ? (
-        <div style={{backgroundColor:"fff"}}>
-
-        <div style={styles.container}>
-            {contextHolder}
-            {/* Statistiques */}
-            <div style={styles.statsContainer}>
-                {[
-                    "Nombre moyen de résidences par ville",
-                    "Prix moyen par ville par nuitée",
-                    "Gain moyen par ville",
-                ].map((title, index) => (
-                    <div key={index} style={styles.statCard}>
-                        <p style={styles.statTitle}>{title}</p>
-                        <h2 style={styles.statValue}>
-                            {index === 1
-                                ? 0 ||
-                                  stats?.meanPricePerNightPerCity
-                                      .toString()
-                                      .replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
-                                      " " +
-                                      currencySign() ||
-                                  0
-                                : index === 2
-                                ? 0 ||
-                                  stats?.meanPricePerNightPerCity
-                                      .toString()
-                                      .replace(/\B(?=(\d{3})+(?!\d))/g, " ") +
-                                      " " +
-                                      currencySign() ||
-                                  0
-                                : stats?.countPerCity}
-                        </h2>
-                    </div>
-                ))}
-            </div>
-
-            {/* Filtres */}
-            <div style={styles.filtersContainer}>
-                <div style={styles.searchInput}>
-                    {" "}
-                    <Autocomplete
-                        onLoad={(autocomplete) =>
-                            (autocompleteRef.current = autocomplete)
-                        }
-                        onPlaceChanged={handlePlaceSelect}
-                        className="searchInput"
-                    >
-                        <input
-                            type="text"
-                            placeholder="Chercher une ville"
-                            value={searchCity}
-                            onChange={(e) => setSearchCity(e.target.value)}
-                            style={{
-                                width: "90%",
-                                padding: "12px",
-                                border: "1px solid #E5E7EB",
-                                borderRadius: "8px",
-                            }}
-                        />
-                    </Autocomplete>
-                </div>
-
-                <div style={styles.dropdownWrapper}>
-                    <button
-                        onClick={() => setShowFilter(!showFilter)}
-                        style={styles.filterButton}
-                    >
-                        {propertyType}
-                    </button>
-                    {showFilter && (
-                        <div style={styles.filterDropdown}>
-                            <AiOutlineClose
-                                style={styles.closeIcon}
-                                onClick={() => setShowFilter(false)}
-                            />
-                          
-                            <div
-                                onClick={() => handlePropertyChange(1)}
-                                style={{
-                                    ...styles.filterItem,
-                                    backgroundColor:
-                                        filterValue.typeResi.includes(1)
-                                            ? "#DAC7FF"
-                                            : "transparent",
-                                }}
-                            >
-                                <img style={resiImg} src="/maison.png" alt="" />
-                                <p>Maison</p>
-                            </div>
-                            <div
-                                onClick={() => handlePropertyChange(2)}
-                                style={{
-                                    ...styles.filterItem,
-                                    backgroundColor:
-                                        filterValue.typeResi.includes(2)
-                                            ? "#DAC7FF"
-                                            : "transparent",
-                                }}
-                            >
-                                <img
-                                    style={resiImg}
-                                    src="/building.png"
-                                    alt=""
-                                />
-                                <p>Appartement</p>
-                            </div>
-                            <devicePixelRatio
-                                onClick={() => handlePropertyChange(3)}
-                                style={{
-                                    ...styles.filterItem,
-                                    backgroundColor:
-                                        filterValue.typeResi.includes(3)
-                                            ? "#DAC7FF"
-                                            : "transparent",
-                                }}
-                            >
-                                <img style={resiImg} src="/chalet.png" alt="" />{" "}
-                                <p>
-                                Chalet 
-
-                                </p>
-                            </devicePixelRatio>
-
-                            
+        <div style={{ backgroundColor: "fff" }}>
+            <div style={styles.container}>
+                {contextHolder}
+                {/* Statistiques */}
+                <div style={styles.statsContainer}>
+                    {[
+                        "Nombre moyen de résidences par ville",
+                        "Prix moyen par ville par nuitée",
+                        "Gain moyen par ville",
+                    ].map((title, index) => (
+                        <div key={index} style={styles.statCard}>
+                            <p style={styles.statTitle}>{title}</p>
+                            <h2 style={styles.statValue}>
+                                {index === 1
+                                    ? 0 ||
+                                      stats?.meanPricePerNightPerCity
+                                          .toString()
+                                          .replace(
+                                              /\B(?=(\d{3})+(?!\d))/g,
+                                              " "
+                                          ) +
+                                          " " +
+                                          currencySign() ||
+                                      0
+                                    : index === 2
+                                    ? 0 ||
+                                      stats?.meanPricePerNightPerCity
+                                          .toString()
+                                          .replace(
+                                              /\B(?=(\d{3})+(?!\d))/g,
+                                              " "
+                                          ) +
+                                          " " +
+                                          currencySign() ||
+                                      0
+                                    : stats?.countPerCity}
+                            </h2>
                         </div>
-                    )}
+                    ))}
                 </div>
 
-                <div style={styles.datePickerContainer}>
-                    <DatePicker
-                        selected={new Date(selectedYear, 0, 1)}
-                        onChange={handleYearChange}
-                        showYearPicker
-                        dateFormat="yyyy"
-                        disabled={loading}
-                        customInput={
-                            <CustomDatePickerButton year={selectedYear} />
-                        }
-                    />
-                </div>
-            </div>
+                {/* Filtres */}
+                <div style={styles.filtersContainer}>
+                    <div style={styles.searchInput}>
+                        {" "}
+                        <Autocomplete
+                            onLoad={(autocomplete) =>
+                                (autocompleteRef.current = autocomplete)
+                            }
+                            onPlaceChanged={handlePlaceSelect}
+                            className="searchInput"
+                        >
+                            <input
+                                type="text"
+                                placeholder="Chercher une ville"
+                                value={searchCity}
+                                onChange={(e) => setSearchCity(e.target.value)}
+                                style={{
+                                    width: "90%",
+                                    padding: "12px",
+                                    border: "1px solid #E5E7EB",
+                                    borderRadius: "8px",
+                                }}
+                            />
+                        </Autocomplete>
+                    </div>
 
-            {/* Carte Google */}
-            <div style={styles.mapContainer}>
-                <StatsMaps
-                    location={{
-                        lat: mapPosition.lat,
-                        lng: mapPosition.lng,
-                    }}
-                    loading={loading}
-                    // showModal={showModal}
-                    // setShowModal={setShowModal}
-                    arrayMap={residence}
-                    mapPosition={mapPosition}
-                    setMapPosition={setMapPosition}
-                    mapBounds={mapBounds}
-                    setMapBounds={setMapBounds}
-                    stats
-                ></StatsMaps>
-            </div>
-            </div>
-             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                                <button
-                                    onClick={() => console.log("Exporting data")}
-                                    className="export-button"
+                    <div style={styles.dropdownWrapper}>
+                        <button
+                            onClick={() => setShowFilter(!showFilter)}
+                            style={styles.filterButton}
+                        >
+                            {propertyType}
+                        </button>
+                        {showFilter && (
+                            <div style={styles.filterDropdown}>
+                                <AiOutlineClose
+                                    style={styles.closeIcon}
+                                    onClick={() => setShowFilter(false)}
+                                />
+
+                                <div
+                                    onClick={() => handlePropertyChange(1)}
+                                    style={{
+                                        ...styles.filterItem,
+                                        backgroundColor:
+                                            filterValue.typeResi.includes(1)
+                                                ? "#DAC7FF"
+                                                : "transparent",
+                                    }}
                                 >
-                                    <FaDownload size={20} color="#9B74F3" /> Exporter les
-                                    résultats
-                                </button>
+                                    <img
+                                        style={resiImg}
+                                        src="/maison.png"
+                                        alt=""
+                                    />
+                                    <p>Maison</p>
+                                </div>
+                                <div
+                                    onClick={() => handlePropertyChange(2)}
+                                    style={{
+                                        ...styles.filterItem,
+                                        backgroundColor:
+                                            filterValue.typeResi.includes(2)
+                                                ? "#DAC7FF"
+                                                : "transparent",
+                                    }}
+                                >
+                                    <img
+                                        style={resiImg}
+                                        src="/building.png"
+                                        alt=""
+                                    />
+                                    <p>Appartement</p>
+                                </div>
+                                <devicePixelRatio
+                                    onClick={() => handlePropertyChange(3)}
+                                    style={{
+                                        ...styles.filterItem,
+                                        backgroundColor:
+                                            filterValue.typeResi.includes(3)
+                                                ? "#DAC7FF"
+                                                : "transparent",
+                                    }}
+                                >
+                                    <img
+                                        style={resiImg}
+                                        src="/chalet.png"
+                                        alt=""
+                                    />{" "}
+                                    <p>Chalet</p>
+                                </devicePixelRatio>
                             </div>
+                        )}
+                    </div>
+
+                    <div style={styles.datePickerContainer}>
+                        <DatePicker
+                            selected={new Date(selectedYear, 0, 1)}
+                            onChange={handleYearChange}
+                            showYearPicker
+                            dateFormat="yyyy"
+                            disabled={loading}
+                            customInput={
+                                <CustomDatePickerButton year={selectedYear} />
+                            }
+                        />
+                    </div>
+                </div>
+
+                {/* Carte Google */}
+                <div style={styles.mapContainer}>
+                    <StatsMaps
+                        location={{
+                            lat: mapPosition.lat,
+                            lng: mapPosition.lng,
+                        }}
+                        loading={loading}
+                        // showModal={showModal}
+                        // setShowModal={setShowModal}
+                        arrayMap={residence}
+                        mapPosition={mapPosition}
+                        setMapPosition={setMapPosition}
+                        mapBounds={mapBounds}
+                        setMapBounds={setMapBounds}
+                        stats
+                    ></StatsMaps>
+                </div>
+            </div>
+            {/* <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button
+                    onClick={() => console.log("Exporting data")}
+                    className="export-button"
+                >
+                    <FaDownload size={20} color="#9B74F3" /> Exporter les
+                    résultats
+                </button>
+            </div> */}
         </div>
     ) : (
         <div style={styles.spinnerContainer}>
@@ -485,9 +493,7 @@ const styles = {
         borderRadius: "5px",
         width: "80%",
         flexDirection: "row",
-        marginBottom:"5px"
-       
-       
+        marginBottom: "5px",
     },
     icon: {
         marginRight: "8px",
