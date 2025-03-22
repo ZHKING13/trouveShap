@@ -1024,9 +1024,7 @@ setUserPosition({
                                 {t("other.entre1mois_3mois")}
                             </li>
                             <span>
-                                {selectResidence?.refundGrid[
-                                    "Entre 1 mois et 3 mois avant le jour J"
-                                ] + "%"}
+                                {selectResidence?.refundGrid?.["Entre 1 mois et 3 mois avant le jour J"] + "%"}
                             </span>
                         </div>
                         <div style={spaceStyle}>
@@ -1035,9 +1033,7 @@ setUserPosition({
                             </li>
                             <span>
                                 {" "}
-                                {selectResidence?.refundGrid[
-                                    "Entre 1 semaine et 1 mois avant le jour J"
-                                ] + "%"}
+                                {selectResidence?.refundGrid?.["Entre 1 semaine et 1 mois avant le jour J"] + "%"}
                             </span>
                         </div>
                         <div style={spaceStyle}>
@@ -1046,9 +1042,7 @@ setUserPosition({
                             </li>
                             <span>
                                 {" "}
-                                {selectResidence?.refundGrid[
-                                    "Entre 48h et 1 semaine avant le jour J"
-                                ] + "%"}
+                                {selectResidence?.refundGrid?.["Entre 48h et 1 semaine avant le jour J"] + "%"}
                             </span>
                         </div>
                         <div style={spaceStyle}>
@@ -1057,9 +1051,7 @@ setUserPosition({
                             </li>
                             <span>
                                 {" "}
-                                {selectResidence?.refundGrid[
-                                    "Moins de 48 heures avant le jour J"
-                                ] + "%"}
+                                {selectResidence?.refundGrid?.["Moins de 48 heures avant le jour J"] + "%"}
                             </span>
                         </div>
                         <div style={spaceStyle}>
@@ -1068,9 +1060,7 @@ setUserPosition({
                             </li>
                             <span>
                                 {" "}
-                                {selectResidence?.refundGrid[
-                                    "Plus de 3 mois avant le jour J"
-                                ] + "%"}
+                                {selectResidence?.refundGrid?.["Plus de 3 mois avant le jour J"] + "%"}
                             </span>
                         </div>
                     </ul>

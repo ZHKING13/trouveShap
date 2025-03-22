@@ -24,7 +24,7 @@ const Header = ({ path, title, children }) => {
                         color: "#9CA3AF",
                     }}
                 >
-                    Dashbord <RightOutlined /> {path}
+                    Dashboard <RightOutlined /> {path}
                 </p>
 
                 <h1
