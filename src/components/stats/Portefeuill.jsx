@@ -10,7 +10,7 @@ import {
 import { currencySign } from "../DataTable";
 import BarCharts from "../chart/Bar";
 
-const Portefuille = () => {
+const Portefuille = ({data,setData}) => {
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [Stats, setStats] = useState(null);
@@ -42,12 +42,18 @@ const Portefuille = () => {
             };
 
             const res = await getCompanyMoneyStats(headers, query);
-            console.log(res);
+            console.log(data);
 
             if (res.status !== 200) {
                 throw new Error(res?.data?.message || "Erreur inconnue");
             }
-            setStats(res.data);
+            setStats(res.data); 
+            setData((prev) => {
+                return {
+                    ...prev,
+                    portefeuille: res.data.companyMoneyPerMonth
+                }
+            } )
         } catch (error) {
             openNotificationWithIcon("error", "Erreur", error.message);
         } finally {
@@ -60,7 +66,7 @@ const Portefuille = () => {
     }, [selectedYear]);
 
     return (
-        <div style={styles.container}>
+        <div id="portefeuille" style={styles.container}>
             {contextHolder}
             <div style={styles.header}>
                 <div>

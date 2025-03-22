@@ -9,7 +9,7 @@ import {
 } from "../../feature/API";
 import { currencySign } from "../DataTable";
 
-const ReservationStats = () => {
+const ReservationStats = ({data,setData}) => {
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [Stats, setStats] = useState(null);
@@ -47,6 +47,12 @@ const ReservationStats = () => {
                 throw new Error(res?.data?.message || "Erreur inconnue");
             }
             setStats(res.data);
+            setData((prev) => {
+                return {
+                    ...prev,
+                    reservation: res.data.bookingsPerMonth
+                }
+            })
         } catch (error) {
             openNotificationWithIcon("error", "Erreur", error.message);
         } finally {
@@ -59,7 +65,7 @@ const ReservationStats = () => {
     }, [selectedYear]);
 
     return (
-        <div style={styles.container}>
+        <div id="reservation" style={styles.container}>
             {contextHolder}
             <div style={styles.header}>
                 <div>
@@ -111,7 +117,7 @@ export default ReservationStats;
 const styles = {
     container: {
         backgroundColor: "white",
-        padding: "20px",
+        padding: "10px",
         borderRadius: "12px",
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
         minWidth: "450px",

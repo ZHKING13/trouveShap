@@ -4,6 +4,8 @@ import "chart.js/auto";
 import { ChartContainer } from "./Probleme";
 import { getRateStat } from "../../feature/API";
 import { Spin } from "antd";
+import { FaDownload } from "react-icons/fa";
+import { ExcelExportService } from "../../feature/util";
 
 const NoteMoyenne = () => {
     const [selectedYear, setSelectedYear] = useState(new Date());
@@ -72,28 +74,66 @@ const NoteMoyenne = () => {
         plugins: { legend: { display: false } },
         scales: { x: { grid: { display: false } }, y: { display: false } },
     };
-
-    return (
-        <div style={styles.container}>
-            <div style={styles.cardContainer}>
-                <div style={styles.cardParent}>
-                    <Card label="Total résidences" value={totalResidences} />
-                    <Card
-                        label="Note moyenne"
-                        value={`${meanRate.toFixed(1)} / 5`}
-                    />
-                </div>
-            </div>
-            <ChartContainer
-                title="Nombre total de réservation"
-                value={totalBookings}
-                year={selectedYear}
-                handlDatePicker={(e) =>
-                    setSelectedYear(e)
+    const handleExport = async () => {
+     
+    
+            if (!nbResidencesPerRateValue) return;
+            setLoading(true);
+    
+            // feuille 1 : Durée moyenne de séjour
+            
+            const excelService = new ExcelExportService();
+           
+            const dataToExport = Object.entries(nbResidencesPerRateValue).map(
+                (item) => {
+                    return {
+                        key: item[0],
+                        value: item[1],
+                    };
                 }
-            >
-                <Bar data={chartData} options={chartOptions} />
-            </ChartContainer>
+            );
+            
+            await excelService.generateSheet(dataToExport, "Note Moyenne", "note", {
+                maxWidth: 950,
+            });
+    
+            setLoading(false);
+            excelService.export("Travelers-stats");
+        };
+    return (
+        <div style={{backgroundColor:"#fff"}}>
+            <div style={styles.container}>
+                <div style={styles.cardContainer}>
+                    <div style={styles.cardParent}>
+                        <Card
+                            label="Total résidences"
+                            value={totalResidences}
+                        />
+                        <Card
+                            label="Note moyenne"
+                            value={`${meanRate.toFixed(1)} / 5`}
+                        />
+                    </div>
+                </div>
+                <ChartContainer
+                    title="Nombre total de réservation"
+                    value={totalBookings}
+                    year={selectedYear}
+                    handlDatePicker={(e) => setSelectedYear(e)}
+                    id={"note"}
+                >
+                    <Bar data={chartData} options={chartOptions} />
+                </ChartContainer>
+            </div>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <button
+                        onClick={handleExport}
+                        className="export-button"
+                    >
+                        <FaDownload size={20} color="#9B74F3" /> Exporter les
+                        résultats
+                    </button>
+                </div>
         </div>
     );
 };

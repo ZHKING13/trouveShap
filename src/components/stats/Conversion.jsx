@@ -18,13 +18,58 @@ import {
     getCancelationRateBookings,
     getConversionStats,
 } from "../../feature/API";
+import { FaDownload } from "react-icons/fa";
+import { MonthArray } from "../../data";
+import * as XLSX from "xlsx";
+import { ExcelExportService } from "../../feature/util";
 
 const ConversionState = () => {
     const [stayStat, setStayStat] = useState(null);
     const [cancelState, setCancelState] = useState(null);
     const [selectedYear, setSelectedYear] = useState(new Date());
     const [loading, setLoading] = useOutletContext();
-
+    const handleExport = async() => {
+        if (!stayStat || !cancelState) return;
+        setLoading(true);
+       const dureeAvecMois = stayStat.meanNightsPerMonth?.map(
+           (item) => ({
+               ...item,
+               monthName: MonthArray[item.month - 1],
+           })
+       );
+   const dataToExport = [
+       { key: "Durée Moyenne Séjour", value: stayStat.meanNights },
+       ...stayStat.meanNightsPerMonth.map((item) => ({
+           key: ` ${MonthArray[item.month - 1]}`,
+           value: item.count,
+       })),
+      
+        ];
+        // feuille 1 : Durée moyenne de séjour
+      const excelService = new ExcelExportService()
+        await excelService.generateSheet(
+            dataToExport,
+            "Durée Moyenne Séjour",
+            "sejour-stats",
+            { maxWidth: 600 }
+        );
+        // feuille 2 : Taux d'annulation
+        // convertir l'objet en tableau
+        const cancelData = [
+            { key: "Annulation", value: cancelState.cancellationRate },
+            { key: "Réservations", value: cancelState.otherStatusBookingsRate }
+        ];
+        await excelService.generateSheet(
+            cancelData,
+            "Taux d'Annulation",
+            "taux-annulaion",
+            {
+                maxWidth: 600,
+            }
+        );
+        setLoading(false);
+        excelService.export("conversion-stats");
+   };
     const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
@@ -53,6 +98,7 @@ const getYearRange = (year) => ({
 
             setStayStat(stay.data);
             setCancelState(cancel.data);
+            
         } catch (error) {
             console.error("Erreur API:", error);
         }
@@ -101,96 +147,105 @@ const getYearRange = (year) => ({
         : [];
 
     return (
-        <div style={styles.container}>
-            {/* Durée moyenne des séjours */}
-            <div style={styles.card}>
-                <div style={styles.header}>
-                    <h3 style={styles.title}>Durée moyenne des séjours</h3>
+        <div>
+            <div  style={styles.container}>
+                {/* Durée moyenne des séjours */}
+                <div id="sejour-stats" style={styles.card}>
+                    <div style={styles.header}>
+                        <h3 style={styles.title}>Durée moyenne des séjours</h3>
 
-                    <DatePicker
-                        selected={selectedYear}
-                        onChange={(date) => setSelectedYear(date)}
-                        showYearPicker
-                        dateFormat="yyyy"
-                        minDate={new Date(2024, 0, 1)}
-                        maxDate={new Date()}
-                        customInput={<CustomDateButton />}
-                    />
+                        <DatePicker
+                            selected={selectedYear}
+                            onChange={(date) => setSelectedYear(date)}
+                            showYearPicker
+                            dateFormat="yyyy"
+                            minDate={new Date(2024, 0, 1)}
+                            maxDate={new Date()}
+                            customInput={<CustomDateButton />}
+                        />
+                    </div>
+                    <div style={styles?.detail}>
+                        <h1 style={styles.bigText}>
+                            {stayStat?.meanNights || 0} <span>nuitées</span>
+                        </h1>
+                    </div>
+                    <ResponsiveContainer width="100%" height={200}>
+                        <BarChart data={staysData} layout="vertical">
+                            <XAxis type="number" hide />
+                            <YAxis dataKey="month" type="category" width={40} />
+                            <Tooltip />
+                            <Bar dataKey="nights" radius={[10, 10, 10, 10]}>
+                                {staysData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={entry.color}
+                                    />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
-                <div style={styles?.detail}>
-                    <h1 style={styles.bigText}>
-                        {stayStat?.meanNights || 0} <span>nuitées</span>
+
+                {/* Taux d'annulation */}
+                <div id="taux-annulaion" style={styles.card}>
+                    <div style={styles.header}>
+                        <h3 style={styles.title}>Taux d'annulation</h3>
+                        <DatePicker
+                            selected={selectedYear}
+                            onChange={(date) => setSelectedYear(date)}
+                            showYearPicker
+                            dateFormat="yyyy"
+                            minDate={new Date(2024, 0, 1)}
+                            maxDate={new Date()}
+                            customInput={<CustomDateButton />}
+                        />
+                    </div>
+
+                    <h1
+                        style={{
+                            ...styles.bigText,
+                            color: "#9B74F3",
+                            textAlign: "left",
+                        }}
+                    >
+                        {cancelState?.cancellationRate || 0}%
                     </h1>
+
+                    <ResponsiveContainer width="100%" height={200}>
+                        <PieChart>
+                            <Pie
+                                data={cancellationData}
+                                dataKey="value"
+                                innerRadius={60}
+                                outerRadius={80}
+                            >
+                                {cancellationData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={entry.color}
+                                    />
+                                ))}
+                            </Pie>
+                            <Legend />
+                        </PieChart>
+                    </ResponsiveContainer>
+
+                    <div style={styles.legendContainer}>
+                        <span style={{ color: "#FC9C66" }}>
+                            Annulation {cancelState?.cancellationRate || 0}%
+                        </span>
+                        <span style={{ color: "#3CD278" }}>
+                            Réservation{" "}
+                            {cancelState?.otherStatusBookingsRate || 0}%
+                        </span>
+                    </div>
                 </div>
-                <ResponsiveContainer width="100%" height={200}>
-                    <BarChart data={staysData} layout="vertical">
-                        <XAxis type="number" hide />
-                        <YAxis dataKey="month" type="category" width={40} />
-                        <Tooltip />
-                        <Bar dataKey="nights" radius={[10, 10, 10, 10]}>
-                            {staysData.map((entry, index) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={entry.color}
-                                />
-                            ))}
-                        </Bar>
-                    </BarChart>
-                </ResponsiveContainer>
             </div>
-
-            {/* Taux d'annulation */}
-            <div style={styles.card}>
-                <div style={styles.header}>
-                    <h3 style={styles.title}>Taux d'annulation</h3>
-                    <DatePicker
-                        selected={selectedYear}
-                        onChange={(date) => setSelectedYear(date)}
-                        showYearPicker
-                        dateFormat="yyyy"
-                        minDate={new Date(2024, 0, 1)}
-                        maxDate={new Date()}
-                        customInput={<CustomDateButton />}
-                    />
-                </div>
-
-                <h1
-                    style={{
-                        ...styles.bigText,
-                        color: "#9B74F3",
-                        textAlign: "left",
-                    }}
-                >
-                    {cancelState?.cancellationRate || 0}%
-                </h1>
-
-                <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                        <Pie
-                            data={cancellationData}
-                            dataKey="value"
-                            innerRadius={60}
-                            outerRadius={80}
-                        >
-                            {cancellationData.map((entry, index) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={entry.color}
-                                />
-                            ))}
-                        </Pie>
-                        <Legend />
-                    </PieChart>
-                </ResponsiveContainer>
-
-                <div style={styles.legendContainer}>
-                    <span style={{ color: "#FC9C66" }}>
-                        Annulation {cancelState?.cancellationRate || 0}%
-                    </span>
-                    <span style={{ color: "#3CD278" }}>
-                        Réservation {cancelState?.otherStatusBookingsRate || 0}%
-                    </span>
-                </div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button onClick={handleExport} className="export-button">
+                    <FaDownload size={20} color="#9B74F3" /> Exporter les
+                    résultats
+                </button>
             </div>
         </div>
     );

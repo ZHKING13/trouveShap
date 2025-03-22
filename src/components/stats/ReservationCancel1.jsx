@@ -9,7 +9,7 @@ import {
     getCancelledBookingsStat,
 } from "../../feature/API";
 
-const ReservationCancel = () => {
+const ReservationCancel = ({data,setData}) => {
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [cancel1Rate, setCancel1Rate] = useState(null);
@@ -19,10 +19,7 @@ const ReservationCancel = () => {
         api[type]({ message: title, description: message });
     };
 
-    const getYearRange = (year) => ({
-        fromDate: `${year}-01-01`,
-        toDate: `${year}-12-31`,
-    });
+  
 
     const handleYearChange = (date) => {
         setSelectedYear(date.getFullYear());
@@ -47,6 +44,12 @@ const ReservationCancel = () => {
                 throw new Error(res?.data?.message || "Erreur inconnue");
             }
             setCancel1Rate(res.data);
+            setData((prev) => {
+                return {
+                    ...prev,
+                    "reservation-annulé": res.data.cancelledBookingsPerMonth
+                }
+            })
         } catch (error) {
             openNotificationWithIcon("error", "Erreur", error.message);
         } finally {
@@ -59,7 +62,7 @@ const ReservationCancel = () => {
     }, [selectedYear]);
 
     return (
-        <div style={styles.container}>
+        <div id="reservation-annulé" style={styles.container}>
             {contextHolder}
             <div style={styles.header}>
                 <div>
@@ -75,7 +78,7 @@ const ReservationCancel = () => {
                     <p style={styles.mainValue}>
                         {loading
                             ? "..."
-                            : cancel1Rate?.cancellationRate || "N/A"}
+                            : cancel1Rate?.cancellationRate + "%" || "N/A"}
                     </p>
                 </div>
                 <div style={styles.datePickerContainer}>

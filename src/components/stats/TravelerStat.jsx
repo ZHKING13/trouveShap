@@ -5,6 +5,8 @@ import { getHostStat, getTravelerStat } from "../../feature/API";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Spin } from "antd";
+import { FaDownload } from "react-icons/fa";
+import { ExcelExportService } from "../../feature/util";
 
 const EvolutionTravelers = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -94,21 +96,48 @@ const EvolutionTravelers = () => {
             y: { display: false },
         },
     };
-
+const handleExport = async () => {
+            if (!travelerPerMonth) return;
+            setLoading(true);
+    
+            // feuille 1 : Durée moyenne de séjour
+            
+            const excelService = new ExcelExportService();
+           
+            const dataToExport = travelerPerMonth.map((item, index) => ({
+                key: monthNames[item.month - 1],
+                value: item.count,
+            }));      
+            
+            await excelService.generateSheet(dataToExport, "Voyageur", "travelers", {
+                maxWidth: 950,
+            });
+    
+            setLoading(false);
+            excelService.export("Travelers-stats");
+        };
     return (
-        <div style={styles.container}>
-            <Header
-                totalTravelers={totalTravelers}
-                evolutionRate={evolutionRate}
-                selectedYear={selectedYear}
-                handleYearChange={handleYearChange}
-            />
-            <div style={styles.chartContainer}>
-                <Line
-                    data={chartData}
-                    options={chartOptions}
-                    style={{ width: "100%" }}
+        <div style={{ backgroundColor: "#fff" }}>
+            <div style={styles.container}>
+                <Header
+                    totalTravelers={totalTravelers}
+                    evolutionRate={evolutionRate}
+                    selectedYear={selectedYear}
+                    handleYearChange={handleYearChange}
                 />
+                <div id="travelers" style={styles.chartContainer}>
+                    <Line
+                        data={chartData}
+                        options={chartOptions}
+                        style={{ width: "100%" }}
+                    />
+                </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button onClick={handleExport} className="export-button">
+                    <FaDownload size={20} color="#9B74F3" /> Exporter les
+                    résultats
+                </button>
             </div>
         </div>
     );
@@ -122,7 +151,7 @@ const Header = ({
 }) => (
     <div style={styles.header}>
         <InfoBox
-            label="Nombre d'hôtes"
+            label="Nombre de voyageurs"
             value={totalTravelers || 0}
         />
         <InfoBox label="Taux de croissance" value={`${evolutionRate?.toFixed(2) || 0}%`} />

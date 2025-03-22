@@ -5,7 +5,7 @@ import { notification } from "antd";
 import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from "recharts";
 import { getBlockedRateStats } from "../../feature/API";
 
-const BlockBooking = () => {
+const BlockBooking = ({data,setData}) => {
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [stats, setStats] = useState(null);
@@ -33,7 +33,15 @@ const BlockBooking = () => {
 
             if (response.status !== 200)
                 throw new Error(response?.data?.message || "Erreur inconnue");
+            console.log(response.data);
+            
             setStats(response.data);
+            setData((prev) => {
+                return {
+                    ...prev,
+                    "reservation-bloqué": response.data
+                }
+            })
         } catch (error) {
             notifyError(error.message);
         } finally {
@@ -60,10 +68,9 @@ const BlockBooking = () => {
     ];
 
     return (
-        <div style={styles.container}>
+        <div id="reservation-bloqué" style={styles.container}>
             {contextHolder}
             <div style={styles.header}>
-               
                 <StatBlock
                     title="Taux de blockage"
                     value={stats?.blockedRate}

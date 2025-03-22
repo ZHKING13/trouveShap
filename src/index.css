@@ -160,6 +160,19 @@ body {
     justify-content: center;
     width: 100%;
 }
+.export-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 2px solid #9B74F3;
+    color: #9B74F3;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 20px;
+}
 
 .file-dropzone {
     border: 2px dashed #e2e8f0;

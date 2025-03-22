@@ -5,7 +5,7 @@ import { notification } from "antd";
 import AreaCharts from "../chart/AreaChart";
 import { getRefungBooking } from "../../feature/API";
 
-const RefundBooking = () => {
+const RefundBooking = ({data,setData}) => {
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [stats, setStats] = useState(null);
@@ -35,6 +35,12 @@ const RefundBooking = () => {
                 throw new Error(response?.data?.message || "Erreur inconnue");
 
             setStats(response.data);
+            setData((prev) => {
+                return {
+                    ...prev,
+                    "reservation-remboursé": response.data.refundedBookingsPerMonth
+                }
+            })
         } catch (error) {
             notifyError(error.message);
         } finally {
@@ -47,7 +53,7 @@ const RefundBooking = () => {
     }, [selectedYear]);
 
     return (
-        <div style={styles.container}>
+        <div id="reservation-remboursé" style={styles.container}>
             {contextHolder}
             <div style={styles.header}>
                 <StatBlock
@@ -57,7 +63,7 @@ const RefundBooking = () => {
                 />
                 <StatBlock
                     title="Taux de remboursement"
-                    value={stats?.refundRate}
+                    value={stats?.refundRate + "%"}
                     loading={loading}
                 />
                 <DatePickerSelector

@@ -5,6 +5,8 @@ import { getHostStat } from "../../feature/API";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Spin } from "antd";
+import { FaDownload } from "react-icons/fa";
+import { ExcelExportService } from "../../feature/util";
 
 const EvolutionHotes = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -92,21 +94,52 @@ const EvolutionHotes = () => {
             y: { display: false },
         },
     };
+    const handleExport = async () => {
+            if (!hostPerMonth) return;
+            setLoading(true);
+    
+            // feuille 1 : Durée moyenne de séjour
+            
+            const excelService = new ExcelExportService();
+           
+            const dataToExport = hostPerMonth.map((item, index) => ({
+                key: monthNames[item.month - 1],
+                value: item.count,
+            }));      
+            
+            await excelService.generateSheet(dataToExport, "hôte", "host", {
+                maxWidth: 600,
+            });
+    
+            setLoading(false);
+            excelService.export("Host-stats");
+        };
 
     return (
-        <div style={styles.container}>
-            <Header
-                totalHosts={totalHosts}
-                evolutionRate={evolutionRate}
-                selectedYear={selectedYear}
-                handleYearChange={handleYearChange}
-            />
-            <div style={styles.chartContainer}>
-                <Line
-                    data={chartData}
-                    options={chartOptions}
-                    style={{ width: "100%" }}
+        <div style={{ backgroundColor: "#fff" }}>
+            <div id="host" style={styles.container}>
+                <Header
+                    totalHosts={totalHosts}
+                    evolutionRate={evolutionRate}
+                    selectedYear={selectedYear}
+                    handleYearChange={handleYearChange}
                 />
+                <div style={styles.chartContainer}>
+                    <Line
+                        data={chartData}
+                        options={chartOptions}
+                        style={{ width: "100%" }}
+                    />
+                </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button
+                    onClick={handleExport}
+                    className="export-button"
+                >
+                    <FaDownload size={20} color="#9B74F3" /> Exporter les
+                    résultats
+                </button>
             </div>
         </div>
     );

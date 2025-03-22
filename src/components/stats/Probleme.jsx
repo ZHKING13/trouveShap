@@ -8,6 +8,8 @@ import {
     getCancellationBookingStatTwo,
 } from "../../feature/API";
 import { Spin } from "antd";
+import { FaDownload } from "react-icons/fa";
+import { ExcelExportService } from "../../feature/util";
 
 const Probleme = () => {
     const [selectedYear, setSelectedYear] = useState(new Date());
@@ -38,6 +40,8 @@ const Probleme = () => {
                     cancel1Rate: cancel1.data,
                     cancel2Rate: cancel2.data,
                 });
+                log(cancel1.data);
+                log(cancel2.data);
             } catch (error) {
                 console.error(
                     "Erreur lors de la récupération des données",
@@ -60,9 +64,12 @@ const Probleme = () => {
     if (!cancelData.cancel1Rate || !cancelData.cancel2Rate)
         return <p>Aucune donnée disponible</p>;
 
-    const { cancellationReasonStat, cancellationRate } = cancelData.cancel1Rate;
+    const { cancellationReasonStat, cancellationRate } =
+        cancelData.cancel1Rate;
     const { totalCancelledBookings, cancellationReasonStat: barDataStat } =
         cancelData.cancel2Rate;
+    console.log(cancellationReasonStat);
+    console.log(barDataStat);
 
     const pieData = {
         labels: cancellationReasonStat?.map((item) => item.reason),
@@ -88,25 +95,58 @@ const Probleme = () => {
             },
         ],
     };
+ const handleExport = async () => {
+        if (!cancelData) return;
+        setLoading(true);
 
+        // feuille 1 : Durée moyenne de séjour
+        
+        const excelService = new ExcelExportService();
+        for (const [key, values] of Object.entries(cancelData)) {
+           
+            const dataToExport = values.cancellationReasonStat.map(
+                (item, index) => ({
+                    key: item.reason,
+                    value: item.count,
+                })
+            );
+let name = key === "cancel1Rate" ? "Taux d'annulation" : "Nombre total de problèmes";
+            await excelService.generateSheet(dataToExport, name, key, {
+                maxWidth: 600,
+            });
+        }
+
+        setLoading(false);
+        excelService.export("Problème-stats");
+    };
     return (
-        <div style={styles.container}>
-            <ChartContainer
-                title="Taux d'annulation"
-                value={`${cancellationRate} %`}
-                handlDatePicker={(e) => setSelectedYear(e)}
-                year={selectedYear}
-            >
-                <Pie data={pieData} options={chartOptions.pie} />
-            </ChartContainer>
-            <ChartContainer
-                title="Nombre total de problèmes"
-                value={totalCancelledBookings}
-                handlDatePicker={(e) => setSelectedYear(e)}
-                year={selectedYear}
-            >
-                <Bar data={barData} options={chartOptions.bar} />
-            </ChartContainer>
+        <div style={{ backgroundColor: "#fff" }}>
+            <div style={styles.container}>
+                <ChartContainer
+                    title="Taux d'annulation"
+                    value={`${cancellationRate} %`}
+                    handlDatePicker={(e) => setSelectedYear(e)}
+                    year={selectedYear}
+                    id={"cancel1Rate"}
+                >
+                    <Pie data={pieData} options={chartOptions.pie} />
+                </ChartContainer>
+                <ChartContainer
+                    title="Nombre total de problèmes"
+                    value={totalCancelledBookings}
+                    handlDatePicker={(e) => setSelectedYear(e)}
+                    year={selectedYear}
+                    id={"cancel2Rate"}
+                >
+                    <Bar data={barData} options={chartOptions.bar} />
+                </ChartContainer>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button onClick={handleExport} className="export-button">
+                    <FaDownload size={20} color="#9B74F3" /> Exporter les
+                    résultats
+                </button>
+            </div>
         </div>
     );
 };
@@ -117,8 +157,9 @@ export const ChartContainer = ({
     children,
     handlDatePicker,
     year,
+    id
 }) => (
-    <div style={styles.chartContainer}>
+    <div id={`${id}`} style={styles.chartContainer}>
         <div style={styles.header}>
             <div>
                 <p style={styles.title}>{title}</p>
@@ -165,7 +206,7 @@ const styles = {
         display: "flex",
         gap: "20px",
         padding: "20px",
-        backgroundColor: "#F7F7FB",
+        backgroundColor: "#fff",
     },
     chartContainer: {
         flex: 1,

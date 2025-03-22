@@ -247,3 +247,17 @@ export const DATA3 = [{
     },
 
 ]
+export const MonthArray = [
+    "Jan",
+    "Fév",
+    "Mar",
+    "Avr",
+    "Mai",
+    "Juin",
+    "Juil",
+    "Août",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Déc",
+];

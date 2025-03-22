@@ -9,7 +9,7 @@ import {
 } from "../../feature/API";
 import { currencySign } from "../DataTable";
 
-const VisiteurStats = () => {
+const VisiteurStats = ({data,setData}) => {
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [Stats, setStats] = useState(null);
@@ -31,9 +31,9 @@ const VisiteurStats = () => {
     const fetchState = async () => {
         setLoading(true);
         try {
-              const query = {
-                  year: selectedYear,
-              };
+            const query = {
+                year: selectedYear,
+            };
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
@@ -41,12 +41,16 @@ const VisiteurStats = () => {
             };
 
             const res = await getVisitorStats(headers, query);
-            console.log(res);
+            console.log(data);
 
             if (res.status !== 200) {
                 throw new Error(res?.data?.message || "Erreur inconnue");
             }
             setStats(res.data);
+            setData((prev) => {return {
+                ...prev,
+                visiteur: res.data.visitorsPerMonth
+            }})
         } catch (error) {
             openNotificationWithIcon("error", "Erreur", error.message);
         } finally {
@@ -59,7 +63,7 @@ const VisiteurStats = () => {
     }, [selectedYear]);
 
     return (
-        <div style={styles.container}>
+        <div id="visiteur" style={styles.container}>
             {contextHolder}
             <div style={styles.header}>
                 <div>

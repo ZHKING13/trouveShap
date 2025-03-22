@@ -11,7 +11,7 @@ import { currencySign } from "../DataTable";
 import BarCharts from "../chart/Bar";
 import { transformData } from "../chart/Line";
 
-const EarnStats = () => {
+const EarnStats = ({data,setData}) => {
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [Stats, setStats] = useState(null);
@@ -37,25 +37,7 @@ const EarnStats = () => {
         index % 2 === 0 ? "#FC9C66" : "#9B74F3"
     );
 
-    const chartData = {
-        labels,
-        datasets: [
-            {
-                label: "Nombre de résidences",
-                data: dataValues,
-                backgroundColor: colors,
-                borderRadius: 5,
-            },
-        ],
-    };
-
-    const chartOptions = {
-        plugins: { legend: { display: false } },
-        scales: {
-            x: { grid: { display: false } },
-            y: { display: false },
-        },
-    };
+  
     const fetchState = async () => {
         setLoading(true);
         try {
@@ -73,6 +55,12 @@ const EarnStats = () => {
                 throw new Error(res?.data?.message || "Erreur inconnue");
             }
             setStats(res.data);
+            setData((prev) => {
+                return {
+                    ...prev,
+                    gain: res.data.moneyPerMonth
+                }
+            } )
         } catch (error) {
             openNotificationWithIcon("error", "Erreur", error.message);
         } finally {
@@ -85,7 +73,7 @@ const EarnStats = () => {
     }, [selectedYear]);
 
     return (
-        <div style={styles.container}>
+        <div id="gain" style={styles.container}>
             {contextHolder}
             <div style={styles.header}>
                 <div>
@@ -143,7 +131,7 @@ export default EarnStats;
 const styles = {
     container: {
         backgroundColor: "white",
-        padding: "20px",
+        padding: "10px",
         borderRadius: "12px",
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
         minWidth: "450px",

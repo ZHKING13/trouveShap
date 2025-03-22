@@ -6,10 +6,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { notification, Spin } from "antd";
 import { getMeanPriceStats } from "../../feature/API";
 import { currencySign } from "../DataTable";
-import { FaFileExcel } from "react-icons/fa";
-import { FaFileExport } from "react-icons/fa6";
+import { FaDownload, FaFileExcel } from "react-icons/fa";
+import { FaDownLong, FaFileExport } from "react-icons/fa6";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { ExcelExportService } from "../../feature/util";
 const RatePrice = () => {
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -23,22 +24,30 @@ const RatePrice = () => {
     const handleYearChange = (date) => {
         setSelectedYear(date.getFullYear());
     };
- const exportToExcel = () => {
+ const handleExport = async() => {
      if (!stats) return;
-
-     const worksheet = XLSX.utils.json_to_sheet(stats.meanPricePerPart || []);
-     const workbook = XLSX.utils.book_new();
-     XLSX.utils.book_append_sheet(workbook, worksheet, "Stats");
-
-     const excelBuffer = XLSX.write(workbook, {
-         bookType: "xlsx",
-         type: "array",
-     });
-     const data = new Blob([excelBuffer], {
-         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-     });
-     saveAs(data, `stats_${selectedYear}.xlsx`);
- };
+     console.log(stats);
+   
+        setLoading(true);
+      
+   const dataToExport = [
+       ...stats.meanPricePerPart.map((item) => ({
+           key: item.label,
+           value: item.count,
+       })),
+   ];
+        // feuille 1 : Durée moyenne de séjour
+      const excelService = new ExcelExportService()
+        await excelService.generateSheet(
+            dataToExport,
+            "Prix moyen des résidences",
+            "prix-moyen-resi",
+            
+            { maxWidth: 600 }
+        );
+     setLoading(false);
+        excelService.export("prix-moyen-residence");
+   };
     const fetchState = async () => {
         setLoading(true);
         try {
@@ -103,7 +112,7 @@ const RatePrice = () => {
                 backgroundColor: "#fff",
             }}
         >
-            <div style={styles.container}>
+            <div id="prix-moyen-resi" style={styles.container}>
                 {contextHolder}
                 <div style={styles.cardContainer}>
                     <div style={styles.card}>
@@ -117,7 +126,7 @@ const RatePrice = () => {
                     <div style={styles.chartHeader}>
                         <div>
                             <p style={styles.chartTitle}>
-                              Prix moyen des résidences
+                                Prix moyen des résidences
                             </p>
                             <h2 style={styles.totalBookings}>
                                 {stats?.meanPrice
@@ -147,10 +156,12 @@ const RatePrice = () => {
                     <Bar data={chartData} options={chartOptions} />
                 </div>
             </div>
-            <button onClick={exportToExcel} style={styles.exportButton}>
-                <FaFileExport size={20} color="#9B74F3" /> Exporter les
-                résultats
-            </button>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button onClick={handleExport} className="export-button">
+                    <FaDownload size={20} color="#9B74F3" /> Exporter les
+                    résultats
+                </button>
+            </div>
         </div>
     );
 };

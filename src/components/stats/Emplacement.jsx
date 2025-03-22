@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import GoogleMapReact from "google-map-react";
-import { FaHome, FaBuilding, FaMountain } from "react-icons/fa";
+import { FaHome, FaBuilding, FaMountain, FaDownload } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import { notification, Spin } from "antd";
 import { getCityStats, getMapResidence } from "../../feature/API";
@@ -218,6 +218,8 @@ const EmplacementPage = () => {
         fetchState();
     }, [selectedYear]);
     return isLoaded ? (
+        <div style={{backgroundColor:"fff"}}>
+
         <div style={styles.container}>
             {contextHolder}
             {/* Statistiques */}
@@ -376,6 +378,16 @@ const EmplacementPage = () => {
                     stats
                 ></StatsMaps>
             </div>
+            </div>
+             <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <button
+                                    onClick={() => console.log("Exporting data")}
+                                    className="export-button"
+                                >
+                                    <FaDownload size={20} color="#9B74F3" /> Exporter les
+                                    résultats
+                                </button>
+                            </div>
         </div>
     ) : (
         <div style={styles.spinnerContainer}>
