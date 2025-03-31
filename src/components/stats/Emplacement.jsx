@@ -170,9 +170,16 @@ const EmplacementPage = () => {
     const fetchState = async () => {
         setLoading(true);
         try {
-            const query = getYearRange(selectedYear);
+            const year = getYearRange(selectedYear);
+            const query = {
+                ...year,
+                admin_search: params.admin_search,
+                viewport: params.viewport,
+                typeIds:params.typeIds
+            }
+                    const filteredObject = createQueryString(query);
 
-            const res = await getCityStats(headers, query);
+            const res = await getCityStats(headers, filteredObject);
             console.log(res);
 
             if (res.status !== 200) {
@@ -216,7 +223,7 @@ const EmplacementPage = () => {
 
     useEffect(() => {
         fetchState();
-    }, [selectedYear]);
+    }, [selectedYear, searchCity, filterValue.typeResi,mapBounds,mapPosition]);
     return isLoaded ? (
         <div style={{ backgroundColor: "fff" }}>
             <div style={styles.container}>
@@ -233,7 +240,7 @@ const EmplacementPage = () => {
                             <h2 style={styles.statValue}>
                                 {index === 1
                                     ? 0 ||
-                                      stats?.meanPricePerNightPerCity
+                                      stats?.meanMoneyPerCity
                                           .toString()
                                           .replace(
                                               /\B(?=(\d{3})+(?!\d))/g,

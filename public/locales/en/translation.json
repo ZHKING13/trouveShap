@@ -257,7 +257,8 @@
     "bank":"Bank :",
     "phone":"Phone number :",
     "temp":"Temporary",
-    "unavailable":"not available"
+    "unavailable":"not available",
+    "cancelReason":"Cancellation reason"
     },
     "remboursement": {
     "demadeNumber":"Request number",

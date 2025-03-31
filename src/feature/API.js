@@ -591,8 +591,8 @@ export const getCityStats = async (headers, query) => {
         };
 
         const response = await privateService.get(
-            "/stats/admin/city-stats",
-            { headers, params: query } // Ajout de query dans params
+            "/stats/admin/city-stats?"+query,
+            { headers } // Ajout de query dans params
         );
 
         const { status, data: responseData } = response;

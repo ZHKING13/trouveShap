@@ -259,7 +259,8 @@
     "bank":"Banque :",
     "phone":"Numéro de téléphone :",
     "temp":"Temporaire",
-    "unavailable":"non fournir"
+    "unavailable":"non fournir",
+    "cancelReason":"Raisons d'annulation"
 },
 "remboursement": {
     "demadeNumber":"Numéro de demande",

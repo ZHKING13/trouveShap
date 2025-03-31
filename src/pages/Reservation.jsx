@@ -250,7 +250,7 @@ const Reservation = () => {
     };
     const onClose = () => {
         setOpen(false);
-        setImgModal(false);
+        // setImgModal(false);
     };
     const headers = {
         "Content-Type": "application/json",
@@ -644,9 +644,10 @@ export const DrawerComponent = ({
                     }}
                 >
                     {selectItem &&
-                        selectItem?.preview_price_result?.averagePricePerNightWithoutFee ?
-                        selectItem?.preview_price_result?.averagePricePerNightWithoutFee.toLocaleString() :
-                        selectItem?.residence?.price.toLocaleString()}{" "}
+                    selectItem?.preview_price_result
+                        ?.averagePricePerNightWithoutFee
+                        ? selectItem?.preview_price_result?.averagePricePerNightWithoutFee.toLocaleString()
+                        : selectItem?.residence?.price.toLocaleString()}{" "}
                     {currencySign()} / {t("other.nuits")}
                 </h2>
                 <p>{t("other.price")}</p>
@@ -737,7 +738,10 @@ export const DrawerComponent = ({
                 </h2>
                 <div>
                     <span></span>
-                    <h3>{selectItem && selectItem.adults} {t("reservaton.personnes")}</h3>
+                    <h3>
+                        {selectItem && selectItem.adults}{" "}
+                        {t("reservaton.personnes")}
+                    </h3>
                 </div>
             </div>
             <Divider />
@@ -789,51 +793,61 @@ export const DrawerComponent = ({
             </h2>
             <div style={spaceStyle}>
                 <span>{t("reservaton.subTotal")}:</span>
-                <h3>{selectItem?.preview_price_result?.normalSubtotal.toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
+                <h3>
+                    {selectItem?.preview_price_result?.normalSubtotal
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </h3>
             </div>
             <div style={spaceStyle}>
                 <span>{t("reservaton.subTotal2")}:</span>
-                <h3>{selectItem?.subtotal.toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
+                <h3>
+                    {selectItem?.subtotal
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </h3>
             </div>
             <div style={spaceStyle}>
                 <span>{t("reservaton.fee")}:</span>
-                <h3>{selectItem?.fee.toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
+                <h3>
+                    {selectItem?.fee
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </h3>
             </div>
             <div style={spaceStyle}>
                 <span>Total:</span>
-                <h3>{selectItem?.total.toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
+                <h3>
+                    {selectItem?.total
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </h3>
             </div>
-            {
-                selectItem?.preview_price_result && (
-                    <>
-                        <Divider />
-                                    <h2
-                                        style={{
-                        color: "#1B2559",
-                                        }}
-                                    >
-                                        {t("reservaton.resume")}
-                        </h2>
-                        
-                        {selectItem?.preview_price_result?.recap.map((item, index) => {
+            {selectItem?.preview_price_result && (
+                <>
+                    <Divider />
+                    <h2
+                        style={{
+                            color: "#1B2559",
+                        }}
+                    >
+                        {t("reservaton.resume")}
+                    </h2>
+
+                    {selectItem?.preview_price_result?.recap.map(
+                        (item, index) => {
                             return (
                                 <div key={index} style={spaceStyle}>
-                                    <span>
-                                        {item?.label}
-                                    </span>
+                                    <span>{item?.label}</span>
                                     <h3>
                                         {item?.count}*{item?.price}
                                     </h3>
                                 </div>
                             );
-                        })}
-                    </>
-                )
-            }
+                        }
+                    )}
+                </>
+            )}
 
             <Divider />
             <h2
@@ -845,13 +859,19 @@ export const DrawerComponent = ({
             </h2>
             <div style={spaceStyle}>
                 <span>{t("reservaton.partHote")} :</span>
-                <h3>{selectItem?.hostMoney.toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
+                <h3>
+                    {selectItem?.hostMoney
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </h3>
             </div>
             <div style={spaceStyle}>
                 <span>{t("reservaton.partTc")} :</span>
-                <h3>{selectItem?.companyMoney.toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}</h3>
+                <h3>
+                    {selectItem?.companyMoney
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                </h3>
             </div>
             <Divider />
             {selectItem?.versementInfos !== null && (
@@ -932,7 +952,7 @@ export const DrawerComponent = ({
                 </Tag>
             </div>
             <Divider />
-            {selectItem?.cancelledAt !== null && (
+            {selectItem?.cancelledAt != null && (
                 <>
                     <div style={spaceStyle}>
                         <h2
@@ -942,7 +962,22 @@ export const DrawerComponent = ({
                         >
                             {t("reservaton.cancelDate")}
                         </h2>
-                        <h3>{FormatDate(selectItem?.cancelleAt)}</h3>
+                        <h3>{FormatDate(selectItem?.cancelledAt)}</h3>
+                    </div>
+                    <Divider />
+                    <div>
+                        <h2
+                            style={{
+                                color: "#1B2559",
+                            }}
+                        >
+                            {t("reservaton.cancelReason")}
+                        </h2>
+                        <h3>
+                            {getLanguageId() == "fr"
+                                ? selectItem?.cancelReason
+                                : selectItem?.cancelReasonEn}
+                        </h3>
                     </div>
                 </>
             )}
@@ -957,11 +992,11 @@ export const DrawerComponent = ({
             <div>
                 <ul>
                     <div style={spaceStyle}>
-                        <li style={listStyle}>
-                            {t("other.entre1mois_3mois")}
-                        </li>
+                        <li style={listStyle}>{t("other.entre1mois_3mois")}</li>
                         <span>
-                            {selectItem?.residence?.refundGrid?.["Entre 1 mois et 3 mois avant le jour J"] + "%"}
+                            {selectItem?.residence?.refundGrid?.[
+                                "Entre 1 mois et 3 mois avant le jour J"
+                            ] + "%"}
                         </span>
                     </div>
                     <div style={spaceStyle}>
@@ -970,7 +1005,9 @@ export const DrawerComponent = ({
                         </li>
                         <span>
                             {" "}
-                            {selectItem?.residence?.refundGrid?.["Entre 1 semaine et 1 mois avant le jour J"] + "%"}
+                            {selectItem?.residence?.refundGrid?.[
+                                "Entre 1 semaine et 1 mois avant le jour J"
+                            ] + "%"}
                         </span>
                     </div>
                     <div style={spaceStyle}>
@@ -979,7 +1016,9 @@ export const DrawerComponent = ({
                         </li>
                         <span>
                             {" "}
-                            {selectItem?.residence?.refundGrid?.["Entre 48h et 1 semaine avant le jour J"] + "%"}
+                            {selectItem?.residence?.refundGrid?.[
+                                "Entre 48h et 1 semaine avant le jour J"
+                            ] + "%"}
                         </span>
                     </div>
                     <div style={spaceStyle}>
@@ -988,16 +1027,18 @@ export const DrawerComponent = ({
                         </li>
                         <span>
                             {" "}
-                            {selectItem?.residence?.refundGrid?.["Moins de 48 heures avant le jour J"] + "%"}
+                            {selectItem?.residence?.refundGrid?.[
+                                "Moins de 48 heures avant le jour J"
+                            ] + "%"}
                         </span>
                     </div>
                     <div style={spaceStyle}>
-                        <li style={listStyle}>
-                            {t("other.plus3mois_1jour")}
-                        </li>
+                        <li style={listStyle}>{t("other.plus3mois_1jour")}</li>
                         <span>
                             {" "}
-                            {selectItem?.residence?.refundGrid?.["Plus de 3 mois avant le jour J"] + "%"}
+                            {selectItem?.residence?.refundGrid?.[
+                                "Plus de 3 mois avant le jour J"
+                            ] + "%"}
                         </span>
                     </div>
                 </ul>
