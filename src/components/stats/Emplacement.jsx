@@ -23,17 +23,11 @@ const EmplacementPage = () => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [api, contextHolder] = notification.useNotification();
     const [mapBounds, setMapBounds] = useState({
-        northeast: {
-            lat: 5.35,
-            lng: -3.967696,
-        },
-        southwest: {
-            lat: 5.35,
-            lng: -3.967696,
-        },
+        northeast: { lat: 5.35, lng: -3.967696 },
+        southwest: { lat: 5.35, lng: -3.967696 },
     });
+    const [lastValidViewport, setLastValidViewport] = useState(null);
     const [residence, setResidence] = useState([]);
-
     const [mapPosition, setMapPosition] = useState({
         lng: -3.967696,
         lat: 5.35,
@@ -45,6 +39,10 @@ const EmplacementPage = () => {
         toDate: "",
         reset: false,
     });
+
+    const autocompleteRef = useRef(null);
+    const boundsTimeoutRef = useRef(null);
+
     const openNotificationWithIcon = (type, title, message) => {
         api[type]({ message: title, description: message });
     };
@@ -62,68 +60,115 @@ const EmplacementPage = () => {
         fromDate: `${year}-01-01`,
         toDate: `${year}-12-31`,
     });
+
+    const isValidViewport = (viewport) => {
+        if (!viewport || !viewport.northeast || !viewport.southwest) return false;
+        
+        const latDiff = Math.abs(viewport.northeast.lat - viewport.southwest.lat);
+        const lngDiff = Math.abs(viewport.northeast.lng - viewport.southwest.lng);
+        
+        return latDiff > 0.001 && lngDiff > 0.001 && latDiff < 10 && lngDiff < 10;
+    };
+
+    const normalizeBounds = (bounds) => {
+        return {
+            northeast: {
+                lat: Math.max(bounds.northeast.lat, bounds.southwest.lat),
+                lng: Math.max(bounds.northeast.lng, bounds.southwest.lng),
+            },
+            southwest: {
+                lat: Math.min(bounds.northeast.lat, bounds.southwest.lat),
+                lng: Math.min(bounds.northeast.lng, bounds.southwest.lng),
+            }
+        };
+    };
+
     const params = useMemo(
         () => ({
             limit: 7,
             admin_search: searchCity,
             zoomLevel: mapPosition.zoom,
-            viewport: {
-                northeast: {
-                    lat: mapBounds.northeast?.lat,
-                    lng: mapBounds.northeast?.lng,
-                },
-                southwest: {
-                    lat: mapBounds.southwest?.lat,
-                    lng: mapBounds.southwest?.lng,
-                },
-            },
+            viewport: mapBounds,
             typeIds: filterValue.typeResi,
             fromDate: getYearRange(selectedYear).fromDate,
             toDate: getYearRange(selectedYear).toDate,
+            showAllResidence: true,
         }),
-        [
-            searchCity,
-            mapPosition.zoom,
-            mapBounds,
-            filterValue.typeResi,
-            selectedYear,
-        ]
+        [searchCity, mapPosition.zoom, mapBounds, filterValue.typeResi, selectedYear]
     );
 
-    const autocompleteRef = useRef(null);
     const handlePlaceSelect = () => {
         if (!autocompleteRef.current) return;
         const place = autocompleteRef.current.getPlace();
-        console.log("place", place.name);
-        setSearchCity(place.name);
-        if (place.geometry) {
-            setMapPosition({
+        
+        if (!place || !place.geometry) return;
+        
+        setSearchCity(place.name || "");
+
+        // Réinitialiser complètement les états pour éviter toute interférence
+        if (boundsTimeoutRef.current) {
+            clearTimeout(boundsTimeoutRef.current);
+        }
+
+        // Créer un flag pour indiquer que nous sommes en train de mettre à jour manuellement
+        window.manualBoundsUpdate = true;
+
+        // Extraire les limites directement depuis l'API Google Maps
+        if (place.geometry.viewport) {
+            // Définir un zoom approprié
+            let newZoom = 12;
+            if (place.types?.includes("locality")) {
+                newZoom = 13;
+            } else if (place.types?.includes("sublocality") || place.types?.includes("neighborhood")) {
+                newZoom = 15;
+            }
+
+            // Créer une copie profonde des limites pour éviter toute référence partagée
+            const bounds = place.geometry.viewport;
+            const newBounds = {
+                northeast: {
+                    lat: Number(bounds.getNorthEast().lat().toFixed(6)),
+                    lng: Number(bounds.getNorthEast().lng().toFixed(6)),
+                },
+                southwest: {
+                    lat: Number(bounds.getSouthWest().lat().toFixed(6)),
+                    lng: Number(bounds.getSouthWest().lng().toFixed(6)),
+                },
+            };
+            
+            console.log("Original viewport from Google:", JSON.stringify(newBounds));
+            
+            // Mettre à jour la position
+            const newPosition = {
                 lat: place.geometry.location.lat(),
                 lng: place.geometry.location.lng(),
-                zoom: 13,
-            });
-            if (place.geometry.viewport) {
-                setMapBounds({
-                    northeast: {
-                        lat: place.geometry.viewport.getNorthEast().lat(),
-                        lng: place.geometry.viewport.getNorthEast().lng(),
-                    },
-                    southwest: {
-                        lat: place.geometry.viewport.getSouthWest().lat(),
-                        lng: place.geometry.viewport.getSouthWest().lng(),
-                    },
-                });
-            }
+                zoom: newZoom,
+            };
+            
+            // Désactiver temporairement les effets secondaires
+            setMapPosition(newPosition);
+            
+            // Attendre que la position soit mise à jour
+            setTimeout(() => {
+                // Mettre à jour les limites avec une précision fixe
+                console.log("Setting final viewport:", JSON.stringify(newBounds));
+                setMapBounds(newBounds);
+                setLastValidViewport(newBounds);
+                
+                // Réactiver les effets secondaires après un délai
+                setTimeout(() => {
+                    window.manualBoundsUpdate = false;
+                }, 1000);
+            }, 500);
         }
     };
+
     const createQueryString = (data) => {
         const buildQuery = (obj, prefix) => {
             return Object.keys(obj)
                 .filter((key) => {
                     const value = obj[key];
-                    return (
-                        value !== null && value !== undefined && value !== ""
-                    );
+                    return value !== null && value !== undefined && value !== "";
                 })
                 .map((key) => {
                     const value = obj[key];
@@ -133,14 +178,9 @@ const EmplacementPage = () => {
                         return value
                             .map((item, index) => {
                                 if (typeof item === "object") {
-                                    return buildQuery(
-                                        item,
-                                        `${queryKey}[${index}]`
-                                    );
+                                    return buildQuery(item, `${queryKey}[${index}]`);
                                 }
-                                return `${queryKey}[${index}]=${encodeURIComponent(
-                                    item
-                                )}`;
+                                return `${queryKey}[${index}]=${encodeURIComponent(item)}`;
                             })
                             .join("&");
                     }
@@ -151,7 +191,7 @@ const EmplacementPage = () => {
 
                     return `${queryKey}=${encodeURIComponent(value)}`;
                 })
-                .filter(Boolean) // Filter out any undefined or null values that might be returned
+                .filter(Boolean)
                 .join("&");
         };
 
@@ -167,6 +207,7 @@ const EmplacementPage = () => {
         Authorization: `Bearer ${localStorage.getItem("accesToken")}`,
         "refresh-token": localStorage.getItem("refreshToken"),
     };
+
     const fetchState = async () => {
         setLoading(true);
         try {
@@ -175,13 +216,11 @@ const EmplacementPage = () => {
                 ...year,
                 admin_search: params.admin_search,
                 viewport: params.viewport,
-                typeIds:params.typeIds
-            }
-                    const filteredObject = createQueryString(query);
+                typeIds: params.typeIds
+            };
+            const filteredObject = createQueryString(query);
 
             const res = await getCityStats(headers, filteredObject);
-            console.log(res);
-
             if (res.status !== 200) {
                 throw new Error(res?.data?.message || "Erreur inconnue");
             }
@@ -192,40 +231,55 @@ const EmplacementPage = () => {
             setLoading(false);
         }
     };
+
     const fetchResidence = async () => {
         setLoading(true);
-        console.log(params);
         const filteredObject = createQueryString(params);
 
-        console.log("filterObjet::::", filteredObject);
-
-        const res = await getMapResidence(filteredObject, headers);
-        console.log("total resi", res.data.length);
-        if (res.status !== 200) {
-            openNotificationWithIcon(
-                "error",
-                t("error.401"),
-                t("error.retry1")
-            );
-            localStorage.clear();
-            setTimeout(() => {
-                Navigate("/login");
-            }, 1500);
-            return;
+        try {
+            const res = await getMapResidence(filteredObject, headers);
+            if (res.status !== 200) {
+                openNotificationWithIcon("error", "Erreur", "Erreur lors de la récupération des résidences");
+                localStorage.clear();
+                setTimeout(() => {
+                    Navigate("/login");
+                }, 1500);
+                return;
+            }
+            setResidence(res.data);
+        } catch (error) {
+            openNotificationWithIcon("error", "Erreur", error.message);
+        } finally {
+            setLoading(false);
         }
-        setResidence(res.data);
-        setLoading(false);
     };
-    const prevMapBounds = mapBounds;
+
     useEffect(() => {
         fetchResidence();
     }, [mapBounds, mapPosition, searchCity, filterValue.typeResi]);
 
     useEffect(() => {
         fetchState();
-    }, [selectedYear, searchCity, filterValue.typeResi,mapBounds,mapPosition]);
-    return isLoaded ? (
-        <div style={{ backgroundColor: "fff" }}>
+    }, [selectedYear, searchCity, filterValue.typeResi, mapBounds, mapPosition]);
+
+    useEffect(() => {
+        return () => {
+            if (boundsTimeoutRef.current) {
+                clearTimeout(boundsTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    if (!isLoaded) {
+        return (
+            <div style={styles.spinnerContainer}>
+                <Spin size="large" />
+            </div>
+        );
+    }
+
+    return (
+        <div style={{ backgroundColor: "#fff" }}>
             <div style={styles.container}>
                 {contextHolder}
                 {/* Statistiques */}
@@ -239,28 +293,10 @@ const EmplacementPage = () => {
                             <p style={styles.statTitle}>{title}</p>
                             <h2 style={styles.statValue}>
                                 {index === 1
-                                    ? 0 ||
-                                      stats?.meanMoneyPerCity
-                                          .toString()
-                                          .replace(
-                                              /\B(?=(\d{3})+(?!\d))/g,
-                                              " "
-                                          ) +
-                                          " " +
-                                          currencySign() ||
-                                      0
+                                    ? stats?.meanMoneyPerCity?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " " + currencySign() || 0
                                     : index === 2
-                                    ? 0 ||
-                                      stats?.meanPricePerNightPerCity
-                                          .toString()
-                                          .replace(
-                                              /\B(?=(\d{3})+(?!\d))/g,
-                                              " "
-                                          ) +
-                                          " " +
-                                          currencySign() ||
-                                      0
-                                    : stats?.countPerCity}
+                                    ? stats?.meanPricePerNightPerCity?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " " + currencySign() || 0
+                                    : stats?.countPerCity || 0}
                             </h2>
                         </div>
                     ))}
@@ -269,11 +305,11 @@ const EmplacementPage = () => {
                 {/* Filtres */}
                 <div style={styles.filtersContainer}>
                     <div style={styles.searchInput}>
-                        {" "}
                         <Autocomplete
-                            onLoad={(autocomplete) =>
-                                (autocompleteRef.current = autocomplete)
-                            }
+                            onLoad={(autocomplete) => {
+                                autocompleteRef.current = autocomplete;
+                                autocomplete.setFields(['geometry', 'name', 'types']);
+                            }}
                             onPlaceChanged={handlePlaceSelect}
                             className="searchInput"
                         >
@@ -305,58 +341,36 @@ const EmplacementPage = () => {
                                     style={styles.closeIcon}
                                     onClick={() => setShowFilter(false)}
                                 />
-
                                 <div
                                     onClick={() => handlePropertyChange(1)}
                                     style={{
                                         ...styles.filterItem,
-                                        backgroundColor:
-                                            filterValue.typeResi.includes(1)
-                                                ? "#DAC7FF"
-                                                : "transparent",
+                                        backgroundColor: filterValue.typeResi.includes(1) ? "#DAC7FF" : "transparent",
                                     }}
                                 >
-                                    <img
-                                        style={resiImg}
-                                        src="/maison.png"
-                                        alt=""
-                                    />
+                                    <img style={resiImg} src="/maison.png" alt="" />
                                     <p>Maison</p>
                                 </div>
                                 <div
                                     onClick={() => handlePropertyChange(2)}
                                     style={{
                                         ...styles.filterItem,
-                                        backgroundColor:
-                                            filterValue.typeResi.includes(2)
-                                                ? "#DAC7FF"
-                                                : "transparent",
+                                        backgroundColor: filterValue.typeResi.includes(2) ? "#DAC7FF" : "transparent",
                                     }}
                                 >
-                                    <img
-                                        style={resiImg}
-                                        src="/building.png"
-                                        alt=""
-                                    />
+                                    <img style={resiImg} src="/building.png" alt="" />
                                     <p>Appartement</p>
                                 </div>
-                                <devicePixelRatio
+                                <div
                                     onClick={() => handlePropertyChange(3)}
                                     style={{
                                         ...styles.filterItem,
-                                        backgroundColor:
-                                            filterValue.typeResi.includes(3)
-                                                ? "#DAC7FF"
-                                                : "transparent",
+                                        backgroundColor: filterValue.typeResi.includes(3) ? "#DAC7FF" : "transparent",
                                     }}
                                 >
-                                    <img
-                                        style={resiImg}
-                                        src="/chalet.png"
-                                        alt=""
-                                    />{" "}
+                                    <img style={resiImg} src="/chalet.png" alt="" />
                                     <p>Chalet</p>
-                                </devicePixelRatio>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -383,42 +397,30 @@ const EmplacementPage = () => {
                             lng: mapPosition.lng,
                         }}
                         loading={loading}
-                        // showModal={showModal}
-                        // setShowModal={setShowModal}
                         arrayMap={residence}
                         mapPosition={mapPosition}
                         setMapPosition={setMapPosition}
                         mapBounds={mapBounds}
                         setMapBounds={setMapBounds}
                         stats
-                    ></StatsMaps>
+                    />
                 </div>
             </div>
-            {/* <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button
-                    onClick={() => console.log("Exporting data")}
-                    className="export-button"
-                >
-                    <FaDownload size={20} color="#9B74F3" /> Exporter les
-                    résultats
-                </button>
-            </div> */}
-        </div>
-    ) : (
-        <div style={styles.spinnerContainer}>
-            <Spin size="large" />
         </div>
     );
 };
+
 const resiImg = {
     width: "30px",
     height: "30px",
 };
+
 const CustomDatePickerButton = React.forwardRef(({ year, onClick }, ref) => (
     <button style={styles.datePickerButton} onClick={onClick} ref={ref}>
         {year} <span style={styles.calendarIcon}>📅</span>
     </button>
 ));
+
 const styles = {
     container: {
         padding: "20px",
@@ -429,7 +431,7 @@ const styles = {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "80vh", // Ensure it takes the full height of the viewport
+        height: "80vh",
         width: "100%",
     },
     statsContainer: {
@@ -443,7 +445,6 @@ const styles = {
         borderRadius: "12px",
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
         flex: 1,
-
         margin: "0 10px",
     },
     statTitle: {
@@ -463,10 +464,6 @@ const styles = {
     },
     searchInput: {
         flex: 1,
-        padding: "12px",
-        border: "1px solid #E5E7EB",
-        borderRadius: "8px",
-        background: "#fff",
     },
     dropdownWrapper: {
         position: "relative",
@@ -490,10 +487,8 @@ const styles = {
         top: "110%",
         left: 0,
     },
-
     filterItem: {
         display: "flex",
-
         gap: "10px",
         padding: "10px",
         border: "1px solid #DAC7FF",
@@ -502,9 +497,6 @@ const styles = {
         flexDirection: "row",
         marginBottom: "5px",
     },
-    icon: {
-        marginRight: "8px",
-    },
     closeIcon: {
         position: "absolute",
         top: "10px",
@@ -512,32 +504,6 @@ const styles = {
         cursor: "pointer",
         fontSize: "16px",
         color: "#A0AEC0",
-    },
-    filterActions: {
-        display: "flex",
-        justifyContent: "space-between",
-        marginTop: "10px",
-    },
-    clearButton: {
-        background: "transparent",
-        color: "red",
-        border: "none",
-        cursor: "pointer",
-        fontSize: "14px",
-    },
-    applyButton: {
-        background: "#6C5DD3",
-        color: "#fff",
-        padding: "8px 15px",
-        borderRadius: "8px",
-        cursor: "pointer",
-        border: "none",
-        fontSize: "14px",
-    },
-    yearSelector: {
-        padding: "12px",
-        border: "1px solid #E5E7EB",
-        borderRadius: "8px",
     },
     mapContainer: {
         height: "450px",

@@ -35,20 +35,41 @@ const StatsMaps = ({
     };
 
     const updateBounds = (map) => {
+        // Ne pas mettre à jour les limites si nous sommes en train de le faire manuellement
+        if (window.manualBoundsUpdate) {
+            console.log("Skipping automatic bounds update during manual update");
+            return;
+        }
+        
         const bounds = map.getBounds();
         if (bounds) {
             const northEast = bounds.getNorthEast();
             const southWest = bounds.getSouthWest();
+            
+            // Utiliser une précision fixe pour éviter les différences minimes
             const newBounds = {
-                northeast: { lat: northEast.lat(), lng: northEast.lng() },
-                southwest: { lat: southWest.lat(), lng: southWest.lng() },
+                northeast: {
+                    lat: Number(northEast.lat().toFixed(6)),
+                    lng: Number(northEast.lng().toFixed(6)),
+                },
+                southwest: {
+                    lat: Number(southWest.lat().toFixed(6)),
+                    lng: Number(southWest.lng().toFixed(6)),
+                },
             };
-            if (
-                newBounds.northeast.lat !== mapBounds.northeast.lat ||
-                newBounds.northeast.lng !== mapBounds.northeast.lng ||
-                newBounds.southwest.lat !== mapBounds.southwest.lat ||
-                newBounds.southwest.lng !== mapBounds.southwest.lng
-            ) {
+            
+            // Vérifier si les limites sont significativement différentes
+            const latDiffNE = Math.abs(newBounds.northeast.lat - mapBounds.northeast.lat);
+            const lngDiffNE = Math.abs(newBounds.northeast.lng - mapBounds.northeast.lng);
+            const latDiffSW = Math.abs(newBounds.southwest.lat - mapBounds.southwest.lat);
+            const lngDiffSW = Math.abs(newBounds.southwest.lng - mapBounds.southwest.lng);
+            
+            // Seuil de différence significative plus élevé
+            const threshold = 0.001;
+            
+            if (latDiffNE > threshold || lngDiffNE > threshold || 
+                latDiffSW > threshold || lngDiffSW > threshold) {
+                console.log("Updating bounds from map:", JSON.stringify(newBounds));
                 setMapBounds(newBounds);
             }
         }
