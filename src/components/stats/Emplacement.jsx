@@ -52,8 +52,27 @@ const EmplacementPage = () => {
             const newTypeResi = prevState.typeResi.includes(type)
                 ? prevState.typeResi.filter((item) => item !== type)
                 : [...prevState.typeResi, type];
+            
+            // Mettre à jour le texte du bouton de filtre
+            updatePropertyTypeText(newTypeResi);
+            
             return { ...prevState, typeResi: newTypeResi };
         });
+    };
+    
+    // Nouvelle fonction pour mettre à jour le texte du bouton de filtre
+    const updatePropertyTypeText = (typeArray) => {
+        if (typeArray.length === 0) {
+            setPropertyType("Toutes les propriétés");
+        } else if (typeArray.length === 3) {
+            setPropertyType("Toutes les propriétés");
+        } else {
+            const typeNames = [];
+            if (typeArray.includes(1)) typeNames.push("Maison");
+            if (typeArray.includes(2)) typeNames.push("Appartement");
+            if (typeArray.includes(3)) typeNames.push("Chalet");
+            setPropertyType(typeNames.join(", "));
+        }
     };
 
     const getYearRange = (year) => ({
@@ -115,12 +134,17 @@ const EmplacementPage = () => {
 
         // Extraire les limites directement depuis l'API Google Maps
         if (place.geometry.viewport) {
+            console.log("place", place);
+            
             // Définir un zoom approprié
             let newZoom = 12;
             if (place.types?.includes("locality")) {
                 newZoom = 13;
             } else if (place.types?.includes("sublocality") || place.types?.includes("neighborhood")) {
                 newZoom = 15;
+            }
+            else if (place.types?.includes("point_of_interest")) {
+                newZoom = 17;
             }
 
             // Créer une copie profonde des limites pour éviter toute référence partagée
@@ -199,7 +223,51 @@ const EmplacementPage = () => {
     };
 
     const handleYearChange = (date) => {
-        setSelectedYear(date.getFullYear());
+        // Mettre à jour l'année sélectionnée
+        const newYear = date.getFullYear();
+        setSelectedYear(newYear);
+        
+        // Forcer une mise à jour des données avec la nouvelle année
+        setTimeout(() => {
+            const year = getYearRange(newYear);
+            const query = {
+                ...year,
+                admin_search: params.admin_search,
+                viewport: params.viewport,
+                typeIds: params.typeIds
+            };
+            const filteredObject = createQueryString(query);
+            
+            console.log("Fetching with new year:", newYear, filteredObject);
+            
+            // Appeler directement les API avec la nouvelle année
+            (async () => {
+                setLoading(true);
+                try {
+                    // Récupérer les statistiques
+                    const statsRes = await getCityStats(headers, filteredObject);
+                    if (statsRes.status === 200) {
+                        setStats(statsRes.data);
+                    }
+                    
+                    // Récupérer les résidences
+                    const paramsWithNewYear = {
+                        ...params,
+                        fromDate: year.fromDate,
+                        toDate: year.toDate
+                    };
+                    const residenceQueryString = createQueryString(paramsWithNewYear);
+                    const residenceRes = await getMapResidence(residenceQueryString, headers);
+                    if (residenceRes.status === 200) {
+                        setResidence(residenceRes.data);
+                    }
+                } catch (error) {
+                    openNotificationWithIcon("error", "Erreur", error.message);
+                } finally {
+                    setLoading(false);
+                }
+            })();
+        }, 100);
     };
 
     const headers = {
@@ -208,6 +276,7 @@ const EmplacementPage = () => {
         "refresh-token": localStorage.getItem("refreshToken"),
     };
 
+    // Restaurer les fonctions fetchState et fetchResidence
     const fetchState = async () => {
         setLoading(true);
         try {
@@ -220,6 +289,7 @@ const EmplacementPage = () => {
             };
             const filteredObject = createQueryString(query);
 
+            console.log("Fetching stats with params:", filteredObject);
             const res = await getCityStats(headers, filteredObject);
             if (res.status !== 200) {
                 throw new Error(res?.data?.message || "Erreur inconnue");
@@ -255,12 +325,29 @@ const EmplacementPage = () => {
     };
 
     useEffect(() => {
-        fetchResidence();
-    }, [mapBounds, mapPosition, searchCity, filterValue.typeResi]);
+        if (!loading) {
+            console.log("Fetching residence with params:", {
+                mapBounds, 
+                mapPosition, 
+                searchCity, 
+                typeIds: filterValue.typeResi,
+                year: selectedYear
+            });
+            fetchResidence();
+        }
+    }, [mapBounds, mapPosition, searchCity, filterValue.typeResi, selectedYear]);
 
     useEffect(() => {
-        fetchState();
-    }, [selectedYear, searchCity, filterValue.typeResi, mapBounds, mapPosition]);
+        if (!loading) {
+            console.log("Fetching stats with params:", {
+                selectedYear, 
+                searchCity, 
+                typeIds: filterValue.typeResi,
+                mapBounds
+            });
+            fetchState();
+        }
+    }, [selectedYear, searchCity, filterValue.typeResi, mapBounds]);
 
     useEffect(() => {
         return () => {
